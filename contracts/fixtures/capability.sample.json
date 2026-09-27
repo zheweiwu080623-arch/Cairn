@@ -1,0 +1,30 @@
+{
+  "schema": "capability.v1",
+  "id": "course.text",
+  "name": "把课件读成文字",
+  "version": "1.0.0",
+  "kind": "read",
+  "input": {
+    "type": "object",
+    "properties": {
+      "courses": { "type": "array", "description": "要读哪几门课（通常是 course.scan 的产物）" },
+      "maxChars": { "type": "number", "description": "每份材料最多取多少字，防止一份扫描件把内存吃光" }
+    },
+    "required": ["courses"]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "materials": { "type": "array", "description": "每份材料：文字 + 关键词 + 段落定位（「第几段 ≈ 第几页」）" }
+    },
+    "required": ["materials"]
+  },
+  "permissions": ["fs:read:course"],
+  "idempotent": true,
+  "cost": "none",
+  "entry": "lib/capabilities/course-text.mjs",
+  "tests": "tests/capability-course-text.test.mjs",
+  "used_by": ["course-assist"],
+  "ui": { "label": "读课件", "group": "课程", "icon": "📄" },
+  "notes": "只读磁盘：不下载、不改原文件、不提交。扫描件抽不出文字时如实标「需 OCR」，不假装读到了（抽文字逻辑见 lib/coursetext.mjs）。"
+}

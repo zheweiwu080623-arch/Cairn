@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "planner-snapshot.v1",
+  "title": "Planner offline snapshot",
+  "description": "Offline fallback for external consumers when Planner HTTP is unreachable. Nothing reads Planner SQLite in the normal path any more.",
+  "type": "object",
+  "required": ["schema", "exported_at", "counts", "sections"],
+  "properties": {
+    "schema": { "const": "planner-snapshot.v1" },
+    "exported_at": { "type": "string" },
+    "stale_after_hours": { "type": "integer", "default": 24 },
+    "source_version": { "type": "string" },
+    "source_pid": { "type": ["integer", "null"] },
+    "content_hash": { "type": "string" },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "tasks": { "type": "integer" },
+        "events": { "type": "integer" },
+        "notifications": { "type": "integer" },
+        "courses": { "type": "integer" },
+        "pending": { "type": "integer" }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "description": "One entry per Planner view, each a viewmodel.v1 object.",
+      "items": { "$ref": "viewmodel.v1" }
+    }
+  },
+  "additionalProperties": true
+}

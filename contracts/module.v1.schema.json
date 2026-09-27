@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "module.v1",
+  "title": "模块描述符 module.v1",
+  "description": "定义一个可插拔功能（视图 / 连接器 / 定时任务 / 小组件）需要声明的一切。目标：加一个功能 = 加一个目录 + 注册一行。",
+  "type": "object",
+  "required": ["schema", "id", "name", "version", "kind", "entry"],
+  "properties": {
+    "schema": { "const": "module.v1" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "唯一标识，小写字母/数字/连字符，如 course-capture" },
+    "name": { "type": "string", "description": "显示名，如「上课助手 · 录音与笔记」" },
+    "version": { "type": "string", "description": "语义化版本，如 0.1.0" },
+    "kind": {
+      "type": "string",
+      "enum": ["view", "connector", "job", "gadget", "processor"],
+      "description": "view=一个页面；connector=数据源；job=定时任务；gadget=挂在既有视图里的小组件；processor=再处理功能（吃 signal、吐 action）"
+    },
+    "icon": { "type": "string" },
+    "order": { "type": "integer", "description": "在导航里的排序位置" },
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "contact": { "type": "string" },
+        "origin": { "type": "string", "description": "来源说明，例如「2026 新生黑客松 · 光昭计划 第22组」" }
+      },
+      "additionalProperties": true
+    },
+    "license": { "type": "string", "description": "该模块自己的许可证，如 MIT" },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "view": { "type": "string", "description": "视图脚本（相对路径）" },
+        "styles": { "type": "string" },
+        "server": { "type": "string", "description": "服务端逻辑（相对路径）" },
+        "run": { "type": "string", "description": "processor 的入口脚本：导出 run(input, ctx) → actions[]（相对路径）" },
+        "readme": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "data": {
+      "type": "object",
+      "description": "声明式数据面：只准读/写这里列出的东西，越界视为错误",
+      "properties": {
+        "reads": { "type": "array", "items": { "type": "string" } },
+        "writes": { "type": "array", "items": { "type": "string" } },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "columns": { "type": "array", "items": { "type": "string" } },
+              "note": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["microphone", "camera", "notifications", "files:read:data", "files:write:data",
+                 "agent:ask", "network:outbound", "clipboard"]
+      },
+      "description": "安装时明确提示用户的能力清单"
+    },
+    "config": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "type"],
+        "properties": {
+          "key": { "type": "string" },
+          "label": { "type": "string" },
+          "type": { "type": "string", "enum": ["string", "number", "boolean", "select"] },
+          "default": {},
+          "options": { "type": "array", "items": { "type": "string" } },
+          "hint": { "type": "string" }
+        },
+        "additionalProperties": true
+      },
+      "description": "配置项由框架自动生成表单，模块不自己写设置页"
+    },
+    "settings": {
+      "type": "boolean",
+      "description": "true = 这个功能有**自己的就地设置**：功能页右上角会出现「⚙ 功能设置」抽屉，内容由模块自己的 view 导出 settings(host, ctx) 画（2026-09-27 新增）。值存在功能自己的键 fn_<id> 里，不进设置页"
+    },
+    "requires": {
+      "type": "object",
+      "properties": {
+        "app": { "type": "string", "description": "应用版本要求，如 >=1.0" },
+        "agent": { "type": "boolean", "description": "是否需要 agent（本地 CLI）才能完整工作" },
+        "modules": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

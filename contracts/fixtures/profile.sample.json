@@ -1,0 +1,29 @@
+{
+  "schema": "profile.v1",
+  "enabled": true,
+  "keywords": [
+    "TOEFL",
+    "ACM"
+  ],
+  "courseCodes": [
+    "MATH1860J",
+    "STAT1000J"
+  ],
+  "allowSenders": [
+    "advisor@example.edu"
+  ],
+  "sourceWeights": {
+    "canvas": 1,
+    "arxiv": 1,
+    "email": 0
+  },
+  "denyKeywords": [
+    "促销",
+    "优惠"
+  ],
+  "denySenders": [],
+  "pushAt": 1,
+  "dropAt": -3,
+  "updated_at": 1789967007180,
+  "origin": "derived"
+}

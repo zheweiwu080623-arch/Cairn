@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "profile.v1",
+  "title": "筛选画像 profile.v1",
+  "description": "决定“外部进来的哪条信息值得打扰你”。enabled 为 false 时，应用行为与引入本契约之前完全一致。",
+  "type": "object",
+  "required": ["schema", "enabled", "keywords", "courseCodes", "allowSenders", "denyKeywords", "denySenders", "pushAt", "dropAt"],
+  "properties": {
+    "schema": { "const": "profile.v1" },
+    "enabled": { "type": "boolean", "description": "总开关。false = 不筛选，一切照旧" },
+    "keywords": {
+      "type": "array", "items": { "type": "string" },
+      "description": "关注的关键词（命中 +2，最多计 3 个）"
+    },
+    "courseCodes": {
+      "type": "array", "items": { "type": "string" },
+      "description": "你的课程代码，如 MATH1860J（命中 +3）"
+    },
+    "allowSenders": {
+      "type": "array", "items": { "type": "string" },
+      "description": "关注的人/组织（命中 +3）"
+    },
+    "sourceWeights": {
+      "type": "object",
+      "additionalProperties": { "type": "number" },
+      "description": "按来源加减权，例如 {\"canvas\": 1, \"arxiv\": -1}"
+    },
+    "denyKeywords": {
+      "type": "array", "items": { "type": "string" },
+      "description": "不想看的词（命中 -2，最多计 3 个）"
+    },
+    "denySenders": {
+      "type": "array", "items": { "type": "string" },
+      "description": "屏蔽的发件人（命中直接 drop）"
+    },
+    "pushAt": { "type": "number", "description": "分数达到该值即自动放行（默认 3）" },
+    "dropAt": { "type": "number", "description": "分数低于该值判为“建议忽略”（默认 -3）" },
+    "updated_at": { "type": "integer" },
+    "origin": {
+      "type": "string",
+      "enum": ["empty", "manual", "derived", "longterm-memory"],
+      "description": "这份画像是怎么来的：手填 / 自动派生 / 长期记忆导入"
+    }
+  },
+  "additionalProperties": true
+}

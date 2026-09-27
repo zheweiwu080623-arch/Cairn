@@ -1,0 +1,38 @@
+{
+  "schema": "module.v1",
+  "id": "settings",
+  "name": "设置",
+  "sub": "数据源 · 外观 · 模式 · 功能",
+  "version": "0.3.1",
+  "kind": "view",
+  "icon": "⚙️",
+  "order": 3,
+  "author": {
+    "name": "空庭Coterie"
+  },
+  "license": "MIT",
+  "entry": {
+    "view": "panel.js",
+    "readme": "README.md"
+  },
+  "data": {
+    "reads": [
+      "prefs",
+      "connectors",
+      "modules",
+      "health",
+      "capabilities"
+    ],
+    "writes": [
+      "prefs",
+      "capabilities"
+    ],
+    "tables": []
+  },
+  "permissions": [],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false
+  }
+}

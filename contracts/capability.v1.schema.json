@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "capability.v1",
+  "title": "能力描述符 capability.v1",
+  "description": "【再处理运算的能力】一条能力 = 一个可复用的原子动作（读课程材料 / 推手机 / 写产物文件……）。功能由能力拼出来，所以每条能力必须能被单独测、必须声明副作用与权限、必须说清是否幂等。命名一律用点分「域.动作」：course.text / notify.app / file.write。设计稿见 outputs/M1_能力清单与契约设计_2026-09-25.md。",
+  "type": "object",
+  "required": ["schema", "id", "name", "version", "kind", "permissions", "idempotent", "cost"],
+  "properties": {
+    "schema": { "const": "capability.v1" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$",
+      "description": "唯一标识，点分「域.动作」（段内允许驼峰），如 course.text / canvas.course.check / dedupe.filterNew / push.phone。不要用下划线或连字符。一旦公开就会被开发者依赖，改名代价很高"
+    },
+    "name": { "type": "string", "description": "显示名（人话），如「把课件读成文字」" },
+    "version": { "type": "string", "description": "语义化版本，如 1.0.0；形状或语义有破坏性变化才升大版本" },
+    "kind": {
+      "type": "string",
+      "enum": ["read", "compute", "write", "outbound"],
+      "description": "read=只读（磁盘 / 网络）· compute=纯计算、无副作用 · write=写本机（文件 / 库 / 通知）· outbound=对外发送（邮件 / 手机 / 外部接口）。动作类（原「执行器」）也算能力，靠这个字段区分"
+    },
+    "input": {
+      "type": "object",
+      "description": "入参的 JSON Schema 片段：注册表与将来的可视化搭建据此生成表单、也能在调用前校验",
+      "additionalProperties": true
+    },
+    "output": {
+      "type": "object",
+      "description": "出参的 JSON Schema 片段（与 input 同格式）",
+      "additionalProperties": true
+    },
+    "permissions": {
+      "type": "array",
+      "description": "要哪些权限；词表见 lib/permissions.mjs（fs:read:course / net:canvas / notify:app / llm:ask……）。空数组 = 除运行环境外什么也不额外要",
+      "items": { "type": "string" }
+    },
+    "idempotent": {
+      "type": "boolean",
+      "description": "同一输入跑两次结果一样吗 —— 「功能 = 能力图」要据此决定一个节点能不能重放、失败后能不能重试"
+    },
+    "cost": {
+      "type": "string",
+      "enum": ["none", "tokens", "money"],
+      "description": "none=不花钱 · tokens=要调模型（花钱）· money=要调付费外部接口。可视化搭建里可以按它过滤节点"
+    },
+    "entry": {
+      "type": ["string", "null"],
+      "description": "实现文件（相对仓库根），如 lib/capabilities/course-text.mjs；实现散在既有 stack 文件里时可为 null，但要在 notes 里写清在哪"
+    },
+    "tests": {
+      "type": ["string", "null"],
+      "description": "这条能力自己的单测（约定 tests/capability-*.test.mjs）；「能被单独测」是敢让开发者组合它的前提，登记时必须有一条"
+    },
+    "used_by": {
+      "type": "array",
+      "description": "现在哪些功能在用（登记表填，用来估「改它有多贵」；S5 的 requires.capabilities 会和它对齐）",
+      "items": { "type": "string" }
+    },
+    "ui": {
+      "type": "object",
+      "description": "给可视化搭建（M3）用的展示信息：按 group 分栏、label 当节点标题",
+      "properties": {
+        "label": { "type": "string" },
+        "group": { "type": "string" },
+        "icon": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "notes": { "type": ["string", "null"], "description": "边界说明与踩过的坑（例如「只读，不下载不提交」）" }
+  },
+  "additionalProperties": true
+}

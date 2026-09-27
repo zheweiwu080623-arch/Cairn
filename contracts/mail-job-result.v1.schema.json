@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mail-job-result.v1",
+  "title": "External mail bridge -> Planner: send-mail result",
+  "description": "Stdout of `<bridge> send-mail --json-stdin` (one JSON object, last line).",
+  "type": "object",
+  "required": ["schema", "ok"],
+  "properties": {
+    "schema": { "const": "mail-job-result.v1" },
+    "ok": { "type": "boolean" },
+    "dry_run": { "type": "boolean" },
+    "bytes": { "type": ["integer", "null"] },
+    "recipients": { "type": "array", "items": { "type": "string" } },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "bytes": { "type": "integer" },
+          "sha256": { "type": "string" }
+        }
+      }
+    },
+    "outbox": { "type": ["string", "null"] },
+    "error": { "type": ["string", "null"] },
+    "duration_ms": { "type": ["integer", "null"] }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "mail-job.v1",
+  "to": [
+    "student@example.edu"
+  ],
+  "subject": "示例文本（已脱敏）",
+  "text": "示例文本（已脱敏）",
+  "attachments": [
+    {
+      "path": "示例文本（已脱敏）"
+    }
+  ],
+  "dry_run": true,
+  "source": "planner:course-sync"
+}

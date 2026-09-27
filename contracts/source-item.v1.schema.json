@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "source-item.v1",
+  "title": "统一条目 source-item.v1",
+  "description": "【第一段·汇总】任何数据源抓回来的一条信息，都先变成这个形状。三段式里的第一张契约：连接器只负责产出它，后面两段都读它。",
+  "type": "object",
+  "required": ["schema", "id", "source", "kind", "title", "fetched_at"],
+  "properties": {
+    "schema": { "const": "source-item.v1" },
+    "id": { "type": "string", "description": "全局唯一：`<source>:<external_id>`，例如 canvas:file-97789-12345" },
+    "source": { "type": "string", "description": "连接器 id（canvas / email_sjtu / rss / ical / jsonapi / localfile / feishu / arxiv / email）" },
+    "external_id": { "type": ["string", "null"], "description": "来源那边的 id，用来去重与增量抓取" },
+    "kind": {
+      "type": "string",
+      "enum": ["task", "event", "reminder", "file", "page", "module", "syllabus", "quiz", "mail", "paper", "note"],
+      "description": "条目类型；再处理段据此决定能做什么动作"
+    },
+    "title": { "type": "string" },
+    "notes": { "type": ["string", "null"] },
+    "url": { "type": ["string", "null"] },
+    "due_at": { "type": ["string", "null"], "description": "截止时间 ISO；没有就 null" },
+    "start_at": { "type": ["string", "null"], "description": "开始时间 ISO（日程类）" },
+    "fetched_at": { "type": "string", "description": "抓取时间 ISO（幂等键的一部分）" },
+    "trust": {
+      "type": ["string", "null"],
+      "enum": ["official", "verified", "unknown", "low", null],
+      "description": "来源可信度：官方公告 / 已核对 / 未知 / 低（爬来的二手信息）"
+    },
+    "content_hash": { "type": ["string", "null"], "description": "正文指纹：内容没变就不重复分析" },
+    "meta": {
+      "type": "object",
+      "description": "结构化补充（课程、发件人、周次……），键自由",
+      "additionalProperties": true
+    },
+    "payload": {
+      "type": "object",
+      "description": "连接器自己的原始形状（便于回溯原文），上层不解析它",
+      "additionalProperties": true
+    }
+  }
+}

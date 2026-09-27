@@ -1,0 +1,17 @@
+{
+  "schema": "module.v1",
+  "id": "ddl-card",
+  "name": "DDL 提醒",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "tasks",
+  "icon": "⏳",
+  "order": 6,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["tasks", "ddl"], "writes": ["ddl"], "tables": [] },
+  "permissions": [],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

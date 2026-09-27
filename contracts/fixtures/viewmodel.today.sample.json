@@ -1,0 +1,170 @@
+{
+  "schema": "viewmodel.v1",
+  "id": "today",
+  "title": "示例文本（已脱敏）",
+  "icon": "calendar-today",
+  "status": "ok",
+  "badge": 95,
+  "summary": "示例摘要",
+  "sections": [
+    {
+      "id": "schedule",
+      "title": "示例文本（已脱敏）",
+      "items": [
+        {
+          "id": "course-dc341a30-1526-4a32-8bbc-f9d0f774590d",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-b05b04c1-b368-41ab-abbf-6aec17af96c6",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-3d55a565-abf2-4192-ad22-486b24bf09c2",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-9756549f-7ece-4e8e-a61f-de38dc988ed5",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-61597501-a2f5-44f1-b821-88006d34b826",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-522d9754-7b46-46ac-a40a-c9ecf73970fa",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-b6fef04c-fedb-4423-8f77-7897ad941dc5",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-5f729994-ad28-448a-bd1f-2d9e6e3d95b3",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        },
+        {
+          "id": "course-f0fca2d2-b135-4bfe-9b3f-d8985ab727ce",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "open",
+            "edit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tasks",
+      "title": "示例文本（已脱敏）",
+      "items": [
+        {
+          "id": "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "done",
+            "edit"
+          ]
+        },
+        {
+          "id": "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "done",
+            "edit"
+          ]
+        },
+        {
+          "id": "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "done",
+            "edit"
+          ]
+        },
+        {
+          "id": "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "done",
+            "edit"
+          ]
+        },
+        {
+          "id": "task-73c0e255-a98a-421d-af1d-942128957af8",
+          "title": "示例文本（已脱敏）",
+          "meta": "示例元信息",
+          "level": "info",
+          "actions": [
+            "done",
+            "edit"
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "quick-add",
+      "label": "示例文本（已脱敏）",
+      "kind": "primary"
+    }
+  ]
+}

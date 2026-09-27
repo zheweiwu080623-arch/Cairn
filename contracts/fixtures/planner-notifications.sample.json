@@ -1,0 +1,55 @@
+{
+  "schema": "planner-notifications.v1",
+  "exported_at": "2026-09-17T23:34:21+08:00",
+  "source_version": "Vol.2.3",
+  "source_pid": 21620,
+  "query": {
+    "source": "arxiv,canvas",
+    "days": 7,
+    "limit": 4
+  },
+  "count": 4,
+  "items": [
+    {
+      "id": "cadca363-d5c1-4760-97d6-482630b70131",
+      "title": "示例文本（已脱敏）",
+      "message": "示例文本（已脱敏）",
+      "url": "https://example.edu/notice",
+      "source": "connector:arxiv",
+      "external_id": "arxiv-2609.11977",
+      "trigger_at": "2026-09-14T07:40:09.309Z",
+      "created_at": 1789371609309
+    },
+    {
+      "id": "54427687-3fea-453e-a42d-da31f8edb9f0",
+      "title": "示例文本（已脱敏）",
+      "message": "示例文本（已脱敏）",
+      "url": "https://example.edu/notice",
+      "source": "connector:arxiv",
+      "external_id": "arxiv-2609.12413",
+      "trigger_at": "2026-09-14T07:40:09.320Z",
+      "created_at": 1789371609320
+    },
+    {
+      "id": "472abe87-ff5e-4947-9624-489cbc9a135e",
+      "title": "示例文本（已脱敏）",
+      "message": "示例文本（已脱敏）",
+      "url": "https://example.edu/notice",
+      "source": "connector:canvas",
+      "external_id": "moditem-97692-1649714",
+      "trigger_at": "2026-09-14T03:03:49.381Z",
+      "created_at": 1789355029380
+    },
+    {
+      "id": "a2320c26-b97a-4424-8101-e209c0c11e79",
+      "title": "示例文本（已脱敏）",
+      "message": "示例文本（已脱敏）",
+      "url": "https://example.edu/notice",
+      "source": "connector:canvas",
+      "external_id": "page-97815-155267-2026-09-14T01:28:05",
+      "trigger_at": "2026-09-14T03:03:49.381Z",
+      "created_at": 1789355029380
+    }
+  ],
+  "content_hash": "sha256:d11a077432aa8b131576269c89aaa59e"
+}

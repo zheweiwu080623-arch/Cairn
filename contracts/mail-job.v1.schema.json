@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mail-job.v1",
+  "title": "Planner -> external mail bridge: send-mail request",
+  "description": "Stdin body of `<bridge> send-mail --json-stdin`. This is the only way Planner asks anything to send mail; the bridge itself is an optional, separate program.",
+  "type": "object",
+  "required": ["to", "subject"],
+  "properties": {
+    "schema": { "const": "mail-job.v1" },
+    "to": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "cc": { "type": ["string", "array", "null"] },
+    "subject": { "type": "string" },
+    "text": { "type": "string" },
+    "html": { "type": ["string", "null"] },
+    "from_name": { "type": ["string", "null"] },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": { "type": "string" },
+          "name": { "type": ["string", "null"] },
+          "mime": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "dry_run": { "type": "boolean", "default": false },
+    "source": { "type": ["string", "null"], "description": "caller id, e.g. planner:course-sync" }
+  },
+  "additionalProperties": false
+}

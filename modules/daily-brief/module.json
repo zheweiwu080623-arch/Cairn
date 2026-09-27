@@ -1,0 +1,21 @@
+{
+  "schema": "module.v1",
+  "id": "daily-brief",
+  "name": "日报 / 晚报",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "today",
+  "icon": "🌅",
+  "order": 2,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": {
+    "reads": ["digest", "priority", "tasks", "events", "notifications"],
+    "writes": [],
+    "tables": []
+  },
+  "permissions": ["network:outbound"],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

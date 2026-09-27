@@ -1,0 +1,19 @@
+{
+  "schema": "action.v1",
+  "id": "action:demo-0001",
+  "signal_id": "signal:demo-0001",
+  "created_at": "2026-09-23T10:00:05.000Z",
+  "type": "file",
+  "status": "done",
+  "dry_run": false,
+  "summary": "把第 4 周材料并进「每周巩固包」",
+  "target": {
+    "kind": "file",
+    "path": "<数据目录>/study/DEMO1010J/week-4-巩固.md"
+  },
+  "idempotency_key": "course-assist:DEMO1010J:week-4",
+  "permissions": ["fs:write:data"],
+  "result": { "ok": true, "detail": "写入 1 个文件（含 6 道例题、3 条易错点）" },
+  "replay_of": null,
+  "audit": { "actor": "processor:course-assist", "at": "2026-09-23T10:00:05.000Z", "duration_ms": 120 }
+}

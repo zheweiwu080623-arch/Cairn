@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "signal.v1",
+  "title": "分析结果 signal.v1",
+  "description": "【第二段·分析】对一条 source-item 的判断：跟我有关吗、多重要、该怎么打扰。三段式里的第二张契约：分析只产出它，绝不产生副作用。",
+  "type": "object",
+  "required": ["schema", "item_id", "created_at", "band", "verdict"],
+  "properties": {
+    "schema": { "const": "signal.v1" },
+    "id": { "type": ["string", "null"], "description": "可选的 signal 自身 id（同一 item 多次分析可以各有一条）" },
+    "item_id": { "type": "string", "description": "指向 source-item.v1 的 id" },
+    "created_at": { "type": "string" },
+    "score": { "type": ["number", "null"], "minimum": 0, "maximum": 100, "description": "重要性 0–100" },
+    "band": {
+      "type": "string",
+      "enum": ["high", "normal", "low"],
+      "description": "重要性分档：high≥70 / normal≥45 / 其余 low"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["push", "review", "drop"],
+      "description": "相关度裁决：推给你 / 待你确认 / 建议忽略"
+    },
+    "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "这次判断有多确定（规则版通常很高，模型版看返回）" },
+    "reasons": {
+      "type": "array",
+      "description": "**为什么**：每一项都要能读成人话（可解释是这个项目的第一原则）",
+      "items": {
+        "type": "object",
+        "required": ["rule", "label"],
+        "properties": {
+          "rule": { "type": "string", "description": "判据代号，如 due-1d / plan-hit / learned-reject" },
+          "label": { "type": "string", "description": "人话说明" },
+          "delta": { "type": ["number", "null"], "description": "加分/扣分" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "证据：这条判断基于原文的哪一句/哪一页（再处理段要能回链到材料）",
+      "items": {
+        "type": "object",
+        "required": ["kind", "text"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["quote", "page", "metadata", "history"] },
+          "text": { "type": "string" },
+          "ref": { "type": ["string", "null"], "description": "如 file:<id>#p3 或 url" }
+        }
+      }
+    },
+    "delivery": {
+      "type": ["string", "null"],
+      "enum": ["now", "digest", "silent", null],
+      "description": "投递三档：立刻 / 进摘要 / 静默（只有它决定要不要打扰你）"
+    },
+    "analysis": {
+      "type": "object",
+      "description": "这次分析是怎么做出来的（用于统计成本与延迟）",
+      "properties": {
+        "engine": { "type": ["string", "null"], "enum": ["rules", "llm", "hybrid", "cache", null] },
+        "ms": { "type": ["number", "null"] },
+        "cost": { "type": ["number", "null"], "description": "估算花费（非高峰半价）" },
+        "cached": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}

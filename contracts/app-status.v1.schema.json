@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "app-status.v1",
+  "title": "Application status envelope",
+  "description": "Machine-readable health of one application. PowerShell trays and `status.ps1` must read this instead of parsing log text.",
+  "type": "object",
+  "required": ["schema", "app", "running", "state", "sections"],
+  "properties": {
+    "schema": { "const": "app-status.v1" },
+    "app": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$",
+      "description": "写入方自己的标识。本程序写 \"planner\"；别的程序（托盘 / 外部组件）写它们自己的小写短名，契约不限定具体取值。"
+    },
+    "version": { "type": "string" },
+    "running": { "type": "boolean" },
+    "pid": { "type": ["integer", "null"] },
+    "started_at": { "type": ["string", "null"] },
+    "heartbeat_at": { "type": ["string", "null"] },
+    "state": { "enum": ["ok", "warn", "error", "down"] },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "state"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "state": { "enum": ["ok", "warn", "error", "idle", "running", "down"] },
+          "detail": { "type": "string" },
+          "last_run": { "type": ["string", "null"] },
+          "next_run": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "metrics": { "type": "object" }
+  },
+  "additionalProperties": true
+}

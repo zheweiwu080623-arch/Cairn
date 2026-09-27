@@ -1,0 +1,20 @@
+{
+  "schema": "module.v1",
+  "id": "preclass-check",
+  "name": "上课前 Canvas 检查",
+  "version": "0.1.0",
+  "kind": "processor",
+  "icon": "⏱️",
+  "order": 10,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "run": "run.js", "readme": "README.md" },
+  "data": { "reads": ["courses", "signal", "connector_data"], "writes": ["notifications"], "tables": [] },
+  "permissions": ["net:canvas", "notify:app"],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false,
+    "capabilities": ["canvas.course.check", "dedupe.filterNew", "dedupe.markSeen", "prefs.read", "notify.app", "push.phone"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "module.v1",
+  "id": "digest-preview",
+  "name": "每日摘要预览",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "connectors",
+  "icon": "📰",
+  "order": 20,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["digest"], "writes": [], "tables": [] },
+  "permissions": [],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

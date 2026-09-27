@@ -1,0 +1,22 @@
+{
+  "schema": "job-spec.v1",
+  "name": "示例文本（已脱敏）",
+  "enabled": true,
+  "when": {
+    "weekday": "SUN",
+    "hour": 16,
+    "minute": 0
+  },
+  "source": {
+    "type": "planner",
+    "query": {
+      "source": "arxiv",
+      "days": 7
+    }
+  },
+  "min_items": 1,
+  "max_items": 3,
+  "subject": "示例文本（已脱敏）",
+  "archive_dir": "digests",
+  "to": "student@example.edu"
+}

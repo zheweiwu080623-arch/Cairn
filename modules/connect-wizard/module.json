@@ -1,0 +1,17 @@
+{
+  "schema": "module.v1",
+  "id": "connect-wizard",
+  "name": "连接向导",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "connectors",
+  "icon": "🪄",
+  "order": 5,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["connectors"], "writes": ["connectors"], "tables": [] },
+  "permissions": ["network:outbound"],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

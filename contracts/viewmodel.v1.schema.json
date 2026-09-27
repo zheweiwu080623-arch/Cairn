@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "viewmodel.v1",
+  "title": "Display ViewModel",
+  "description": "Transport-neutral display contract shared by Planner and any other renderer. Renderers (native, web, console, email, markdown, json) consume this and never reach into storage or HTTP.",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "schema": { "const": "viewmodel.v1" },
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "icon": { "type": "string" },
+    "status": { "enum": ["ok", "info", "warn", "error", "idle", "running"] },
+    "badge": { "type": ["integer", "null"] },
+    "summary": { "type": "string" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "title"],
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "meta": { "type": "string" },
+                "body": { "type": "string" },
+                "level": { "enum": ["info", "ok", "warn", "error", "muted"] },
+                "at": { "type": ["string", "null"] },
+                "url": { "type": ["string", "null"] },
+                "actions": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "kind": { "enum": ["primary", "secondary", "danger"] }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

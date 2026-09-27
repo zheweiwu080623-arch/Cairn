@@ -1,0 +1,21 @@
+{
+  "schema": "signal.v1",
+  "id": "signal:demo-0001",
+  "item_id": "canvas:file-99999-123456",
+  "created_at": "2026-09-23T10:00:02.000Z",
+  "score": 74,
+  "band": "high",
+  "verdict": "push",
+  "confidence": 0.9,
+  "reasons": [
+    { "rule": "plan-hit", "label": "和你在上的课有关「DEMO1010J」", "delta": 30 },
+    { "rule": "coursework", "label": "标题和课程作业/考试相关", "delta": 6 },
+    { "rule": "source", "label": "来自 canvas", "delta": 10 }
+  ],
+  "evidence": [
+    { "kind": "page", "text": "Week 4 Exercise Set（共 6 题）", "ref": "file:canvas:file-99999-123456#p1" },
+    { "kind": "history", "text": "上一周的同类题单你花了约 2 小时", "ref": null }
+  ],
+  "delivery": "digest",
+  "analysis": { "engine": "rules", "ms": 3, "cost": 0, "cached": false }
+}

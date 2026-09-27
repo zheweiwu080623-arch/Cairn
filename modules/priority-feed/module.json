@@ -1,0 +1,21 @@
+{
+  "schema": "module.v1",
+  "id": "priority-feed",
+  "name": "重要信息",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "today",
+  "icon": "🔥",
+  "order": 1,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": {
+    "reads": ["priority", "goals", "tasks", "events", "milestones", "academic", "courses", "notifications"],
+    "writes": ["goals"],
+    "tables": []
+  },
+  "permissions": ["network:outbound"],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

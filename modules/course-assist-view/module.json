@@ -1,0 +1,18 @@
+{
+  "schema": "module.v1",
+  "id": "course-assist-view",
+  "name": "课程辅助",
+  "sub": "课件 · 巩固 · 考前",
+  "version": "0.2.0",
+  "kind": "view",
+  "icon": "📚",
+  "order": 20,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["course_materials", "study_files", "modules", "localdirs"], "writes": [], "tables": [] },
+  "permissions": [],
+  "config": [],
+  "settings": true,
+  "requires": { "app": ">=1.0", "agent": false }
+}

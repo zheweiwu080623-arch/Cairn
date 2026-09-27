@@ -1,0 +1,3761 @@
+{
+ "tasks": [
+  {
+   "id": "e9d47561-4c8f-4b2d-a6b3-46c63be06928",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "done",
+   "priority": 3,
+   "due_at": "2026-09-13",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "ab554a0d-07ae-4d42-b893-7d2bc0953e29",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "done",
+   "priority": 3,
+   "due_at": "2026-09-13",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "cb2ac44f-6c77-4063-8d28-3e99cc8510ec",
+   "title": "[示例] 预习第 3 章",
+   "status": "done",
+   "priority": 1,
+   "due_at": "2026-09-14",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "e6c9c16f-0dd9-408a-b876-16f2c5b7e06d",
+   "title": "[示例] 小组讨论准备",
+   "status": "done",
+   "priority": 2,
+   "due_at": "2026-09-15T21:00",
+   "source": "app",
+   "tags": "示例标签"
+  },
+  {
+   "id": "c9950f41-a6a7-4548-8169-1cec081ad7a2",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-09-18T20:00",
+   "source": "app",
+   "tags": "示例标签"
+  },
+  {
+   "id": "036ec83d-701f-4e7b-b08c-828682bca90b",
+   "title": "[示例] 提交实验报告",
+   "status": "done",
+   "priority": 1,
+   "due_at": "2026-09-19",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-09-19T21:30",
+   "source": "app",
+   "tags": "示例标签"
+  },
+  {
+   "id": "dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-09-20",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "cba1ea80-79b7-4664-9044-43bf14d236eb",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-09-20",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "70ce6add-9645-4314-ba17-5031f73059c8",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "done",
+   "priority": 2,
+   "due_at": "2026-09-20",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "73c0e255-a98a-421d-af1d-942128957af8",
+   "title": "[示例] 预习第 11 章",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-09-20",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "22cb3fde-0f3e-453b-b0c4-3200cb4d9bbd",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-09-22",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "541ef5a7-81c5-4a4f-8ffe-82cfe3c8661e",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-09-26",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "33bb7065-124c-48c5-a37f-22f8db6b285f",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-09-26",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "93651fb9-524a-4e75-9ca6-58bf8a0d7d21",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-09-27",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "17248dc9-200c-4f68-bf82-f1dd3ace4bf5",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-09-27",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "05c21c3c-d323-40ec-9d7e-42ffca75f0bb",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-09-27",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "1c84d2ff-115f-417e-92ea-6ba2e5560052",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-09-27",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "cbb234eb-e6e0-4dbf-a8d1-2ce0cb1c9381",
+   "title": "[示例] 预习第 19 章",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-03",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "84764b07-bf0f-4f7d-91c5-db18ff92dd10",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-04",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "3ff356f6-9037-46cc-ac6d-a3f5a36f28a3",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-04",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "a2e37331-441c-4520-9909-36efdbeb20d0",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-04",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "b6201628-acfc-4689-b2a4-f32e9abc343c",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-04",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "f0ad92ec-10c0-4308-a35a-d6ae6421e2b3",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-04",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "77529cfe-2c5b-4433-be2d-324e913113c1",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-05",
+   "source": "mad-plan",
+   "tags": "示例标签"
+  },
+  {
+   "id": "19071da8-12f1-4bcb-8df6-c958e9a9a772",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-10-10",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d7f32e40-b937-45b1-8c3b-ec27e3c8e05c",
+   "title": "[示例] 预习第 27 章",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-11",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "80958eff-b010-4e81-b375-a38a51736abb",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-11",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "841d2eea-b224-4895-af4f-05bbca744fa4",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-11",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "ed790b23-f12c-4286-b5ee-d043c3e6f05f",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-11",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "2ee34c74-48eb-41c0-b149-990f440a6f19",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-11",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "019c613c-05cd-4495-9781-ca83d5d79d44",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-12",
+   "source": "mad-plan",
+   "tags": "示例标签"
+  },
+  {
+   "id": "e4888853-2a9d-4c22-843a-2dafccaaed2f",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-10-17",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "da87ed5d-30f7-42fd-9061-dd8bcb790442",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-10-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "682e3fd4-1d56-4f78-a7b5-acedbfb6ddeb",
+   "title": "[示例] 预习第 35 章",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "22616e0e-f9df-4647-9fd8-57feac7f6b62",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "0f148af8-2f72-4351-9e17-bd5281dc29cd",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "06c71a29-b657-4a11-a80f-bc062acf4ee0",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d4fd3991-949a-4dea-8f5d-bbd6c781be09",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-10-24",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "7938af9c-320c-4116-9663-b5967c7aebde",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-24",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "8e7ea129-4128-4e13-a00e-37718dd515ff",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-24",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "58a67777-1963-4865-b9b9-000b1a716d3d",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-25",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "0e794d79-01c4-4b00-8f6e-9aef7abe88df",
+   "title": "[示例] 预习第 43 章",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-10-25",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "3533c04d-304e-4de6-a82b-08938b7af569",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-25",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "e0d613fd-2ba5-430b-912f-feb41560bba8",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-10-31",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "68a42bdb-3dad-42c6-bd72-71daeb1ab19d",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-10-31",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "61f0be07-1e3b-4637-8d9c-8f40238efe65",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-01",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "1c5ae935-86dd-4993-91d1-a85d74dce579",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-01",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "92d02550-85ad-4809-abfc-ba0e8e6bc13b",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-01",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "8598d702-a670-4ca2-a7e5-36d15ebcff63",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-01",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "3f0cefcf-74e3-4bb6-ba36-34795f53c97d",
+   "title": "[示例] 预习第 51 章",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "7c7d2e07-fbcc-4073-9660-b52cd681d77e",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-07",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "edde958a-a72a-4b8b-8b9e-17bb5d01a936",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-08",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d5d913d9-7a00-46bb-8017-52d513554ddb",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-08",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "9d79ee69-24a7-4f48-8c8f-63b05332171d",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-08",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "29458cc9-5d34-415b-9b35-f7853c9495ca",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-08",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "7655f8f7-a176-4b26-b29e-4ff8a5caa86b",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-14",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "fdc587e5-49e6-40f1-8d04-8c418c569138",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "19aaf19e-8f89-4e33-8f89-8e452e89a506",
+   "title": "[示例] 预习第 59 章",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "7482d2eb-f75e-4732-a9ce-6805b33e628a",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "ec33cab7-49fa-468f-9219-5c780306e28e",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "4676aa4b-48e7-4fe4-8acc-399a444ced5f",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "22fd5ffb-cb4d-4d64-9d9f-4c3558769cc5",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-20",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "4e7a8bba-9193-4dc8-89b5-b10e382d44ed",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-21",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "485b089f-ab18-4ab7-a97e-52593ec84198",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-21",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "0f8dbdc1-5885-4a77-a3cd-4edb8d0ff055",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-22",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "6b8fafaf-5d6d-44e4-ba18-0b1a2a668933",
+   "title": "[示例] 预习第 67 章",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-22",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "c29626bf-27de-4036-a373-359948f01f2a",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-28",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d607e80f-f541-4ea5-b387-85336309320e",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-11-28",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "48ee96f1-95c3-43ce-ad69-f3bc2ada464b",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-28",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "048f6724-44b3-426e-85c9-279388e07f10",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-11-29",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d82774aa-fe14-427c-97e3-cf0305ce92c0",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-11-29",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "740f34d8-dce1-44fa-9db6-3c058d618aed",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-05",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "9414114a-a3ed-45e9-840b-8e4b01dfcb2f",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "8e1bf265-ca73-473a-8918-a2178068c412",
+   "title": "[示例] 预习第 75 章",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "41770da1-a83c-4d42-8a06-8a84c6244621",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-12-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "1817e7e0-328d-4846-b3e3-1eef905b0103",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-12-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "5b4e6ad3-5caa-4293-8ead-3ffe4ffb12a2",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-12-06",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "1f747c11-5eeb-42db-b067-04f0a145f2d6",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-12-12",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "4d539e78-7ae6-4c65-a32a-d3c5978343f2",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-13",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "1133aa7a-9a9a-462e-8a51-5796f834076f",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2026-12-13",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "56f917fa-6a4f-4fc2-8094-296cf9470c5f",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-12-13",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "99de2357-ac2a-4165-b553-b29d73945359",
+   "title": "[示例] 预习第 83 章",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-16",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "5a6d9dcc-a979-4e00-b2f8-ef635cbb88b5",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2026-12-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "22d1373e-e8e9-4d67-82e7-a45985fab7b3",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 4,
+   "due_at": "2026-12-18",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "25bffcf6-079d-4a15-9334-263b7f635856",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2026-12-19",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "dbc366e8-bfee-4d9a-9503-531ea01ca96b",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-01-10",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "86d157be-c838-4308-be1a-8e0d06e3917a",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2027-01-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "b78ebc65-8bf7-40aa-a261-f0f3388a8bbf",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-01-15",
+   "source": "winter-projects",
+   "tags": "示例标签"
+  },
+  {
+   "id": "b595cc27-35b2-4f2a-93e6-8a73bc75bbc5",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2027-01-17",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "f863c8a1-0a76-4063-8d52-1b23ef47514c",
+   "title": "[示例] 预习第 91 章",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2027-01-29",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "a03ed9a1-1247-49d1-8b3c-da0fd89fc289",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2027-02-14",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "fd7fab12-ca1f-4205-a6f9-b3173b6ca479",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-02-15",
+   "source": "mad-plan",
+   "tags": "示例标签"
+  },
+  {
+   "id": "7cabca1d-ebeb-4a33-a755-52266d1090bb",
+   "title": "[示例] 提交实验报告",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-02-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "b7381ab7-0208-411b-b6a7-945ff1ec12b1",
+   "title": "[示例] 预约答疑时间",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-02-15",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "d725b6c1-8271-48b8-adc9-2d27066f508e",
+   "title": "[示例] 整理参考书清单",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-02-15",
+   "source": "winter-projects",
+   "tags": "示例标签"
+  },
+  {
+   "id": "cecf32f7-79a0-4d06-bcc4-7ba24b1886c4",
+   "title": "[示例] 整理本周课程笔记",
+   "status": "todo",
+   "priority": 2,
+   "due_at": "2027-02-15",
+   "source": "winter-projects",
+   "tags": "示例标签"
+  },
+  {
+   "id": "fa702ac5-13eb-47be-80f9-5ada442f5071",
+   "title": "[示例] 完成作业 A 初稿",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2027-02-15",
+   "source": "winter-projects",
+   "tags": "示例标签"
+  },
+  {
+   "id": "dec9794a-4779-4e50-a3d4-d2c1901b69f6",
+   "title": "[示例] 预习第 99 章",
+   "status": "todo",
+   "priority": 1,
+   "due_at": "2027-02-28",
+   "source": "weekly-fa26-v2",
+   "tags": "示例标签"
+  },
+  {
+   "id": "aeee5260-6a98-4488-9c2d-66d3ad8bee15",
+   "title": "[示例] 小组讨论准备",
+   "status": "todo",
+   "priority": 3,
+   "due_at": "2027-02-28",
+   "source": "mad-plan",
+   "tags": "示例标签"
+  },
+  {
+   "id": "b91df0cf-47b0-4f97-ab49-25a1ac86bd1e",
+   "title": "[示例] 复习单元测试范围",
+   "status": "todo",
+   "priority": 2,
+   "due_at": null,
+   "source": "winter-projects",
+   "tags": "示例标签"
+  }
+ ],
+ "events": [
+  {
+   "id": "51486b4a-78a0-4dc8-954a-1e008bb8c1d6",
+   "title": "自习",
+   "start_at": "2026-09-11T09:00",
+   "end_at": "2026-09-11T11:00",
+   "all_day": 0,
+   "source": "app"
+  },
+  {
+   "id": "bb1a38b6-a986-48f4-80e5-a774b8078a58",
+   "title": "示例课程 A",
+   "start_at": "2026-09-16T14:00",
+   "end_at": "2026-09-16T16:00",
+   "all_day": 0,
+   "source": "app"
+  },
+  {
+   "id": "59cc379a-a905-412c-a5f4-b243cd19692c",
+   "title": "小组讨论",
+   "start_at": "2026-09-16T20:30",
+   "end_at": "2026-09-16T21:00",
+   "all_day": 0,
+   "source": "app"
+  },
+  {
+   "id": "d7132442-30e1-4f33-81cb-53d45f549c70",
+   "title": "答疑时间",
+   "start_at": "2026-09-19T18:30",
+   "end_at": "2026-09-19T21:30",
+   "all_day": 0,
+   "source": "app"
+  },
+  {
+   "id": "e7605c01-9e95-4617-b352-e5673611017c",
+   "title": "实验课",
+   "start_at": "2026-09-20T15:00",
+   "end_at": "2026-09-20T15:30",
+   "all_day": 0,
+   "source": "app"
+  },
+  {
+   "id": "879672a3-858d-4150-8d63-69c227f04908",
+   "title": "讲座：主题 107",
+   "start_at": "2026-10-31T19:30",
+   "end_at": "2026-10-31T22:00",
+   "all_day": 0,
+   "source": "app"
+  }
+ ],
+ "notifications": [
+  {
+   "id": "6b9ad55c-19a9-4019-8409-79f41c860765",
+   "title": "Registration Notice 108",
+   "trigger_at": "2026-09-12T10:11:57.338Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.338Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "331",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "a98f18dc-625b-4510-9a61-7e4503d99179",
+   "title": "Scholarship Info 109",
+   "trigger_at": "2026-09-12T10:11:57.341Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.341Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "332",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "36a35cd0-5556-4a19-b322-0865dab372c5",
+   "title": "Library Notice 110",
+   "trigger_at": "2026-09-12T10:11:57.345Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.345Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "333",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+   "title": "Course Announcement 111: Undergraduate Students",
+   "trigger_at": "2026-09-12T10:11:57.348Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.348Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "334",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "502a52e3-afeb-4408-b6ae-8cfa4ccc9be9",
+   "title": "Assignment Reminder 112",
+   "trigger_at": "2026-09-12T10:11:57.353Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.353Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "335",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b51ac4c0-199c-419c-8a09-227b0e159b33",
+   "title": "Registration Notice 113",
+   "trigger_at": "2026-09-12T10:11:57.357Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.357Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "336",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "72e227af-a939-4ef4-b110-09c34cf000d4",
+   "title": "Scholarship Info 114",
+   "trigger_at": "2026-09-12T10:11:57.363Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.363Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "337",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "778844a9-4e40-43a5-85e1-a5c86887febb",
+   "title": "Library Notice 115",
+   "trigger_at": "2026-09-12T10:11:57.372Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.372Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "338",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "0410c32b-f85f-48be-97a7-c3bc941d1634",
+   "title": "Course Announcement 116: Undergraduate Students",
+   "trigger_at": "2026-09-12T10:11:57.376Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.376Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "344",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fa6e870f-ae88-44d8-a1cc-86e60849007f",
+   "title": "Assignment Reminder 117",
+   "trigger_at": "2026-09-12T10:11:57.380Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.380Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "345",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "5eaf79ac-fbc9-47a4-9e7e-42f4c7436544",
+   "title": "Registration Notice 118",
+   "trigger_at": "2026-09-12T10:11:57.384Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.384Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "346",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "714a7b03-7e92-4a5e-99d9-e22c2768b1b5",
+   "title": "Scholarship Info 119",
+   "trigger_at": "2026-09-12T10:11:57.389Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.389Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "347",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "9ad7f13b-cced-4cab-8623-594d3d3c0768",
+   "title": "Library Notice 120",
+   "trigger_at": "2026-09-12T10:11:57.393Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.393Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "348",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e25594f7-a458-45a2-bf0d-55d088c84550",
+   "title": "Course Announcement 121: Undergraduate Students",
+   "trigger_at": "2026-09-12T10:11:57.397Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.397Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "349",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "25edd305-6058-4bfe-8052-637d1ee5fda6",
+   "title": "Assignment Reminder 122",
+   "trigger_at": "2026-09-12T10:11:57.402Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.402Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "350",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "ee633b33-9446-40dd-a274-7fca09aa86b7",
+   "title": "Registration Notice 123",
+   "trigger_at": "2026-09-12T10:11:57.406Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.406Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "351",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d549d4f8-b47e-42ab-9b4f-9ba45ef58099",
+   "title": "Scholarship Info 124",
+   "trigger_at": "2026-09-12T10:11:57.409Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.409Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "352",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "ddc95371-911e-4397-89d9-433c28c6fab5",
+   "title": "Library Notice 125",
+   "trigger_at": "2026-09-12T10:11:57.412Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.412Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "353",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "9eea7051-0ff1-4704-ba98-b1af4d7e8d1d",
+   "title": "Course Announcement 126: Undergraduate Students",
+   "trigger_at": "2026-09-12T10:11:57.415Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.415Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "354",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "2c7397b2-9939-4787-9cd5-089c1b2cc78f",
+   "title": "Assignment Reminder 127",
+   "trigger_at": "2026-09-12T10:11:57.419Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:57.419Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "355",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "3cc931dd-fec4-4f21-9c39-a80f3776e136",
+   "title": "Registration Notice 128",
+   "trigger_at": "2026-09-13T02:37:01.215Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-13T02:37:01.215Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "356",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e32bbe36-005d-46c9-8e1f-f78521b7783b",
+   "title": "Scholarship Info 129",
+   "trigger_at": "2026-09-14T00:05:34.542Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T00:05:34.542Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "357",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "10d0161f-8813-4353-9fdb-f8c0f1da3bd8",
+   "title": "Library Notice 130",
+   "trigger_at": "2026-09-14T00:05:34.548Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T00:05:34.548Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "358",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "a4ccd1a2-48e6-4d23-b864-bf374fbadb7f",
+   "title": "Course Announcement 131: Undergraduate Students",
+   "trigger_at": "2026-09-14T00:05:34.552Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T00:05:34.552Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "359",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "472abe87-ff5e-4947-9624-489cbc9a135e",
+   "title": "Assignment Reminder 132",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.381Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "a2320c26-b97a-4424-8101-e209c0c11e79",
+   "title": "Registration Notice 133",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.381Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "45fab94e-64fd-48ff-b169-3b6cc2a8b5be",
+   "title": "Scholarship Info 134",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.381Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "4fa09150-56cb-40c5-b4a9-831df7357ad6",
+   "title": "Library Notice 135",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.381Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f7d61397-02eb-43b2-a680-9ccc75d1d920",
+   "title": "Course Announcement 136: Undergraduate Students",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.381Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "0a0a3d79-72c2-4418-9ba5-5bb0f4cfc783",
+   "title": "Assignment Reminder 137",
+   "trigger_at": "2026-09-14T03:03:49.381Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "6ef12832-9e18-40cc-a78c-db2e4f2b3ca7",
+   "title": "Registration Notice 138",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "657594b6-3667-4fd4-93c3-3668fd7b6ebc",
+   "title": "Scholarship Info 139",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b716c6dd-acbb-44d7-b683-f4d39e2eb22e",
+   "title": "Library Notice 140",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "2bf7e66c-748f-410f-8f1d-5523cb013156",
+   "title": "Course Announcement 141: Undergraduate Students",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "71391e5a-70c7-44d7-ab77-6c2b117b71a9",
+   "title": "Assignment Reminder 142",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "227dcc01-3ccd-4d2c-af5d-93d37a859213",
+   "title": "Registration Notice 143",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "bc452437-e7a8-4c51-9513-01a597c4c846",
+   "title": "Scholarship Info 144",
+   "trigger_at": "2026-09-14T03:03:49.382Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T03:03:49.382Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "37aef1af-461b-4319-a6f3-a60fb786674b",
+   "title": "Library Notice 145",
+   "trigger_at": "2026-09-14T09:06:04.434Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T09:06:04.434Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "5c0538ce-0a9d-4ad4-82e5-f04730bccb20",
+   "title": "Course Announcement 146: Undergraduate Students",
+   "trigger_at": "2026-09-14T09:06:04.468Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T09:06:04.468Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "32be1022-d0b6-4e4b-b440-6056ac02f46f",
+   "title": "Assignment Reminder 147",
+   "trigger_at": "2026-09-14T12:06:16.114Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T12:06:16.114Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "4f899fe3-f6d4-4ea9-82cd-fde285abe5ac",
+   "title": "Registration Notice 148",
+   "trigger_at": "2026-09-14T12:06:16.143Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T12:06:16.143Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b908a13b-0230-4462-8372-fe8764f9c067",
+   "title": "Scholarship Info 149",
+   "trigger_at": "2026-09-14T23:46:06.046Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.046Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "abf98a9e-7cba-4fb9-a9c0-30fdda57a9bc",
+   "title": "Library Notice 150",
+   "trigger_at": "2026-09-14T23:46:06.052Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.052Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b249d7dd-bfb1-4380-a42b-c30371755310",
+   "title": "Course Announcement 151: Undergraduate Students",
+   "trigger_at": "2026-09-14T23:46:06.053Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.053Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d3bf1b11-9b6d-40fe-a907-2c0255833487",
+   "title": "Assignment Reminder 152",
+   "trigger_at": "2026-09-14T23:46:06.055Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.055Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "a13e5a83-db50-4be8-9dda-82b4ee61bcf0",
+   "title": "Registration Notice 153",
+   "trigger_at": "2026-09-14T23:46:06.057Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.057Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f556ac95-37b6-4759-bca7-b4b5c6b529b5",
+   "title": "Scholarship Info 154",
+   "trigger_at": "2026-09-14T23:46:06.059Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.059Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "c6201b5d-40a4-49d7-a195-af13f08010f3",
+   "title": "Library Notice 155",
+   "trigger_at": "2026-09-14T23:46:06.060Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.060Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "c5167bfc-e95f-459a-bec3-b20e7b5231e2",
+   "title": "Course Announcement 156: Undergraduate Students",
+   "trigger_at": "2026-09-14T23:46:06.062Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.062Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "ca4cfa7e-31f6-4ce6-b596-96119a9cf424",
+   "title": "Assignment Reminder 157",
+   "trigger_at": "2026-09-14T23:46:06.063Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.063Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "59b47177-1029-4bc8-9927-3b26e0f40700",
+   "title": "Registration Notice 158",
+   "trigger_at": "2026-09-14T23:46:06.065Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.065Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "85b8b082-32ce-47f9-b2d4-7831eb7c0680",
+   "title": "Scholarship Info 159",
+   "trigger_at": "2026-09-14T23:46:06.067Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.067Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f6c4d5c6-de90-4ea4-9ea7-f0d5aee22293",
+   "title": "Library Notice 160",
+   "trigger_at": "2026-09-14T23:46:06.068Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.068Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "29c44ec9-4dc6-444d-8a5b-2504545b518a",
+   "title": "Course Announcement 161: Undergraduate Students",
+   "trigger_at": "2026-09-14T23:46:06.069Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.069Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "98ebe326-3661-4456-a229-b17eed4bd8f5",
+   "title": "Assignment Reminder 162",
+   "trigger_at": "2026-09-14T23:46:06.071Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.071Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "637971d1-ae70-49aa-b8ce-5f264e08074d",
+   "title": "Registration Notice 163",
+   "trigger_at": "2026-09-14T23:46:06.074Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.074Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fc02c872-eb74-450f-a459-3711b507d3fe",
+   "title": "Scholarship Info 164",
+   "trigger_at": "2026-09-14T23:46:06.078Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.078Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "92efbc2b-0be5-4207-aec3-7a5a5649b5ac",
+   "title": "Library Notice 165",
+   "trigger_at": "2026-09-14T23:46:06.080Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.080Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "41da1ec0-09bf-435f-8e94-8733c8cf3741",
+   "title": "Course Announcement 166: Undergraduate Students",
+   "trigger_at": "2026-09-14T23:46:06.081Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.081Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "2cfa65ce-b7a3-4106-9124-c252ed74efb0",
+   "title": "Assignment Reminder 167",
+   "trigger_at": "2026-09-14T23:46:06.083Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.083Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e03f9797-8d21-48b8-9920-0d98d246be19",
+   "title": "Registration Notice 168",
+   "trigger_at": "2026-09-14T23:46:06.084Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.084Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "44b6c495-6382-4252-821d-472ef1b5c436",
+   "title": "Scholarship Info 169",
+   "trigger_at": "2026-09-14T23:46:06.086Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.086Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fb9c81c9-c0be-4f2e-99fe-953a8174163a",
+   "title": "Library Notice 170",
+   "trigger_at": "2026-09-14T23:46:06.095Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.095Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "01468168-5124-418e-b36e-900f5e781ff4",
+   "title": "Course Announcement 171: Undergraduate Students",
+   "trigger_at": "2026-09-14T23:46:06.096Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.096Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f9757fbd-b1f6-4998-9f07-3cd4a77ef35b",
+   "title": "Assignment Reminder 172",
+   "trigger_at": "2026-09-14T23:46:06.099Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.099Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "74953fff-4d87-47a4-9d3d-881b6d71d944",
+   "title": "Registration Notice 173",
+   "trigger_at": "2026-09-14T23:46:06.100Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.100Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1a1304a1-ce60-4a9e-b5c4-51b1f73eac6d",
+   "title": "Scholarship Info 174",
+   "trigger_at": "2026-09-14T23:46:06.104Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T23:46:06.104Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "78ec07a1-8020-48a6-86a2-c09a811677dd",
+   "title": "Library Notice 175",
+   "trigger_at": "2026-09-15T00:00:46.071Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T00:00:46.071Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "360",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "ad051353-453d-446a-8e3b-b68d53a0daf7",
+   "title": "Course Announcement 176: Undergraduate Students",
+   "trigger_at": "2026-09-15T00:00:46.077Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T00:00:46.077Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "361",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fa46ab7d-ab6a-40f7-9f5f-e5539eff853e",
+   "title": "Assignment Reminder 177",
+   "trigger_at": "2026-09-15T03:12:18.538Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T03:12:18.538Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "7d753ece-5dc6-4309-8555-969cb0ccda9f",
+   "title": "Registration Notice 178",
+   "trigger_at": "2026-09-15T12:03:02.172Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T12:03:02.172Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "6f8b7b69-2296-48e2-b2b9-bbb4c82588eb",
+   "title": "Scholarship Info 179",
+   "trigger_at": "2026-09-15T15:03:04.386Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T15:03:04.386Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "2d930c74-9376-4b89-80da-7a13d6640fb0",
+   "title": "Library Notice 180",
+   "trigger_at": "2026-09-15T15:03:04.419Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T15:03:04.419Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "4580a1e9-8788-43a8-a76a-25d83ca2bae1",
+   "title": "Course Announcement 181: Undergraduate Students",
+   "trigger_at": "2026-09-15T15:03:04.421Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T15:03:04.421Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f15f8b7e-69f4-4213-af46-f476d4c694a2",
+   "title": "Assignment Reminder 182",
+   "trigger_at": "2026-09-16T00:00:56.628Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.628Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "362",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "95e70561-ce5a-4511-8032-b9da6ba310f2",
+   "title": "Registration Notice 183",
+   "trigger_at": "2026-09-16T00:00:56.635Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.635Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "363",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "439f112e-27b6-4e1d-a40b-f70ef12e3d90",
+   "title": "Scholarship Info 184",
+   "trigger_at": "2026-09-16T00:00:56.641Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.641Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "364",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f3899831-0688-48f7-b588-e77aae228091",
+   "title": "Library Notice 185",
+   "trigger_at": "2026-09-16T00:00:56.644Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.644Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "365",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e6e982c8-e385-481d-bbb8-eb19059224f7",
+   "title": "Course Announcement 186: Undergraduate Students",
+   "trigger_at": "2026-09-16T00:00:56.648Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.648Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "366",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "9eedf145-d1f3-466b-a750-b10690edd453",
+   "title": "Assignment Reminder 187",
+   "trigger_at": "2026-09-16T00:00:56.652Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.652Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "367",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "920269ee-2b2a-4fc9-851b-a6e51048abc8",
+   "title": "Registration Notice 188",
+   "trigger_at": "2026-09-16T00:00:56.655Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:56.655Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "368",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1abcd249-500a-45f9-b8d0-fdff0924401d",
+   "title": "Scholarship Info 189",
+   "trigger_at": "2026-09-16T07:58:31.494Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T07:58:31.494Z",
+   "priority": 1,
+   "source": "codex",
+   "external_id": "example-external-id",
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "3c7e0611-ed20-4f2a-a4f1-660af8b8c946",
+   "title": "Library Notice 190",
+   "trigger_at": "2026-09-16T08:01:04.419Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T08:01:04.419Z",
+   "priority": 1,
+   "source": "codex",
+   "external_id": "example-external-id",
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b65e57b8-4108-4bce-af83-2dd135ba0e3e",
+   "title": "Course Announcement 191: Undergraduate Students",
+   "trigger_at": "2026-09-16T08:57:39.387Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T08:57:39.387Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "f0244a1d-29b4-4273-8e87-8ac32d2b5cfe",
+   "title": "Assignment Reminder 192",
+   "trigger_at": "2026-09-16T15:43:13.854Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T15:43:13.854Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fd31094c-38d1-4341-83e0-26fcfb5f2e73",
+   "title": "Registration Notice 193",
+   "trigger_at": "2026-09-16T15:43:13.884Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T15:43:13.884Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "96da00db-f97c-4be4-badb-c2886da703c0",
+   "title": "Scholarship Info 194",
+   "trigger_at": "2026-09-17T00:23:52.328Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T00:23:52.328Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "369",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d2bfdfdc-1bdb-43f1-939e-064925c1e4e5",
+   "title": "Library Notice 195",
+   "trigger_at": "2026-09-17T00:23:52.336Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T00:23:52.336Z",
+   "priority": 1,
+   "source": "connector:email_sjtu",
+   "external_id": "370",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d42dfa42-46de-4cc1-bcdf-f8e24ecdb5bb",
+   "title": "Course Announcement 196: Undergraduate Students",
+   "trigger_at": "2026-09-17T00:25:13.427Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T00:25:13.427Z",
+   "priority": 1,
+   "source": "codex",
+   "external_id": "example-external-id",
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "145d64af-3c7b-41d5-aa2c-ed4891a3e93c",
+   "title": "Assignment Reminder 197",
+   "trigger_at": "2026-09-17T01:25:54.371Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T01:25:54.371Z",
+   "priority": 1,
+   "source": "codex",
+   "external_id": "example-external-id",
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d72f495e-8ec4-42fe-8f51-5be908e3b185",
+   "title": "Registration Notice 198",
+   "trigger_at": "2026-09-17T06:25:26.550Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T06:25:26.550Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e99357ad-6ee9-4799-9bb7-93ba2bf982ed",
+   "title": "Scholarship Info 199",
+   "trigger_at": "2026-09-17T06:25:26.560Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T06:25:26.560Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1159d4b1-b162-4977-b6f3-82b04d1dfff4",
+   "title": "Library Notice 200",
+   "trigger_at": "2026-09-17T06:25:26.583Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T06:25:26.583Z",
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "22b31dd3-bf0a-4675-b237-84ff6711f50d",
+   "title": "Course Announcement 201: Undergraduate Students",
+   "trigger_at": "2026-09-17T23:50:00",
+   "repeat": "daily",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "app",
+   "external_id": null,
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "21a455fa-3bab-438f-8e2b-728c17733450",
+   "title": "Assignment Reminder 202",
+   "trigger_at": "2026-10-10T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "620ec2c5-1dcb-43c5-9008-ba1b57ee302d",
+   "title": "Registration Notice 203",
+   "trigger_at": "2026-10-17T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "8d07294a-e98c-40be-b77d-2e816b20f7bf",
+   "title": "Scholarship Info 204",
+   "trigger_at": "2026-10-24T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1b21bba4-c5c9-442a-bfef-3febed86d010",
+   "title": "Library Notice 205",
+   "trigger_at": "2026-11-14T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "d3bb26cb-4b00-4e0f-b2f0-b740a5426e2b",
+   "title": "Course Announcement 206: Undergraduate Students",
+   "trigger_at": "2026-11-21T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fc552c52-3106-4b83-8a8d-b68a16a5aa9f",
+   "title": "Assignment Reminder 207",
+   "trigger_at": "2026-11-28T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "336ce730-ce71-4b40-b6db-52b2707eb2a6",
+   "title": "Registration Notice 208",
+   "trigger_at": "2026-12-12T15:59:00.000Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 1,
+   "source": "connector:canvas",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "5baf133f-4545-406b-8cdb-0ada2807f9e9",
+   "title": "Scholarship Info 209",
+   "trigger_at": "2026-09-12T10:11:55.675Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:55.675Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1131",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "2e15c998-5dc1-4f9e-ad78-3a340fdb1cb4",
+   "title": "Library Notice 210",
+   "trigger_at": "2026-09-12T10:11:55.689Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:55.689Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1139",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "0679c9ac-4375-4176-98d7-f028b29471c0",
+   "title": "Course Announcement 211: Undergraduate Students",
+   "trigger_at": "2026-09-12T10:11:55.694Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-12T10:11:55.694Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1143",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "cadca363-d5c1-4760-97d6-482630b70131",
+   "title": "Assignment Reminder 212",
+   "trigger_at": "2026-09-14T07:40:09.309Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T07:40:09.309Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "54427687-3fea-453e-a42d-da31f8edb9f0",
+   "title": "Registration Notice 213",
+   "trigger_at": "2026-09-14T07:40:09.320Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T07:40:09.320Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "be7a592e-999d-4bc1-9cb3-2929d8c2577a",
+   "title": "Scholarship Info 214",
+   "trigger_at": "2026-09-14T07:40:09.321Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T07:40:09.321Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "8b57a7ea-0063-4b71-95ef-4095fafb8349",
+   "title": "Library Notice 215",
+   "trigger_at": "2026-09-14T07:40:09.324Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T07:40:09.324Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "c954c7a8-788f-45b9-924d-8a1358cef452",
+   "title": "Course Announcement 216: Undergraduate Students",
+   "trigger_at": "2026-09-14T07:40:09.328Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-14T07:40:09.328Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "909e8b60-8c50-4163-8b5b-f02482aadf0e",
+   "title": "Assignment Reminder 217",
+   "trigger_at": "2026-09-15T00:00:03.759Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-15T00:00:03.759Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1153",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "b06971dc-cf5a-4a89-945a-c65c2ad73f3f",
+   "title": "Registration Notice 218",
+   "trigger_at": "2026-09-16T00:00:03.813Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:03.813Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1158",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "da3d8e91-c5fd-44bc-81e1-9b6ba769df7c",
+   "title": "Scholarship Info 219",
+   "trigger_at": "2026-09-16T00:00:03.817Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:03.817Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1160",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fbeaba1a-d574-44b4-845c-b070358442d8",
+   "title": "Library Notice 220",
+   "trigger_at": "2026-09-16T00:00:16.051Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.051Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "6b068d91-80a1-45a2-bca2-2feef7e1b052",
+   "title": "Course Announcement 221: Undergraduate Students",
+   "trigger_at": "2026-09-16T00:00:16.058Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.058Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "975c9072-100a-46fe-8fa5-ca5f63b2a836",
+   "title": "Assignment Reminder 222",
+   "trigger_at": "2026-09-16T00:00:16.061Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.061Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "dc65bb0e-61e9-4cb8-9ca7-df1807509dc8",
+   "title": "Registration Notice 223",
+   "trigger_at": "2026-09-16T00:00:16.064Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.064Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "4fe86143-c50b-4f74-910f-cb333f0411be",
+   "title": "Scholarship Info 224",
+   "trigger_at": "2026-09-16T00:00:16.067Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.067Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "98f3e51b-5d40-42fe-b55d-ad9c047bfa1a",
+   "title": "Library Notice 225",
+   "trigger_at": "2026-09-16T00:00:16.071Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.071Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "3adda1e7-dbdf-4ec7-b597-d64f8cdac089",
+   "title": "Course Announcement 226: Undergraduate Students",
+   "trigger_at": "2026-09-16T00:00:16.074Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.074Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1841152d-ce73-4aec-8fd8-ec5b495a20db",
+   "title": "Assignment Reminder 227",
+   "trigger_at": "2026-09-16T00:00:16.078Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.078Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "e965ddd7-80e8-4fd4-96b9-8c8c4cdbf0e7",
+   "title": "Registration Notice 228",
+   "trigger_at": "2026-09-16T00:00:16.081Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.081Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "6ee57556-ed4d-46e1-8447-9283af97e7b2",
+   "title": "Scholarship Info 229",
+   "trigger_at": "2026-09-16T00:00:16.084Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-16T00:00:16.084Z",
+   "priority": 0,
+   "source": "connector:arxiv",
+   "external_id": "example-external-id",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "37480ef5-d15f-4c64-aced-825f1bfdff7c",
+   "title": "Library Notice 230",
+   "trigger_at": "2026-09-17T00:23:00.394Z",
+   "repeat": "none",
+   "enabled": 1,
+   "last_fired_at": "2026-09-17T00:23:00.394Z",
+   "priority": 0,
+   "source": "connector:email",
+   "external_id": "1163",
+   "url": "https://example.edu/notice",
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "fb8f1544-5095-4d2d-86ef-8dbae46076a7",
+   "title": "Course Announcement 231: Undergraduate Students",
+   "trigger_at": "2026-09-19T09:00:00",
+   "repeat": "weekly",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 0,
+   "source": "app",
+   "external_id": null,
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "0da51862-0aad-4588-81f3-5ac1a0bd7965",
+   "title": "Assignment Reminder 232",
+   "trigger_at": "2026-09-20T17:00:00",
+   "repeat": "weekly",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 0,
+   "source": "app",
+   "external_id": null,
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  },
+  {
+   "id": "1c8c72a6-7b21-4714-a5fa-e7dba6f361c3",
+   "title": "Registration Notice 233",
+   "trigger_at": "2026-09-21T10:30:00",
+   "repeat": "weekly",
+   "enabled": 1,
+   "last_fired_at": null,
+   "priority": 0,
+   "source": "app",
+   "external_id": null,
+   "url": null,
+   "message": "示例正文（已脱敏）"
+  }
+ ],
+ "codex": {
+  "connected": true,
+  "home": "C:\\Users\\example\\.codex",
+  "automations": [
+   {
+    "id": "automation",
+    "name": "示例自动化 234",
+    "kind": "cron",
+    "prompt": "示例自动化提示词：请生成一份当天的安排摘要。",
+    "status": "ACTIVE",
+    "rrule": "RRULE:FREQ=WEEKLY;BYHOUR=8;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR",
+    "model": "deepseek-v4-flash-vision-exp",
+    "notification_policy": "failed_runs_only",
+    "target_thread_id": null,
+    "created_at": 1788105303306,
+    "updated_at": 1789015763528,
+    "path": "C:\\Users\\example\\.codex\\automations\\automation\\automation.toml",
+    "describe": "每天 08:00",
+    "next_run_at": "2026-09-18T00:00:00.000Z"
+   },
+   {
+    "id": "automation-2",
+    "name": "示例自动化 234",
+    "kind": "cron",
+    "prompt": "示例自动化提示词：请生成一份当天的安排摘要。",
+    "status": "ACTIVE",
+    "rrule": "RRULE:FREQ=WEEKLY;BYHOUR=16;BYMINUTE=0;BYDAY=FR",
+    "model": "deepseek-v4-flash-vision-exp",
+    "notification_policy": "failed_runs_only",
+    "target_thread_id": null,
+    "created_at": 1788105304544,
+    "updated_at": 1789015767189,
+    "path": "C:\\Users\\example\\.codex\\automations\\automation-2\\automation.toml",
+    "describe": "每天 08:00",
+    "next_run_at": "2026-09-18T08:00:00.000Z"
+   },
+   {
+    "id": "automation-3",
+    "name": "示例自动化 234",
+    "kind": "cron",
+    "prompt": "示例自动化提示词：请生成一份当天的安排摘要。",
+    "status": "ACTIVE",
+    "rrule": "RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR",
+    "model": "deepseek-v4-flash-vision-exp",
+    "notification_policy": "failed_runs_only",
+    "target_thread_id": null,
+    "created_at": 1788105305710,
+    "updated_at": 1789545692564,
+    "path": "C:\\Users\\example\\.codex\\automations\\automation-3\\automation.toml",
+    "describe": "每天 08:00",
+    "next_run_at": "2026-09-18T01:00:00.000Z"
+   },
+   {
+    "id": "automation-5",
+    "name": "示例自动化 234",
+    "kind": "heartbeat",
+    "prompt": "示例自动化提示词：请生成一份当天的安排摘要。",
+    "status": "ACTIVE",
+    "rrule": "RRULE:FREQ=WEEKLY;BYHOUR=10;BYMINUTE=0;BYDAY=SU",
+    "model": "",
+    "notification_policy": "",
+    "target_thread_id": "01a076d4-7bd2-7a31-9285-e42f8e99efd4",
+    "created_at": 1788700463184,
+    "updated_at": 1788702321990,
+    "path": "C:\\Users\\example\\.codex\\automations\\automation-5\\automation.toml",
+    "describe": "每天 08:00",
+    "next_run_at": "2026-09-20T02:00:00.000Z"
+   },
+   {
+    "id": "automation-4",
+    "name": "示例自动化 234",
+    "kind": "cron",
+    "prompt": "示例自动化提示词：请生成一份当天的安排摘要。",
+    "status": "PAUSED",
+    "rrule": "RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=46",
+    "model": "deepseek-v4-flash-vision-exp",
+    "notification_policy": "failed_runs_only",
+    "target_thread_id": null,
+    "created_at": 1788150517831,
+    "updated_at": 1789015338313,
+    "path": "C:\\Users\\example\\.codex\\automations\\automation-4\\automation.toml",
+    "describe": "每天 08:00",
+    "next_run_at": null
+   }
+  ],
+  "threads": [
+   {
+    "id": "01a0af5d-9e3e-7790-bb6e-ec4892cc04ac",
+    "title": "示例会话 234：检查任务清单"
+   },
+   {
+    "id": "01a0af6e-a7a5-70b2-abb7-5e0f5a7aee38",
+    "title": "示例会话 235：规划本周安排"
+   },
+   {
+    "id": "01a0af5c-9ab8-7910-ab08-281da39e2508",
+    "title": "示例会话 236：连接器调试"
+   },
+   {
+    "id": "01a0aedf-e2e5-7570-abb2-133544dd55cc",
+    "title": "示例会话 237：整理课程资料"
+   },
+   {
+    "id": "01a0aef3-9efe-7f02-8d63-0f5a21cc21f4",
+    "title": "示例会话 238：检查任务清单"
+   },
+   {
+    "id": "01a0aef2-ed66-7c53-910e-72a48c6861ec",
+    "title": "示例会话 239：规划本周安排"
+   },
+   {
+    "id": "01a0aee6-0336-7500-9c74-cda4c68d2ab3",
+    "title": "示例会话 240：连接器调试"
+   },
+   {
+    "id": "01a0ae8b-4bf8-7140-915e-88367d3b6593",
+    "title": "示例会话 241：整理课程资料"
+   },
+   {
+    "id": "01a0ae13-22c3-73e2-accc-f1d428ac8ef1",
+    "title": "示例会话 242：检查任务清单"
+   },
+   {
+    "id": "01a0ad53-d8f6-7e92-b3f7-934c4ea8f2d6",
+    "title": "示例会话 243：规划本周安排"
+   },
+   {
+    "id": "01a0acf4-6d8f-7ea3-b92d-98edcabca37a",
+    "title": "示例会话 244：连接器调试"
+   },
+   {
+    "id": "01a0acbf-4634-7f13-8213-6b4e6d83d9da",
+    "title": "示例会话 245：整理课程资料"
+   },
+   {
+    "id": "01a0aa51-f0c3-7af1-892a-8cb14cbd83ac",
+    "title": "示例会话 246：检查任务清单"
+   },
+   {
+    "id": "01a0a933-7b57-72f3-9744-6b91d5062ee9",
+    "title": "示例会话 247：规划本周安排"
+   },
+   {
+    "id": "01a0a9bf-7863-7b60-a6b0-5a73e4d13d06",
+    "title": "示例会话 248：连接器调试"
+   },
+   {
+    "id": "01a0a934-4c0e-7531-b357-fde077c410e9",
+    "title": "示例会话 249：整理课程资料"
+   },
+   {
+    "id": "01a0a7b8-9966-7243-945a-2e3e25ebb166",
+    "title": "示例会话 250：检查任务清单"
+   },
+   {
+    "id": "01a0a82b-e7d9-7602-b33c-0937dceb3ca1",
+    "title": "示例会话 251：规划本周安排"
+   },
+   {
+    "id": "01a0a7b6-5ce7-7ad0-862a-a328d09f00ae",
+    "title": "示例会话 252：连接器调试"
+   },
+   {
+    "id": "01a0a7ba-c787-7992-ac4a-a60f2dc3fe1a",
+    "title": "示例会话 253：整理课程资料"
+   },
+   {
+    "id": "01a0a784-6fb9-7593-8afb-78f9a94f491f",
+    "title": "示例会话 254：检查任务清单"
+   },
+   {
+    "id": "01a0a4fa-19bb-7d00-86bb-0f5ed7bbe860",
+    "title": "示例会话 255：规划本周安排"
+   },
+   {
+    "id": "01a0a522-a076-7451-9d85-afebbd2a24e0",
+    "title": "示例会话 256：连接器调试"
+   },
+   {
+    "id": "01a0a258-3d12-7f90-ba03-24bb5e601897",
+    "title": "示例会话 257：整理课程资料"
+   },
+   {
+    "id": "01a0a294-6ecd-7fd0-823b-bb4461db0547",
+    "title": "示例会话 258：检查任务清单"
+   },
+   {
+    "id": "01a0a252-2fba-7e23-96b9-7588d649dc4b",
+    "title": "示例会话 259：规划本周安排"
+   },
+   {
+    "id": "01a0a286-7100-7e93-85b8-3ac712dbfb41",
+    "title": "示例会话 260：连接器调试"
+   },
+   {
+    "id": "01a0a283-52b3-7cc0-b55a-442291c24d51",
+    "title": "示例会话 261：整理课程资料"
+   },
+   {
+    "id": "01a09e66-9a58-7af1-a389-2d8542a94f45",
+    "title": "示例会话 262：检查任务清单"
+   },
+   {
+    "id": "01a09f27-3fb0-7dd1-83ad-80531398916d",
+    "title": "示例会话 263：规划本周安排"
+   },
+   {
+    "id": "01a0a25e-67b9-7ee0-b2d5-420f06053890",
+    "title": "示例会话 264：连接器调试"
+   },
+   {
+    "id": "01a0a0a9-65ed-7731-b622-4a7b0335b929",
+    "title": "示例会话 265：整理课程资料"
+   },
+   {
+    "id": "01a0a08f-a50f-76c0-a4ff-798456a8bb55",
+    "title": "示例会话 266：检查任务清单"
+   },
+   {
+    "id": "01a0a08f-7a9e-77f3-b3dc-e4c5df931240",
+    "title": "示例会话 267：规划本周安排"
+   },
+   {
+    "id": "01a0a011-3f89-78f3-b5e7-c54f35d33ae1",
+    "title": "示例会话 268：连接器调试"
+   },
+   {
+    "id": "01a09fe7-12db-7633-9752-13372c3bc289",
+    "title": "示例会话 269：整理课程资料"
+   },
+   {
+    "id": "01a09fe1-e2a7-79b0-903b-2b9fd11c10e9",
+    "title": "示例会话 270：检查任务清单"
+   },
+   {
+    "id": "01a09fad-4264-75e2-a5de-491b475c6530",
+    "title": "示例会话 271：规划本周安排"
+   },
+   {
+    "id": "01a09faf-0217-7bd1-a5cc-75f27a28d744",
+    "title": "示例会话 272：连接器调试"
+   },
+   {
+    "id": "01a09f3e-9d44-77c3-8377-36eeb4dde770",
+    "title": "示例会话 273：整理课程资料"
+   },
+   {
+    "id": "01a09f3f-4c68-74b1-82ea-ed620ab3ca6c",
+    "title": "示例会话 274：检查任务清单"
+   },
+   {
+    "id": "01a09f0a-13bc-7a31-a354-d799b1a077ef",
+    "title": "示例会话 275：规划本周安排"
+   },
+   {
+    "id": "01a09f08-d170-72d3-a8e5-d011174e1b70",
+    "title": "示例会话 276：连接器调试"
+   },
+   {
+    "id": "01a09ed4-bfb1-7de1-9585-c3e8a4635a21",
+    "title": "示例会话 277：整理课程资料"
+   },
+   {
+    "id": "01a09e62-9c56-7d71-986a-add9525ecf85",
+    "title": "示例会话 278：检查任务清单"
+   },
+   {
+    "id": "01a09e66-16bd-7122-b034-40a106b8cb15",
+    "title": "示例会话 279：规划本周安排"
+   },
+   {
+    "id": "01a09e6b-06fa-7080-826b-2a208c6b4559",
+    "title": "示例会话 280：连接器调试"
+   },
+   {
+    "id": "01a09e64-7ae8-72d1-9376-9c868dd002ac",
+    "title": "示例会话 281：整理课程资料"
+   },
+   {
+    "id": "01a09e68-f76a-7af0-9e53-5df8e821cedd",
+    "title": "示例会话 282：检查任务清单"
+   },
+   {
+    "id": "01a09e3d-00ce-7ef1-906a-89d92a603f46",
+    "title": "示例会话 283：规划本周安排"
+   },
+   {
+    "id": "01a09def-cac1-78e0-8a8b-ae5c00353909",
+    "title": "示例会话 284：连接器调试"
+   },
+   {
+    "id": "01a09df0-c29f-71d3-8ddc-948231497b7d",
+    "title": "示例会话 285：整理课程资料"
+   },
+   {
+    "id": "01a09dd0-2539-7ed1-a8a2-232113cb67c1",
+    "title": "示例会话 286：检查任务清单"
+   },
+   {
+    "id": "01a09dd2-0488-70e0-a11a-b14700044f57",
+    "title": "示例会话 287：规划本周安排"
+   },
+   {
+    "id": "01a095f2-de59-77e3-9aee-d2ec27f8e702",
+    "title": "示例会话 288：连接器调试"
+   },
+   {
+    "id": "01a09dbf-00cc-70f1-8796-0d0f2c7fe443",
+    "title": "示例会话 289：整理课程资料"
+   },
+   {
+    "id": "01a09d6b-7923-72b3-84b2-69aaff76e498",
+    "title": "示例会话 290：检查任务清单"
+   },
+   {
+    "id": "01a09b53-79fc-7912-b1ea-a3b648855971",
+    "title": "示例会话 291：规划本周安排"
+   },
+   {
+    "id": "01a09d6f-0e7f-7171-9bc0-b79f390c5593",
+    "title": "示例会话 292：连接器调试"
+   },
+   {
+    "id": "01a09d5f-d8b8-7e23-b18f-36f65cea073e",
+    "title": "示例会话 293：整理课程资料"
+   },
+   {
+    "id": "01a09d37-a6b0-7843-8fc1-e748404b8caf",
+    "title": "示例会话 294：检查任务清单"
+   },
+   {
+    "id": "01a09b55-cffd-7621-8de4-2e24a3c7c62f",
+    "title": "示例会话 295：规划本周安排"
+   },
+   {
+    "id": "01a09b2e-bb1b-7cd0-9687-8c623f36aba8",
+    "title": "示例会话 296：连接器调试"
+   },
+   {
+    "id": "01a09ae5-357c-7840-9e5f-2fa16a99bbec",
+    "title": "示例会话 297：整理课程资料"
+   },
+   {
+    "id": "01a09ac7-d80e-7fe3-919e-b841d24f2aa0",
+    "title": "示例会话 298：检查任务清单"
+   },
+   {
+    "id": "01a09ab8-d085-7572-860e-aadc9ccefcd1",
+    "title": "示例会话 299：规划本周安排"
+   },
+   {
+    "id": "01a09a88-f096-7a13-aa14-227f0b4ea46f",
+    "title": "示例会话 300：连接器调试"
+   },
+   {
+    "id": "01a09a6a-89a8-7481-8155-1cd2eb1c936c",
+    "title": "示例会话 301：整理课程资料"
+   },
+   {
+    "id": "01a09a87-f749-7153-a3d4-146dfed8994b",
+    "title": "示例会话 302：检查任务清单"
+   },
+   {
+    "id": "01a09a72-77d6-70c2-8655-5a6661e9c4f4",
+    "title": "示例会话 303：规划本周安排"
+   },
+   {
+    "id": "01a0994a-9314-74f0-9793-6a44aeb90093",
+    "title": "示例会话 304：连接器调试"
+   },
+   {
+    "id": "01a09949-599b-7f60-97fb-feafdd01f3a1",
+    "title": "示例会话 305：整理课程资料"
+   },
+   {
+    "id": "01a098ae-f405-7e31-8ae2-cf8c129f0e1a",
+    "title": "示例会话 306：检查任务清单"
+   },
+   {
+    "id": "01a09918-fb91-75b0-b382-170bcfd4bbb6",
+    "title": "示例会话 307：规划本周安排"
+   },
+   {
+    "id": "01a09916-fdc3-7a00-a4ad-f51e35d53f1d",
+    "title": "示例会话 308：连接器调试"
+   },
+   {
+    "id": "01a09916-e433-7271-9396-aee7561ab5fb",
+    "title": "示例会话 309：整理课程资料"
+   },
+   {
+    "id": "01a09915-7053-7191-aba6-0543a0f591eb",
+    "title": "示例会话 310：检查任务清单"
+   },
+   {
+    "id": "01a098f1-39cd-7202-8b6a-026d6f274b40",
+    "title": "示例会话 311：规划本周安排"
+   },
+   {
+    "id": "01a09881-890c-7d12-8929-d01cf2d75893",
+    "title": "示例会话 312：连接器调试"
+   },
+   {
+    "id": "01a076d4-7bd2-7a31-9285-e42f8e99efd4",
+    "title": "示例会话 313：整理课程资料"
+   },
+   {
+    "id": "01a095f4-7c46-76e2-ba1a-e855ac0179a4",
+    "title": "示例会话 314：检查任务清单"
+   },
+   {
+    "id": "01a0955c-3b4f-7213-b045-a073418681d0",
+    "title": "示例会话 315：规划本周安排"
+   },
+   {
+    "id": "01a09593-9c40-7b60-b5ed-ea664eae27f9",
+    "title": "示例会话 316：连接器调试"
+   },
+   {
+    "id": "01a09592-f5de-7c02-b356-76ed4d0a3f4f",
+    "title": "示例会话 317：整理课程资料"
+   },
+   {
+    "id": "01a0952e-5a74-7bb2-a0ca-3a018d6bd74b",
+    "title": "示例会话 318：检查任务清单"
+   },
+   {
+    "id": "01a09544-a0e4-7cd1-80ff-606c0326d360",
+    "title": "示例会话 319：规划本周安排"
+   },
+   {
+    "id": "01a094e5-3a9b-71c3-8c38-3f502e85769d",
+    "title": "示例会话 320：连接器调试"
+   },
+   {
+    "id": "01a09516-df6b-7283-877e-f256aad3d842",
+    "title": "示例会话 321：整理课程资料"
+   },
+   {
+    "id": "01a09518-811a-7393-afc7-af452ba716b0",
+    "title": "示例会话 322：检查任务清单"
+   },
+   {
+    "id": "01a09506-0083-7472-a5d6-8408d79c01ef",
+    "title": "示例会话 323：规划本周安排"
+   },
+   {
+    "id": "01a09506-8448-7262-a276-4bd0d70e0515",
+    "title": "示例会话 324：连接器调试"
+   },
+   {
+    "id": "01a094e8-29d2-7ac0-a055-3a7edbb5e25d",
+    "title": "示例会话 325：整理课程资料"
+   },
+   {
+    "id": "01a086b1-a73f-72c3-a7cc-4d5f16fafbb5",
+    "title": "示例会话 326：检查任务清单"
+   },
+   {
+    "id": "01a093eb-3a72-7142-958e-a5e50e203f70",
+    "title": "示例会话 327：规划本周安排"
+   },
+   {
+    "id": "01a093ec-c1de-7622-b53a-50417d8e3379",
+    "title": "示例会话 328：连接器调试"
+   },
+   {
+    "id": "01a093f1-25b0-7f51-9be6-3a7cc3d44c31",
+    "title": "示例会话 329：整理课程资料"
+   },
+   {
+    "id": "01a093eb-a80d-7c82-8005-6d1c70322f5a",
+    "title": "示例会话 330：检查任务清单"
+   },
+   {
+    "id": "01a093eb-3633-78b1-a6d6-3f7c4ae84d0c",
+    "title": "示例会话 331：规划本周安排"
+   },
+   {
+    "id": "01a093eb-362e-7c23-b49b-a54da7587613",
+    "title": "示例会话 332：连接器调试"
+   },
+   {
+    "id": "01a093eb-362e-7c23-b49b-a522c2171059",
+    "title": "示例会话 333：整理课程资料"
+   },
+   {
+    "id": "01a089f5-e897-71b3-903f-7f9d38082139",
+    "title": "示例会话 334：检查任务清单"
+   },
+   {
+    "id": "01a089f4-32ca-76d0-8e79-374099da16b7",
+    "title": "示例会话 335：规划本周安排"
+   },
+   {
+    "id": "01a0898d-7601-7422-b6cc-acccfaac4b6a",
+    "title": "示例会话 336：连接器调试"
+   },
+   {
+    "id": "01a089a4-1e4b-7fc2-9f44-e9b1dbac285f",
+    "title": "示例会话 337：整理课程资料"
+   },
+   {
+    "id": "01a08995-7521-7282-a5d9-c4548d29702d",
+    "title": "示例会话 338：检查任务清单"
+   },
+   {
+    "id": "01a0894f-9568-7321-b12a-b4ddeef79629",
+    "title": "示例会话 339：规划本周安排"
+   },
+   {
+    "id": "01a0894e-f27d-7042-b874-6280a978ed4f",
+    "title": "示例会话 340：连接器调试"
+   },
+   {
+    "id": "01a07f1d-bf52-73c2-9b46-811e1c5a2d24",
+    "title": "示例会话 341：整理课程资料"
+   },
+   {
+    "id": "01a08665-7e12-71d1-bbfe-706221fed18a",
+    "title": "示例会话 342：检查任务清单"
+   },
+   {
+    "id": "01a0866a-7197-7bb3-b7c6-93d2801e88fc",
+    "title": "示例会话 343：规划本周安排"
+   },
+   {
+    "id": "01a08655-fbf6-7d81-8421-a23fb471cc47",
+    "title": "示例会话 344：连接器调试"
+   },
+   {
+    "id": "01a08658-2ec0-7f21-8166-6472e77eb446",
+    "title": "示例会话 345：整理课程资料"
+   },
+   {
+    "id": "01a08167-96a2-7070-8fc2-712693623918",
+    "title": "示例会话 346：检查任务清单"
+   },
+   {
+    "id": "01a080e1-98fd-7271-8e95-93ef1c31a6b0",
+    "title": "示例会话 347：规划本周安排"
+   },
+   {
+    "id": "01a080e3-f9f0-79c3-977c-b4e7acc136e9",
+    "title": "示例会话 348：连接器调试"
+   },
+   {
+    "id": "01a080dc-3cf2-7530-ae18-281e9d18c15f",
+    "title": "示例会话 349：整理课程资料"
+   },
+   {
+    "id": "01a07f74-b2bd-7c33-b8ed-1d4e3aec1641",
+    "title": "示例会话 350：检查任务清单"
+   },
+   {
+    "id": "01a07f70-c4ab-70f3-b9b0-41f3c2b21788",
+    "title": "示例会话 351：规划本周安排"
+   },
+   {
+    "id": "01a07c38-e4d5-73d2-845d-89a7b35e0a6c",
+    "title": "示例会话 352：连接器调试"
+   },
+   {
+    "id": "01a07c33-f8de-79f0-8051-42ade02bde3a",
+    "title": "示例会话 353：整理课程资料"
+   },
+   {
+    "id": "01a07c14-83d2-7643-9f62-a355b2b34bce",
+    "title": "示例会话 354：检查任务清单"
+   },
+   {
+    "id": "01a07c12-e5e5-7e12-96fe-072939cbb97d",
+    "title": "示例会话 355：规划本周安排"
+   },
+   {
+    "id": "01a07735-88dc-7b21-8836-ece67cac4c8a",
+    "title": "示例会话 356：连接器调试"
+   },
+   {
+    "id": "01a07727-7c2a-7f51-be5b-7f89cb8b8ceb",
+    "title": "示例会话 357：整理课程资料"
+   },
+   {
+    "id": "01a076d9-5192-7472-8bc7-31a6fce31644",
+    "title": "示例会话 358：检查任务清单"
+   },
+   {
+    "id": "01a0622d-bd21-75b3-837d-7889b00b44f6",
+    "title": "示例会话 359：规划本周安排"
+   },
+   {
+    "id": "01a076ba-720f-71a3-9c47-2db0153bda62",
+    "title": "示例会话 360：连接器调试"
+   },
+   {
+    "id": "01a076c0-4a97-7830-8d2f-483719441d98",
+    "title": "示例会话 361：整理课程资料"
+   },
+   {
+    "id": "01a065c6-0cf6-72d2-aa47-a2729e23c876",
+    "title": "示例会话 362：检查任务清单"
+   },
+   {
+    "id": "01a06231-bf67-76d1-be5d-c1d507ffa8f4",
+    "title": "示例会话 363：规划本周安排"
+   },
+   {
+    "id": "01a0583b-7b59-74b2-a38f-4cce57f67740",
+    "title": "示例会话 364：连接器调试"
+   },
+   {
+    "id": "01a06081-a35c-79f1-a990-28946207695f",
+    "title": "示例会话 365：整理课程资料"
+   },
+   {
+    "id": "01a05d94-9b85-7292-a953-ab41ffdd7551",
+    "title": "示例会话 366：检查任务清单"
+   },
+   {
+    "id": "01a05d56-00c3-7a02-b76d-fa7406e39ea0",
+    "title": "示例会话 367：规划本周安排"
+   },
+   {
+    "id": "01a05d4a-f8cc-7e61-b269-df4a42e11653",
+    "title": "示例会话 368：连接器调试"
+   },
+   {
+    "id": "01a057d2-f355-70f1-bce1-3ab5cfa30e6f",
+    "title": "示例会话 369：整理课程资料"
+   },
+   {
+    "id": "01a05d3e-e7e5-7bd0-bbd7-a542960a4cf5",
+    "title": "示例会话 370：检查任务清单"
+   },
+   {
+    "id": "01a05d3a-7e41-7d80-b0db-0a7a2ebec611",
+    "title": "示例会话 371：规划本周安排"
+   },
+   {
+    "id": "01a05d38-b5bf-7de3-a7a7-43558e845b75",
+    "title": "示例会话 372：连接器调试"
+   },
+   {
+    "id": "01a05d06-0e2c-7331-9aeb-da6bd91c8803",
+    "title": "示例会话 373：整理课程资料"
+   },
+   {
+    "id": "01a0583f-1c1e-72e1-ae55-104da912683a",
+    "title": "示例会话 374：检查任务清单"
+   },
+   {
+    "id": "01a0583d-faad-73c1-b5bb-2673e7f61172",
+    "title": "示例会话 375：规划本周安排"
+   },
+   {
+    "id": "01a0583c-9e89-7cb2-99d3-bf3446e8a171",
+    "title": "示例会话 376：连接器调试"
+   },
+   {
+    "id": "01a05826-51bb-7203-83ee-45139d369ce4",
+    "title": "示例会话 377：整理课程资料"
+   },
+   {
+    "id": "01a05814-2e56-7330-9bc5-75a7838196f0",
+    "title": "示例会话 378：检查任务清单"
+   },
+   {
+    "id": "01a05812-1b3c-76a1-9f64-c5807aebbee1",
+    "title": "示例会话 379：规划本周安排"
+   },
+   {
+    "id": "01a0580f-97eb-70c0-b94f-b25bf48b12dd",
+    "title": "示例会话 380：连接器调试"
+   },
+   {
+    "id": "01a05808-824e-7892-8e2a-f4bcd4591821",
+    "title": "示例会话 381：整理课程资料"
+   },
+   {
+    "id": "01a05801-c227-7e20-b9d5-c6c98361cea0",
+    "title": "示例会话 382：检查任务清单"
+   },
+   {
+    "id": "01a057e5-ccf0-7560-8e93-673ccd1a0f6f",
+    "title": "示例会话 383：规划本周安排"
+   },
+   {
+    "id": "01a05368-ffa4-7d53-9147-99f8265411ad",
+    "title": "示例会话 384：连接器调试"
+   },
+   {
+    "id": "01a057de-889a-7d12-9e19-54f329cfbe9e",
+    "title": "示例会话 385：整理课程资料"
+   },
+   {
+    "id": "01a057d2-504f-7740-8c82-0ef79715c705",
+    "title": "示例会话 386：检查任务清单"
+   },
+   {
+    "id": "01a05642-44cb-7d51-a01a-6d3e60729a4b",
+    "title": "示例会话 387：规划本周安排"
+   },
+   {
+    "id": "01a05615-4a53-7de3-94b0-ba5e0977e5ed",
+    "title": "示例会话 388：连接器调试"
+   },
+   {
+    "id": "01a05637-7649-7a60-91b1-3550e2a88e31",
+    "title": "示例会话 389：整理课程资料"
+   },
+   {
+    "id": "01a0562a-999d-7462-82b5-ee8b33318912",
+    "title": "示例会话 390：检查任务清单"
+   },
+   {
+    "id": "01a05621-bde8-7e92-b791-0baef2df6068",
+    "title": "示例会话 391：规划本周安排"
+   },
+   {
+    "id": "01a05608-7853-7a40-b115-3188ff5f6b42",
+    "title": "示例会话 392：连接器调试"
+   },
+   {
+    "id": "01a05613-421c-7a63-abd8-a7344d149337",
+    "title": "示例会话 393：整理课程资料"
+   },
+   {
+    "id": "01a05611-880d-7d63-95b5-69411598df4a",
+    "title": "示例会话 394：检查任务清单"
+   },
+   {
+    "id": "01a05607-98ea-72a0-8ef6-71663029fc3d",
+    "title": "示例会话 395：规划本周安排"
+   },
+   {
+    "id": "01a05607-98db-7aa2-8810-576315aa260b",
+    "title": "示例会话 396：连接器调试"
+   },
+   {
+    "id": "01a05359-e8d8-7060-b6f3-21b431e4fa1a",
+    "title": "示例会话 397：整理课程资料"
+   },
+   {
+    "id": "01a0534b-cd46-72d1-8787-feb197deaedb",
+    "title": "示例会话 398：检查任务清单"
+   },
+   {
+    "id": "01a05376-4dd5-73f2-aaf4-fe1981d53c6a",
+    "title": "示例会话 399：规划本周安排"
+   },
+   {
+    "id": "01a05373-f150-7a00-ac4c-b69bbe1a3790",
+    "title": "示例会话 400：连接器调试"
+   },
+   {
+    "id": "01a0535f-b406-74c0-b89e-55026c6ee002",
+    "title": "示例会话 401：整理课程资料"
+   },
+   {
+    "id": "01a0535b-0096-7be3-9275-4d846cba4612",
+    "title": "示例会话 402：检查任务清单"
+   },
+   {
+    "id": "01a05359-c1c7-7fc1-8ad3-64381ff56999",
+    "title": "示例会话 403：规划本周安排"
+   },
+   {
+    "id": "01a05341-5c97-77a0-bbfe-53e8fe216b65",
+    "title": "示例会话 404：连接器调试"
+   },
+   {
+    "id": "01a05350-1b6e-7883-86b6-59960a550ac7",
+    "title": "示例会话 405：整理课程资料"
+   },
+   {
+    "id": "01a05349-c5f8-74a1-8f89-04a60f8401dc",
+    "title": "示例会话 406：检查任务清单"
+   },
+   {
+    "id": "01a05347-cd33-7f61-956d-145938e75788",
+    "title": "示例会话 407：规划本周安排"
+   },
+   {
+    "id": "01a0533f-6c4f-7a11-99d9-14f60ebf73b0",
+    "title": "示例会话 408：连接器调试"
+   },
+   {
+    "id": "01a052c2-4691-7882-a4a6-31baf6f7c604",
+    "title": "示例会话 409：整理课程资料"
+   },
+   {
+    "id": "01a052c8-6571-76d0-86b9-0134e8b1a9ed",
+    "title": "示例会话 410：检查任务清单"
+   },
+   {
+    "id": "01a04dbc-bacf-7e62-8fb7-fbed4e62fcb2",
+    "title": "示例会话 411：规划本周安排"
+   },
+   {
+    "id": "01a04dbc-3cac-7512-ace4-3d5933d0796e",
+    "title": "示例会话 412：连接器调试"
+   },
+   {
+    "id": "01a03365-adbf-7f73-883b-256dc55bb9fd",
+    "title": "示例会话 413：整理课程资料"
+   },
+   {
+    "id": "019ff813-192d-7af3-b7c2-6d089ba68538",
+    "title": "示例会话 414：检查任务清单"
+   },
+   {
+    "id": "019ff812-5bb6-7760-b36b-7140e026235d",
+    "title": "示例会话 415：规划本周安排"
+   },
+   {
+    "id": "019fef21-bb2b-75f3-a09d-3986eef5ebc7",
+    "title": "示例会话 416：连接器调试"
+   },
+   {
+    "id": "019fe9d3-9406-7db3-b819-bb5172c78918",
+    "title": "示例会话 417：整理课程资料"
+   }
+  ],
+  "error": null,
+  "synced_at": 1789650127911
+ },
+ "connectors": {
+  "meta": [
+   {
+    "id": "feishu",
+    "name": "飞书 / Lark",
+    "icon": "💬",
+    "description": "通过飞书开放平台 API 导入日历日程（需企业自建应用凭据）。",
+    "fields": [
+     {
+      "key": "app_id",
+      "label": "App ID",
+      "type": "text",
+      "required": true,
+      "placeholder": "cli_xxxxxxxx"
+     },
+     {
+      "key": "app_secret",
+      "label": "App Secret",
+      "type": "password",
+      "required": true,
+      "placeholder": "••••••••"
+     }
+    ]
+   },
+   {
+    "id": "canvas",
+    "name": "Canvas LMS",
+    "icon": "🎓",
+    "description": "通过 Canvas REST API 导入课程、作业（转为任务）与日历事件（转为日程），并巡检课程文件 / 页面资源 / 教学大纲 / 模块（转为通知）；新文件可自动下载到桌面课程资料并同步到办公本。",
+    "fields": [
+     {
+      "key": "base_url",
+      "label": "Canvas 域名",
+      "type": "text",
+      "required": true,
+      "placeholder": "https://school.instructure.com"
+     },
+     {
+      "key": "token",
+      "label": "API 访问令牌",
+      "type": "password",
+      "required": true,
+      "placeholder": "粘贴 Canvas 生成的 Token"
+     },
+     {
+      "key": "lookback_days",
+      "label": "课程文件/资源回溯天数（默认 30）",
+      "type": "number",
+      "required": false,
+      "placeholder": "30"
+     }
+    ]
+   },
+   {
+    "id": "email",
+    "name": "邮箱 (IMAP)",
+    "icon": "📧",
+    "description": "通过 IMAP 读取收件箱邮件（支持 Gmail / Zimbra / 任意标准 IMAP），转为任务或提醒。",
+    "fields": [
+     {
+      "key": "host",
+      "label": "IMAP 服务器",
+      "type": "text",
+      "required": true,
+      "placeholder": "imap.gmail.com"
+     },
+     {
+      "key": "port",
+      "label": "端口(SSL)",
+      "type": "number",
+      "required": true,
+      "placeholder": "993",
+      "default": 993
+     },
+     {
+      "key": "user",
+      "label": "邮箱账号",
+      "type": "text",
+      "required": true,
+      "placeholder": "student@example.edu"
+     },
+     {
+      "key": "password",
+      "label": "密码 / 应用专用密码",
+      "type": "password",
+      "required": true,
+      "placeholder": "••••••••"
+     },
+     {
+      "key": "since_days",
+      "label": "最近 N 天",
+      "type": "number",
+      "required": false,
+      "placeholder": "7",
+      "default": 7
+     },
+     {
+      "key": "gmail_exclude_categories",
+      "label": "Gmail 排除的分类",
+      "type": "text",
+      "required": false,
+      "placeholder": "social,promotions,forums",
+      "default": "social,promotions,forums"
+     },
+     {
+      "key": "block_senders",
+      "label": "屏蔽的发件域名（逗号分隔）",
+      "type": "text",
+      "required": false,
+      "placeholder": "instagram.com,redditmail.com,..."
+     }
+    ]
+   },
+   {
+    "id": "email_sjtu",
+    "name": "交大邮箱 (Zimbra)",
+    "icon": "🏫",
+    "description": "读取 SJTU 交大邮箱（mail.sjtu.edu.cn）收件箱，同步到「通知」（重点来源）。",
+    "fields": [
+     {
+      "key": "host",
+      "label": "IMAP 服务器",
+      "type": "text",
+      "required": true,
+      "placeholder": "mail.sjtu.edu.cn"
+     },
+     {
+      "key": "port",
+      "label": "端口(SSL)",
+      "type": "number",
+      "required": true,
+      "placeholder": "993",
+      "default": 993
+     },
+     {
+      "key": "user",
+      "label": "邮箱账号",
+      "type": "text",
+      "required": true,
+      "placeholder": "你的学号@sjtu.edu.cn"
+     },
+     {
+      "key": "password",
+      "label": "密码 / 应用专用密码",
+      "type": "password",
+      "required": true,
+      "placeholder": "••••••••"
+     },
+     {
+      "key": "since_days",
+      "label": "最近 N 天",
+      "type": "number",
+      "required": false,
+      "placeholder": "7",
+      "default": 7
+     },
+     {
+      "key": "gmail_exclude_categories",
+      "label": "Gmail 排除的分类",
+      "type": "text",
+      "required": false,
+      "placeholder": "social,promotions,forums",
+      "default": "social,promotions,forums"
+     },
+     {
+      "key": "block_senders",
+      "label": "屏蔽的发件域名（逗号分隔）",
+      "type": "text",
+      "required": false,
+      "placeholder": "instagram.com,redditmail.com,..."
+     }
+    ]
+   },
+   {
+    "id": "arxiv",
+    "name": "arXiv 论文订阅",
+    "icon": "📄",
+    "description": "按「关键词 + arXiv 分类」订阅最新论文（无需密钥）。官方接口限流时自动降级到 arXiv RSS / OpenAlex。新论文进入「通知」，点开直达摘要页。",
+    "fields": [
+     {
+      "key": "keywords",
+      "label": "关键词（逗号/空格分隔，多个词=任中）",
+      "type": "text",
+      "required": false,
+      "placeholder": "agent memory, tool use, autonomous planning"
+     },
+     {
+      "key": "categories",
+      "label": "arXiv 分类（空格分隔，留空则只按关键词）",
+      "type": "text",
+      "required": false,
+      "placeholder": "cs.AI cs.CL cs.LG"
+     },
+     {
+      "key": "exclude",
+      "label": "排除词（命中即丢弃）",
+      "type": "text",
+      "required": false,
+      "placeholder": "survey, position paper"
+     },
+     {
+      "key": "lookback_days",
+      "label": "只看最近 N 天（默认 3）",
+      "type": "number",
+      "required": false,
+      "placeholder": "3"
+     },
+     {
+      "key": "max_results",
+      "label": "每轮最多收录（默认 12）",
+      "type": "number",
+      "required": false,
+      "placeholder": "12"
+     },
+     {
+      "key": "cache_hours",
+      "label": "本地缓存小时数（默认 6，避免被限流）",
+      "type": "number",
+      "required": false,
+      "placeholder": "6"
+     },
+     {
+      "key": "source",
+      "label": "取数路径：auto / arxiv / rss / openalex",
+      "type": "text",
+      "required": false,
+      "placeholder": "auto"
+     }
+    ]
+   }
+  ],
+  "configs": [
+   {
+    "source": "arxiv",
+    "config_json": "{\"keywords\": \"example keyword, another keyword\", \"categories\": \"cs.AI cs.CL cs.MA\", \"exclude\": \"full-duplex, duplex, speech, TTS\", \"lookback_days\": 3, \"max_results\": 10, \"cache_hours\": 6, \"source\": \"auto\"}",
+    "status": "ok",
+    "last_sync": 1789371723252,
+    "last_error": null,
+    "updated_at": 1789371723252
+   },
+   {
+    "source": "canvas",
+    "config_json": "{\"base_url\": \"https://example.instructure.com\", \"token\": \"••••0000\", \"lookback_days\": \"\"}",
+    "status": "ok",
+    "last_sync": 1789522367171,
+    "last_error": null,
+    "updated_at": 1789522367171
+   },
+   {
+    "source": "email",
+    "config_json": "{\"host\": \"imap.gmail.com\", \"port\": 993, \"user\": \"student@example.edu\", \"password\": \"••••0000\", \"since_days\": \"7\", \"gmail_exclude_categories\": \"social,promotions,forums\", \"block_senders\": \"instagram.com,facebookmail.com,facebook.com,redditmail.com,reddit.com,twitter.com,x.com,tiktok.com,snapchat.com,pinterest.com,quora.com,grammarly.com,adobe.com,suno.com,uber.com,spotify.com\"}",
+    "status": "configured",
+    "last_sync": 1788844764841,
+    "last_error": null,
+    "updated_at": 1789206373507
+   },
+   {
+    "source": "email_sjtu",
+    "config_json": "{\"host\": \"imap.example.edu\", \"port\": \"993\", \"user\": \"student@example.edu\", \"password\": \"••••0000\", \"since_days\": \"7\", \"gmail_exclude_categories\": \"\", \"block_senders\": \"\"}",
+    "status": "configured",
+    "last_sync": null,
+    "last_error": null,
+    "updated_at": 1789206955976
+   },
+   {
+    "source": "feishu",
+    "config_json": "{\"app_id\": \"cli_example000000\", \"app_secret\": \"••••0000\"}",
+    "status": "empty",
+    "last_sync": 1789522055053,
+    "last_error": null,
+    "updated_at": 1789522055053
+   }
+  ],
+  "counts": {
+   "feishu": 0,
+   "canvas": 50,
+   "email": 8,
+   "email_sjtu": 27,
+   "arxiv": 10
+  }
+ },
+ "health": {
+  "ok": true,
+  "app": "codex-planner",
+  "pid": 21620,
+  "port": 3210,
+  "node": "v24.20.0",
+  "platform": "win32",
+  "started_at": "2026-09-17T13:02:07.847Z",
+  "uptime_sec": 9015,
+  "log_path": "data/server.log",
+  "canvas_watch": {
+   "enabled": true,
+   "interval_hours": 3,
+   "last_run": "2026-09-17T12:33:09.056Z",
+   "next_run": "2026-09-17T15:33:09.056Z",
+   "last_error": "fetch failed",
+   "last_result": {
+    "added": 0,
+    "total": 51,
+    "raw": {
+     "courses": 7,
+     "assignments": 7,
+     "events": 0,
+     "files": 38,
+     "pages": 3,
+     "syllabus": 2,
+     "module_items": 1,
+     "skipped_old": 54,
+     "lookback_days": 30
+    },
+    "at": "2026-09-17T09:24:48.927Z",
+    "course_sync": {
+     "queued": 39,
+     "background": true
+    }
+   }
+  },
+  "autostart": {
+   "supported": true,
+   "enabled": true,
+   "path": "C:\\Users\\example\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\CodexPlanner.lnk"
+  },
+  "counts": {
+   "tasks": 101,
+   "notifications": 126,
+   "pending": 0
+  },
+  "server_time": 1789659142957
+ },
+ "server_time": 1789659142957,
+ "_note": "trimmed /api/state fixture for tests/viewmodel.test.mjs; see contracts/README.md"
+}

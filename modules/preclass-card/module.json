@@ -1,0 +1,17 @@
+{
+  "schema": "module.v1",
+  "id": "preclass-card",
+  "name": "上课前检查",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "today",
+  "icon": "⏱️",
+  "order": 3,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["preclass", "courses", "modules"], "writes": ["preclass"], "tables": [] },
+  "permissions": ["net:canvas"],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

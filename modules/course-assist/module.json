@@ -1,0 +1,20 @@
+{
+  "schema": "module.v1",
+  "id": "course-assist",
+  "name": "课程辅助",
+  "version": "0.1.0",
+  "kind": "processor",
+  "icon": "📚",
+  "order": 20,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "run": "run.js", "readme": "README.md" },
+  "data": { "reads": ["course_materials"], "writes": ["study_files"], "tables": [] },
+  "permissions": ["fs:read:course", "fs:write:data", "notify:app"],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false,
+    "capabilities": ["course.scan", "course.text", "course.artifacts", "notify.app", "file.write"]
+  }
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cairn</title>
+  <link rel="stylesheet" href="/styles.css?v=b20260927i" />
+</head>
+<body data-theme="p5">
+  <div id="winbar">
+    <div class="wb-title"><span class="wb-logo">📅</span><span id="app-name-wb">Cairn</span> <span class="ver-tag" id="ver-tag"></span></div>
+  </div>
+  <div class="wp-layer" id="wp-a" aria-hidden="true"><video muted loop playsinline preload="none" disablepictureinpicture></video></div>
+  <div class="wp-layer" id="wp-b" aria-hidden="true"><video muted loop playsinline preload="none" disablepictureinpicture></video></div>
+  <div id="grain" aria-hidden="true"></div>
+  <div id="bang" aria-hidden="true"><span class="bang-txt" id="bang-txt"></span></div>
+  <svg class="bg-emblem" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="#e60012" stroke-width="3">
+      <path d="M38 38 L162 162 M162 38 L38 162"/>
+      <circle cx="100" cy="100" r="60" stroke-width="2"/>
+      <circle cx="100" cy="100" r="30" fill="#e60012" stroke="none"/>
+    </g>
+    <g fill="#ff2e40">
+      <path d="M100 6 L114 58 L62 92 L96 94 L100 156 L106 94 L142 92 L90 58 Z" opacity=".6"/>
+      <circle cx="22" cy="42" r="3"/><circle cx="182" cy="66" r="2"/>
+      <circle cx="174" cy="154" r="3"/><circle cx="30" cy="158" r="2"/><circle cx="120" cy="24" r="2"/>
+    </g>
+    <g stroke="#ff6b6b" stroke-width="1" opacity=".5">
+      <path d="M60 60 L78 78 M140 60 L122 78 M60 140 L78 122 M140 140 L122 122"/>
+    </g>
+  </svg>
+  <canvas id="fx-bg" aria-hidden="true"></canvas>
+  <div id="app">
+    <header id="topbar">
+      <div class="brand">
+        <div class="brand-logo">📅</div>
+        <div>
+          <div class="brand-title" id="app-name-brand">Cairn</div>
+          <div class="brand-sub">日程 · 任务 · 通知 · <span id="brand-ver"></span></div>
+        </div>
+      </div>
+      <button class="ghost home-btn" id="btn-home" title="返回 / 唤出主菜单"><span class="nav-ico">⌂</span> 主菜单</button>
+      <div style="flex:1"></div>
+      <div class="top-actions">
+        <div class="conn-small" id="conn-small">未连接</div>
+        <button class="ghost" id="open-browser" title="系统通知权限">🔔</button>
+        <button class="ghost" id="settings-btn" title="设置">⚙️ 设置</button>
+        <button class="btn primary" id="quick-add">+ 快速添加</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <header id="page-head">
+        <div>
+          <h1 id="page-title">今日</h1>
+          <div id="clock" class="clock"></div>
+          <!-- 学生特化：学期周次（没设学期时这一行是空的） -->
+          <div id="semester-line" class="semester-line"></div>
+        </div>
+        <!-- 功能自己的设置（「⚙ 功能设置」抽屉）：只有声明了 settings 的功能才在这里出现按钮 -->
+        <div id="page-actions" class="page-actions"></div>
+      </header>
+
+      <section id="view-hub" class="view active"></section>
+      <section id="view-today" class="view"></section>
+      <section id="view-calendar" class="view"></section>
+      <section id="view-tasks" class="view"></section>
+      <section id="view-habits" class="view"></section>
+      <section id="view-notifications" class="view"></section>
+      <section id="view-stats" class="view"></section>
+      <section id="view-codex" class="view"></section>
+      <section id="view-connectors" class="view"></section>
+      <section id="view-music" class="view"></section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-backdrop" class="hidden">
+    <div id="modal">
+      <div class="modal-head">
+        <h2 id="modal-title"></h2>
+        <button class="icon-btn" id="modal-close">✕</button>
+      </div>
+      <div id="modal-body"></div>
+      <div class="modal-foot">
+        <button class="btn danger" id="modal-delete" style="display:none;margin-right:auto">🗑 删除</button>
+        <button class="btn" id="modal-cancel">取消</button>
+        <button class="btn primary" id="modal-save">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule manager (课表 / 校历) -->
+  <div id="manager-backdrop" class="hidden">
+    <div id="manager">
+      <div class="modal-head">
+        <h2>📚 课表 / 校历管理</h2>
+        <button class="icon-btn" id="manager-close">✕</button>
+      </div>
+      <div id="manager-body"></div>
+    </div>
+  </div>
+
+  <!-- Theme chooser -->
+  <div id="theme-backdrop" class="hidden">
+    <div id="theme-modal">
+      <div class="modal-head">
+        <h2>🎨 界面风格</h2>
+        <button class="icon-btn" id="theme-close">✕</button>
+      </div>
+      <div id="theme-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast / notification banner -->
+  <div id="toast-wrap"></div>
+  <div id="live-banner"></div>
+
+  <div id="theme-flash"></div>
+
+  <!-- 一行式输入 / .ics / .csv 的解析器（纯函数，单测在 tests/schedule-input.test.mjs） -->
+  <script src="/schedule-input.js?v=b20260927j"></script>
+  <script src="/app.js?v=b20260927i"></script>
+  <!-- ViewModel 层：把 viewmodel.js（ES 模块）挂成 window.PlannerVM 供 app.js 使用 -->
+  <script type="module" src="/vm-bridge.js?v=b20260927i"></script>
+</body>
+</html>

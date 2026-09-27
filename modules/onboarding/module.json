@@ -1,0 +1,18 @@
+{
+  "schema": "module.v1",
+  "id": "onboarding",
+  "name": "五步上手",
+  "sub": "导览 · 用户/开发者模式",
+  "version": "0.2.0",
+  "kind": "view",
+  "icon": "🧭",
+  "order": 5,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": ["prefs", "connectors", "modules", "flows", "capabilities"], "writes": ["prefs"], "tables": [] },
+  "permissions": [],
+  "config": [],
+  "boot": true,
+  "requires": { "app": ">=1.0", "agent": false }
+}

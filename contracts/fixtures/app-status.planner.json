@@ -1,0 +1,38 @@
+{
+  "schema": "app-status.v1",
+  "app": "planner",
+  "version": "Vol.2.3",
+  "running": true,
+  "pid": 21620,
+  "started_at": "2026-09-17T13:02:07.847Z",
+  "heartbeat_at": "2026-09-17T23:34:21+08:00",
+  "state": "warn",
+  "sections": [
+    {
+      "id": "core",
+      "label": "示例文本（已脱敏）",
+      "state": "ok",
+      "detail": "http 127.0.0.1:3210"
+    },
+    {
+      "id": "canvas_watch",
+      "label": "示例文本（已脱敏）",
+      "state": "warn",
+      "detail": "fetch failed",
+      "last_run": "2026-09-17T12:33:09.056Z",
+      "next_run": "2026-09-17T15:33:09.056Z"
+    },
+    {
+      "id": "autostart",
+      "label": "示例文本（已脱敏）",
+      "state": "ok",
+      "detail": "示例文本（已脱敏）"
+    }
+  ],
+  "metrics": {
+    "tasks": 101,
+    "notifications": 126,
+    "pending": 0,
+    "uptime_sec": 9015
+  }
+}

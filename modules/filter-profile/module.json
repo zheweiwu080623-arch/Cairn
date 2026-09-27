@@ -1,0 +1,23 @@
+{
+  "schema": "module.v1",
+  "id": "filter-profile",
+  "name": "我关心什么 · 信息筛选",
+  "version": "0.1.0",
+  "kind": "gadget",
+  "mount_into": "connectors",
+  "icon": "🧭",
+  "order": 10,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": {
+    "reads": ["profile", "profile_learned", "tasks", "notifications", "courses"],
+    "writes": ["profile"],
+    "tables": []
+  },
+  "permissions": ["agent:ask"],
+  "config": [
+    { "key": "semantic", "label": "语义兜底（只在非高峰跑）", "type": "boolean", "default": false }
+  ],
+  "requires": { "app": ">=1.0", "agent": false }
+}

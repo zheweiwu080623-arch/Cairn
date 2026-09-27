@@ -1,0 +1,35 @@
+{
+  "schema": "app-status.v1",
+  "app": "bridge",
+  "version": "0.1.0",
+  "running": true,
+  "pid": 30072,
+  "started_at": "2026-09-17T08:23:52",
+  "heartbeat_at": "2026-09-17T23:34:20",
+  "state": "ok",
+  "sections": [
+    {
+      "id": "core",
+      "label": "示例文本（已脱敏）",
+      "state": "running",
+      "detail": "poll_interval=15s"
+    },
+    {
+      "id": "mail",
+      "label": "示例文本（已脱敏）",
+      "state": "ok",
+      "detail": "smtp.163.com"
+    },
+    {
+      "id": "jobs",
+      "label": "示例文本（已脱敏）",
+      "state": "idle",
+      "detail": "示例文本（已脱敏）"
+    }
+  ],
+  "metrics": {
+    "max_tasks_per_run": 3,
+    "daily_cny": 6.0,
+    "weekly_cny": 25.0
+  }
+}

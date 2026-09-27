@@ -1,0 +1,19 @@
+{
+  "schema": "mail-job-result.v1",
+  "ok": true,
+  "dry_run": true,
+  "bytes": 1615410,
+  "recipients": [
+    "student@example.edu"
+  ],
+  "attachments": [
+    {
+      "name": "示例文本（已脱敏）",
+      "bytes": 1615410,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "outbox": "C:\\Users\\example\\outbox\\reply-example.eml",
+  "error": null,
+  "duration_ms": 412
+}

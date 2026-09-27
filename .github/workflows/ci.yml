@@ -1,0 +1,86 @@
+# 三平台 CI：验证"换台机器还灵不灵"。
+#
+# 两个 job：
+#   1) portable —— tests/run-portable.mjs 里那批"纯仓库内"的测试（当前 102 套）；
+#   2) smoke    —— **真的把服务起起来**再打一遍只读接口（2026-09-27 加：光跑离线测试证明不了
+#                  "在这台机器上能跑"，macOS / Linux 上的启动与路径问题正是靠这一步才能露出来）。
+# 需要活的 Planner 服务、本机邮件桥、PowerShell 的测试故意不进 CI（见 tests/run-portable.mjs 的 LOCAL_ONLY_TESTS）。
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  portable:
+    name: ${{ matrix.os }} / node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # 本仓库零依赖：不需要 npm install，直接跑。
+      - name: 运行可移植测试子集
+        run: node tests/run-portable.mjs
+
+  smoke:
+    name: ${{ matrix.os }} / 起服务打接口
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      # 数据目录：容器/runner 上没有 <repo>/data，服务会落到平台默认目录
+      # （macOS: ~/Library/Application Support/Cairn；Linux: $XDG_DATA_HOME/cairn）。
+      - name: 起服务（后台）并等它健康
+        shell: bash
+        run: |
+          set -e
+          node server.mjs > server-smoke.log 2>&1 &
+          echo $! > server.pid
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:3210/api/health > /dev/null; then
+              echo "服务起来了（第 ${i} 秒）"; exit 0
+            fi
+            sleep 1
+          done
+          echo "服务 40 秒没起来，日志："; cat server-smoke.log; exit 1
+      - name: 只读接口全打一遍（非 200 就算失败）
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+          for p in /api/health /api/state /api/prefs /api/modules /api/connectors /api/courses /api/academic \
+                   /api/habits /api/milestones /api/focus /api/insights /api/mobile /api/daily /api/ddl \
+                   /api/wallpapers /api/capabilities /api/backups /api/pending /api/profile /api/priority; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:3210$p")
+            if [ "$code" != "200" ]; then echo "FAIL $p -> $code"; fail=1; else echo "ok   $p"; fi
+          done
+          exit $fail
+      - name: 两个"这台机器能不能用"的检查（端口在听 / 数据目录建出来了）
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS http://127.0.0.1:3210/api/health | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const h=JSON.parse(s);if(!h.ok)process.exit(1);console.log('health ok · pid',h.pid,'· node',h.node,'· platform',h.platform);})"
+          curl -fsS http://127.0.0.1:3210/api/prefs | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const p=JSON.parse(s);console.log('prefs ok · theme',p.theme,'· quiet',JSON.stringify(p.quiet));})"
+      - name: 出错就留日志（失败时也能看）
+        if: failure()
+        shell: bash
+        run: tail -n 200 server-smoke.log || true
+      - name: 关掉服务
+        if: always()
+        shell: bash
+        run: |
+          if [ -f server.pid ]; then kill "$(cat server.pid)" 2>/dev/null || true; fi

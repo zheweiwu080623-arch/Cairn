@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "action.v1",
+  "title": "再处理动作 action.v1",
+  "description": "【第三段·再处理】拿 signal 去解决现实问题：发邮件 / 建任务 / 生成文档 / 调外部接口……三段式里的第三张契约。带幂等键与审计，保证能重跑、能回放、能说清做了什么。",
+  "type": "object",
+  "required": ["schema", "created_at", "type", "status"],
+  "properties": {
+    "schema": { "const": "action.v1" },
+    "id": { "type": ["string", "null"] },
+    "signal_id": { "type": ["string", "null"], "description": "指向 signal.v1 的 id；没有上游 signal（如定时任务）可为 null" },
+    "created_at": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["notify", "push", "task", "event", "mail", "file", "external", "archive", "report"],
+      "description": "动作类型：通知 / 推手机 / 建任务 / 建日程 / 发邮件 / 写文件 / 调外部接口 / 归档改名 / 生成报告"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "done", "failed", "skipped"],
+      "description": "planned=只规划未执行（dry-run 停在这一步）"
+    },
+    "dry_run": { "type": ["boolean", "null"], "description": "true = 只记录「本来会做什么」，不产生副作用" },
+    "summary": { "type": ["string", "null"], "description": "一句话说清这条动作要干嘛（给人看）" },
+    "target": {
+      "type": "object",
+      "description": "动作落到哪儿（文件路径 / 收件人 / 外部接口名……）",
+      "additionalProperties": true
+    },
+    "idempotency_key": { "type": ["string", "null"], "description": "幂等键：同一件事重复跑不会重复执行" },
+    "permissions": {
+      "type": "array",
+      "description": "这条动作声明需要的能力（执行前展示、越权拒绝）",
+      "items": { "type": "string" }
+    },
+    "result": {
+      "type": "object",
+      "description": "执行结果（回执）",
+      "properties": {
+        "ok": { "type": ["boolean", "null"] },
+        "detail": { "type": ["string", "null"] }
+      }
+    },
+    "replay_of": { "type": ["string", "null"], "description": "若这条是重放，指向原动作 id" },
+    "audit": {
+      "type": "object",
+      "description": "审计：谁在什么时候、由哪个再处理功能产生的，耗时多少",
+      "properties": {
+        "actor": { "type": ["string", "null"], "description": "如 processor:course-assist" },
+        "at": { "type": ["string", "null"] },
+        "duration_ms": { "type": ["number", "null"] }
+      }
+    }
+  }
+}

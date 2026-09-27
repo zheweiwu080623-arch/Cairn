@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "job-spec.v1",
+  "title": "Recurring job specification",
+  "description": "One recurring job of an external program. The `source` block must never contain a Planner database path in the target design.",
+  "type": "object",
+  "required": ["name", "source"],
+  "properties": {
+    "schema": { "const": "job-spec.v1" },
+    "name": { "type": "string" },
+    "enabled": { "type": "boolean", "default": true },
+    "when": {
+      "type": "object",
+      "properties": {
+        "weekday": { "enum": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN", "*"] },
+        "hour": { "type": "integer", "minimum": 0, "maximum": 23 },
+        "minute": { "type": "integer", "minimum": 0, "maximum": 59 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["planner", "sqlite", "file", "inline"],
+          "description": "`planner` uses the HTTP/snapshot contract; `sqlite` is debug-only and must be requested with --debug-sqlite."
+        },
+        "query": { "type": ["object", "string", "null"] },
+        "path": { "type": ["string", "null"] },
+        "days": { "type": ["integer", "null"] }
+      }
+    },
+    "min_items": { "type": "integer" },
+    "max_items": { "type": "integer" },
+    "subject": { "type": "string" },
+    "archive_dir": { "type": ["string", "null"] },
+    "to": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }
+  },
+  "additionalProperties": true
+}

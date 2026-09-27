@@ -1,0 +1,20 @@
+{
+  "schema": "module.v1",
+  "id": "hello-processor",
+  "name": "示例再处理功能",
+  "version": "0.1.0",
+  "kind": "processor",
+  "icon": "🧪",
+  "order": 90,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "run": "run.js", "readme": "README.md" },
+  "data": { "reads": ["signal"], "writes": [], "tables": [] },
+  "permissions": ["notify:app"],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false,
+    "capabilities": ["notify.app"]
+  }
+}

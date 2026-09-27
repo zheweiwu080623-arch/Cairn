@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "planner-notifications.v1",
+  "title": "Planner notification export",
+  "description": "Outbound contract from Planner. External consumers (office AI, local scripts) read it; the SQLite table is a debug fallback only.",
+  "type": "object",
+  "required": ["schema", "exported_at", "items"],
+  "properties": {
+    "schema": { "const": "planner-notifications.v1" },
+    "exported_at": { "type": "string" },
+    "source_version": { "type": "string" },
+    "source_pid": { "type": ["integer", "null"] },
+    "content_hash": { "type": "string" },
+    "query": {
+      "type": "object",
+      "properties": {
+        "source": { "type": ["string", "null"] },
+        "days": { "type": ["integer", "null"] },
+        "limit": { "type": ["integer", "null"] }
+      }
+    },
+    "count": { "type": "integer" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "source"],
+        "properties": {
+          "id": { "type": ["integer", "string", "null"] },
+          "title": { "type": "string" },
+          "message": { "type": "string" },
+          "url": { "type": ["string", "null"] },
+          "source": { "type": "string" },
+          "external_id": { "type": ["string", "null"] },
+          "trigger_at": { "type": ["string", "null"] },
+          "created_at": {
+            "type": ["string", "integer", "null"],
+            "description": "ISO string or epoch milliseconds, whichever the store returns; the exporter normalises to ISO in Phase 5."
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

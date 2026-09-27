@@ -1,0 +1,368 @@
+{
+  "generated_at": "2026-09-18T19:09:34.805316+08:00",
+  "now_ms": 1789659142957.0,
+  "today": "2026-09-17",
+  "counts": {
+    "todays_events": 0,
+    "overdue": 0,
+    "due_today": 0,
+    "upcoming": 5,
+    "open_notifs": 5,
+    "done": 6
+  },
+  "expected": {
+    "id": "today",
+    "title": "今日",
+    "summary": "0 项安排，0 项到期/逾期",
+    "badge": 0,
+    "sections": [
+      {
+        "id": "stats",
+        "title": "概览",
+        "items": [
+          "stat-schedule",
+          "stat-due",
+          "stat-done"
+        ]
+      },
+      {
+        "id": "schedule",
+        "title": "今天的安排 2026-09-17",
+        "items": []
+      },
+      {
+        "id": "focus",
+        "title": "需要关注的任务",
+        "items": []
+      },
+      {
+        "id": "reminders",
+        "title": "即将到来的提醒",
+        "items": [
+          "notif-6b9ad55c-19a9-4019-8409-79f41c860765",
+          "notif-a98f18dc-625b-4510-9a61-7e4503d99179",
+          "notif-36a35cd0-5556-4a19-b322-0865dab372c5",
+          "notif-1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+          "notif-502a52e3-afeb-4408-b6ae-8cfa4ccc9be9"
+        ]
+      },
+      {
+        "id": "upcoming",
+        "title": "未来任务",
+        "items": [
+          "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+          "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+          "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+          "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+          "task-73c0e255-a98a-421d-af1d-942128957af8"
+        ]
+      },
+      {
+        "id": "codex",
+        "title": "Codex 连接",
+        "items": [
+          "codex-state"
+        ]
+      }
+    ]
+  },
+  "variants": [
+    {
+      "label": "captured",
+      "now_ms": 1789659142957.0,
+      "today": "2026-09-17",
+      "counts": {
+        "todays_events": 0,
+        "overdue": 0,
+        "due_today": 0,
+        "upcoming": 5,
+        "open_notifs": 5,
+        "done": 6
+      },
+      "expected": {
+        "id": "today",
+        "title": "今日",
+        "summary": "0 项安排，0 项到期/逾期",
+        "badge": 0,
+        "sections": [
+          {
+            "id": "stats",
+            "title": "概览",
+            "items": [
+              "stat-schedule",
+              "stat-due",
+              "stat-done"
+            ]
+          },
+          {
+            "id": "schedule",
+            "title": "今天的安排 2026-09-17",
+            "items": []
+          },
+          {
+            "id": "focus",
+            "title": "需要关注的任务",
+            "items": []
+          },
+          {
+            "id": "reminders",
+            "title": "即将到来的提醒",
+            "items": [
+              "notif-6b9ad55c-19a9-4019-8409-79f41c860765",
+              "notif-a98f18dc-625b-4510-9a61-7e4503d99179",
+              "notif-36a35cd0-5556-4a19-b322-0865dab372c5",
+              "notif-1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+              "notif-502a52e3-afeb-4408-b6ae-8cfa4ccc9be9"
+            ]
+          },
+          {
+            "id": "upcoming",
+            "title": "未来任务",
+            "items": [
+              "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+              "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+              "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+              "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+              "task-73c0e255-a98a-421d-af1d-942128957af8"
+            ]
+          },
+          {
+            "id": "codex",
+            "title": "Codex 连接",
+            "items": [
+              "codex-state"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "events",
+      "now_ms": 1789561800000.0,
+      "today": "2026-09-16",
+      "counts": {
+        "todays_events": 2,
+        "overdue": 0,
+        "due_today": 0,
+        "upcoming": 5,
+        "open_notifs": 5,
+        "done": 6
+      },
+      "expected": {
+        "id": "today",
+        "title": "今日",
+        "summary": "2 项安排，0 项到期/逾期",
+        "badge": 0,
+        "sections": [
+          {
+            "id": "stats",
+            "title": "概览",
+            "items": [
+              "stat-schedule",
+              "stat-due",
+              "stat-done"
+            ]
+          },
+          {
+            "id": "schedule",
+            "title": "今天的安排 2026-09-16",
+            "items": [
+              "event-bb1a38b6-a986-48f4-80e5-a774b8078a58",
+              "event-59cc379a-a905-412c-a5f4-b243cd19692c"
+            ]
+          },
+          {
+            "id": "focus",
+            "title": "需要关注的任务",
+            "items": []
+          },
+          {
+            "id": "reminders",
+            "title": "即将到来的提醒",
+            "items": [
+              "notif-6b9ad55c-19a9-4019-8409-79f41c860765",
+              "notif-a98f18dc-625b-4510-9a61-7e4503d99179",
+              "notif-36a35cd0-5556-4a19-b322-0865dab372c5",
+              "notif-1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+              "notif-502a52e3-afeb-4408-b6ae-8cfa4ccc9be9"
+            ]
+          },
+          {
+            "id": "upcoming",
+            "title": "未来任务",
+            "items": [
+              "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+              "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+              "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+              "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+              "task-73c0e255-a98a-421d-af1d-942128957af8"
+            ]
+          },
+          {
+            "id": "codex",
+            "title": "Codex 连接",
+            "items": [
+              "codex-state"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "dense",
+      "now_ms": 1791072000000.0,
+      "today": "2026-10-04",
+      "counts": {
+        "todays_events": 0,
+        "overdue": 13,
+        "due_today": 5,
+        "upcoming": 5,
+        "open_notifs": 5,
+        "done": 6
+      },
+      "expected": {
+        "id": "today",
+        "title": "今日",
+        "summary": "0 项安排，18 项到期/逾期",
+        "badge": 18,
+        "sections": [
+          {
+            "id": "stats",
+            "title": "概览",
+            "items": [
+              "stat-schedule",
+              "stat-due",
+              "stat-done"
+            ]
+          },
+          {
+            "id": "schedule",
+            "title": "今天的安排 2026-10-04",
+            "items": []
+          },
+          {
+            "id": "focus",
+            "title": "需要关注的任务",
+            "items": [
+              "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+              "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+              "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+              "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+              "task-73c0e255-a98a-421d-af1d-942128957af8",
+              "task-22cb3fde-0f3e-453b-b0c4-3200cb4d9bbd",
+              "task-541ef5a7-81c5-4a4f-8ffe-82cfe3c8661e",
+              "task-33bb7065-124c-48c5-a37f-22f8db6b285f"
+            ]
+          },
+          {
+            "id": "reminders",
+            "title": "即将到来的提醒",
+            "items": [
+              "notif-6b9ad55c-19a9-4019-8409-79f41c860765",
+              "notif-a98f18dc-625b-4510-9a61-7e4503d99179",
+              "notif-36a35cd0-5556-4a19-b322-0865dab372c5",
+              "notif-1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+              "notif-502a52e3-afeb-4408-b6ae-8cfa4ccc9be9"
+            ]
+          },
+          {
+            "id": "upcoming",
+            "title": "未来任务",
+            "items": [
+              "task-77529cfe-2c5b-4433-be2d-324e913113c1",
+              "task-19071da8-12f1-4bcb-8df6-c958e9a9a772",
+              "task-d7f32e40-b937-45b1-8c3b-ec27e3c8e05c",
+              "task-80958eff-b010-4e81-b375-a38a51736abb",
+              "task-841d2eea-b224-4895-af4f-05bbca744fa4"
+            ]
+          },
+          {
+            "id": "codex",
+            "title": "Codex 连接",
+            "items": [
+              "codex-state"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "afternoon",
+      "now_ms": 1791086400000.0,
+      "today": "2026-10-04",
+      "counts": {
+        "todays_events": 0,
+        "overdue": 13,
+        "due_today": 5,
+        "upcoming": 5,
+        "open_notifs": 5,
+        "done": 6
+      },
+      "expected": {
+        "id": "today",
+        "title": "今日",
+        "summary": "0 项安排，18 项到期/逾期",
+        "badge": 18,
+        "sections": [
+          {
+            "id": "stats",
+            "title": "概览",
+            "items": [
+              "stat-schedule",
+              "stat-due",
+              "stat-done"
+            ]
+          },
+          {
+            "id": "schedule",
+            "title": "今天的安排 2026-10-04",
+            "items": []
+          },
+          {
+            "id": "focus",
+            "title": "需要关注的任务",
+            "items": [
+              "task-c9950f41-a6a7-4548-8169-1cec081ad7a2",
+              "task-fcdfe14f-9bcb-432d-b227-5425a336d1b5",
+              "task-dc6c9681-dcf6-401a-872c-1e5a8bf82742",
+              "task-cba1ea80-79b7-4664-9044-43bf14d236eb",
+              "task-73c0e255-a98a-421d-af1d-942128957af8",
+              "task-22cb3fde-0f3e-453b-b0c4-3200cb4d9bbd",
+              "task-541ef5a7-81c5-4a4f-8ffe-82cfe3c8661e",
+              "task-33bb7065-124c-48c5-a37f-22f8db6b285f"
+            ]
+          },
+          {
+            "id": "reminders",
+            "title": "即将到来的提醒",
+            "items": [
+              "notif-6b9ad55c-19a9-4019-8409-79f41c860765",
+              "notif-a98f18dc-625b-4510-9a61-7e4503d99179",
+              "notif-36a35cd0-5556-4a19-b322-0865dab372c5",
+              "notif-1cb2b57d-aeb3-463b-9b19-9b189bdaf572",
+              "notif-502a52e3-afeb-4408-b6ae-8cfa4ccc9be9"
+            ]
+          },
+          {
+            "id": "upcoming",
+            "title": "未来任务",
+            "items": [
+              "task-77529cfe-2c5b-4433-be2d-324e913113c1",
+              "task-19071da8-12f1-4bcb-8df6-c958e9a9a772",
+              "task-d7f32e40-b937-45b1-8c3b-ec27e3c8e05c",
+              "task-80958eff-b010-4e81-b375-a38a51736abb",
+              "task-841d2eea-b224-4895-af4f-05bbca744fa4"
+            ]
+          },
+          {
+            "id": "codex",
+            "title": "Codex 连接",
+            "items": [
+              "codex-state"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "module.v1",
+  "id": "course-capture",
+  "name": "上课助手 · 录音与笔记",
+  "version": "0.1.0",
+  "kind": "view",
+  "icon": "🎧",
+  "order": 65,
+  "author": {
+    "name": "示例团队",
+    "contact": "team@example.edu",
+    "origin": "2026 新生黑客松 · 光昭计划 第22组（示例）"
+  },
+  "license": "MIT",
+  "entry": {
+    "view": "views/course-capture/view.js",
+    "styles": "views/course-capture/view.css",
+    "readme": "views/course-capture/README.md"
+  },
+  "data": {
+    "reads": ["courses", "tasks"],
+    "writes": ["course_notes"],
+    "tables": [
+      {
+        "name": "course_notes",
+        "columns": ["id", "course_id", "week", "started_at", "audio_path", "transcript", "summary", "mindmap_path"],
+        "note": "一节课一条；挂在课表的 course_id 与周次上"
+      }
+    ]
+  },
+  "permissions": ["microphone", "files:write:data", "agent:ask"],
+  "config": [
+    { "key": "auto_transcribe", "label": "课后自动转写", "type": "boolean", "default": true },
+    { "key": "keep_audio_days", "label": "录音保留天数", "type": "number", "default": 30 },
+    { "key": "whisper_backend", "label": "转写后端", "type": "select", "options": ["浏览器内置", "本地模型", "agent"], "default": "agent" }
+  ],
+  "requires": { "app": ">=1.0", "agent": false }
+}

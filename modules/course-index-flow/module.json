@@ -1,0 +1,20 @@
+{
+  "schema": "module.v1",
+  "id": "course-index-flow",
+  "name": "课程资料索引（能力图版）",
+  "version": "0.1.0",
+  "kind": "processor",
+  "icon": "🧩",
+  "order": 25,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "flow": "flow.json", "readme": "README.md" },
+  "data": { "reads": ["course_materials"], "writes": ["study_files"], "tables": [] },
+  "permissions": ["fs:read:course", "fs:write:data", "notify:app"],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false,
+    "capabilities": ["course.scan", "course.text", "course.artifacts", "file.write", "notify.app"]
+  }
+}

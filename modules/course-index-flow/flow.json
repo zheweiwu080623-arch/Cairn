@@ -1,0 +1,12 @@
+{
+  "schema": "flow.v1",
+  "note": "这个功能**一行 JS 都没有**：四个节点、三条连线，全部由能力拼出来（M2）。",
+  "nodes": [
+    { "id": "scan", "capability": "course.scan", "input": {} },
+    { "id": "read", "capability": "course.text", "input": { "courses": "$scan.courses", "only": "$input.only" } },
+    { "id": "index", "capability": "course.artifacts", "input": { "materials": "$read.materials", "course": "$input.only" } },
+    { "id": "save", "capability": "file.write", "input": { "path": "$index.path", "text": "$index.markdown" } },
+    { "id": "tell", "capability": "notify.app", "input": { "title": "课程资料索引已更新", "text": "$input.note" } }
+  ],
+  "edges": [["scan", "read"], ["read", "index"], ["index", "save"], ["index", "tell"]]
+}
