@@ -206,7 +206,17 @@ const signalBase = {
   });
   ok('卡片显示"还有几分钟上课"与课号', html.includes('20 分钟后上课') && html.includes('DEMO1010J'));
   ok('卡片有四个设置 + 三颗按钮',
-    ['pc-lead', 'pc-enabled', 'pc-notify', 'pc-bark', 'pc-since', 'pc-save', 'pc-dry', 'pc-run'].every((id) => html.includes(`id="${id}"`)));
+    ['pc-enabled', 'pc-notify', 'pc-save', 'pc-dry', 'pc-run'].every((id) => html.includes(`id="${id}"`)));
+  // 2026-09-28：提前几分钟 / 只看最近多久 / 推手机这三个细项搬进了页头 ⚙ 功能设置
+  // （卡片上只留一行指路，一处声明原则）。
+  ok('卡片不再重复那三个细项，而是指路到页头 ⚙ 功能设置',
+    !['pc-lead', 'pc-since', 'pc-bark'].some((id) => html.includes(`id="${id}"`))
+    && html.includes('⚙ 功能设置'));
+  {
+    const drawer = view.renderSettings({ prefs: { lead_minutes: 30, since_hours: 48, bark: false } });
+    ok('抽屉里才有"提前几分钟 / 只看最近多久 / 推手机"',
+      ['pc-set-lead', 'pc-set-since', 'pc-set-bark', 'pc-set-save'].every((id) => drawer.includes(`id="${id}"`)));
+  }
   ok('没有课时给出友好提示', view.renderCard({ prefs: {}, upcoming: [] }).includes('接下来没有马上要上的课'));
 
   const srv = readFileSync(join(ROOT, 'server.mjs'), 'utf8');

@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "kind": "gadget",
   "mount_into": "today",
+  "settings": true,
   "icon": "⏱️",
   "order": 3,
   "author": { "name": "空庭Coterie" },

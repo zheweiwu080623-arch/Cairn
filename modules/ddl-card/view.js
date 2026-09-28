@@ -45,13 +45,9 @@ export function renderCard(payload = {}) {
         <label class="dim" style="display:flex;align-items:center;gap:6px">
           <input type="checkbox" id="ddl-enabled" ${prefs.enabled ? 'checked' : ''} style="width:auto" />开启
         </label>
-        <span class="dim">提醒档位：</span>
-        ${STEP_CHOICES.map((s) => `<label class="dim" style="display:flex;align-items:center;gap:4px">
-          <input type="checkbox" class="ddl-step" data-ms="${s.ms}" ${steps.includes(s.ms) ? 'checked' : ''} style="width:auto" />${esc(s.label)}
-        </label>`).join('')}
-        <label class="dim" style="display:flex;align-items:center;gap:6px">
-          <input type="checkbox" id="ddl-bark" ${prefs.bark ? 'checked' : ''} style="width:auto" />推手机（只发一句话）
-        </label>
+        <!-- 2026-09-28：档位与"推手机"这两个细项搬进页头那颗 ⚙（"谁的东西放谁的页面上"，
+             卡片上只留一行指路，免得卡片越长越乱）-->
+        <span class="dim">档位与"推手机"在右上角 <b>⚙ 功能设置</b> 里改 · 现在 ${steps.length || 0} 档${prefs.bark ? ' · 会推手机' : ''}</span>
         <button class="btn small primary" id="ddl-save">保存</button>
         <button class="btn small" id="ddl-check">试试现在会提醒什么</button>
         <span class="dim" id="ddl-status"></span>
@@ -80,16 +76,16 @@ export async function mount(el, ctx = {}) {
   }
 
   function bind() {
-    const steps = () => [...el.querySelectorAll('.ddl-step')].filter((x) => x.checked).map((x) => Number(x.dataset.ms));
     const save = el.querySelector('#ddl-save');
     if (save) save.onclick = async () => {
       status('保存中…');
       try {
+        // 只改"开/关"，档位与推手机沿用当前值（它们在抽屉里改，别在这里被顺手清掉）
         payload = await api('POST', '/api/ddl', {
           prefs: {
             enabled: el.querySelector('#ddl-enabled').checked,
-            bark: el.querySelector('#ddl-bark').checked,
-            steps: steps(),
+            bark: !!(payload.prefs && payload.prefs.bark),
+            steps: (payload.prefs && payload.prefs.steps) || [],
           },
         });
         draw();
@@ -107,6 +103,69 @@ export async function mount(el, ctx = {}) {
           : `现在没有到档位的任务（${r.reason || ''}）`);
         await load();
       } catch (e) { status(''); show('失败：' + (e.message || '')); }
+    };
+  }
+
+  await load();
+}
+
+// ---------------- 抽屉里的设置（页头 ⚙ 功能设置；2026-09-28） ----------------
+/**
+ * 抽屉内容（纯函数，方便测）：档位多选 + 推手机。
+ * 卡片上不再重复写一遍这两项 —— 改一处就够，免得两边说法打架。
+ */
+export function renderSettings(state = {}) {
+  const prefs = state.prefs || {};
+  const steps = Array.isArray(prefs.steps) ? prefs.steps : [];
+  return `<div class="fn-section-title">提醒档位</div>
+    <div class="dim">到这些档位各提醒一次（每档只响一次，做完的不提醒）。一个都不勾 = 回到默认五档。</div>
+    <div class="flex" style="gap:12px;flex-wrap:wrap;margin:10px 0">
+      ${STEP_CHOICES.map((s) => `<label class="dim" style="display:flex;align-items:center;gap:5px">
+        <input type="checkbox" class="ddl-set-step" data-ms="${s.ms}" ${steps.includes(s.ms) ? 'checked' : ''} style="width:auto" />${esc(s.label)}
+      </label>`).join('')}
+    </div>
+    <div class="fn-section-title">要不要推手机</div>
+    <label class="dim" style="display:flex;align-items:center;gap:6px">
+      <input type="checkbox" id="ddl-set-bark" ${prefs.bark ? 'checked' : ''} style="width:auto" />推手机（Bark，只发一句话）
+    </label>
+    <div class="flex" style="gap:8px;align-items:center;margin-top:12px">
+      <button class="btn small primary" id="ddl-set-save">保存</button>
+      <span class="dim" id="ddl-set-note">${esc(state.note || '')}</span>
+    </div>`;
+}
+
+export async function settings(host, ctx = {}) {
+  const { api, toast = () => {}, reloadPage = () => {} } = ctx;
+  const state = { prefs: {}, note: '' };
+  const note = (t) => { state.note = t; const n = host.querySelector('#ddl-set-note'); if (n) n.textContent = t || ''; };
+  const draw = () => { host.innerHTML = renderSettings(state); bind(); };
+
+  async function load() {
+    try {
+      const r = await api('GET', '/api/ddl');
+      state.prefs = (r && r.prefs) || {};
+    } catch (e) {
+      host.innerHTML = `<div class="empty">读不到设置：${esc((e && e.message) || '')}</div>`;
+      return;
+    }
+    draw();
+  }
+
+  function bind() {
+    const save = host.querySelector('#ddl-set-save');
+    if (!save) return;
+    save.onclick = async () => {
+      const steps = [...host.querySelectorAll('.ddl-set-step')].filter((x) => x.checked).map((x) => Number(x.dataset.ms));
+      const bark = !!(host.querySelector('#ddl-set-bark') || {}).checked;
+      note('保存中…');
+      try {
+        // 开关沿用卡片上的当前值（这里只负责档位与推手机）
+        const r = await api('POST', '/api/ddl', { prefs: { enabled: state.prefs.enabled !== false, bark, steps } });
+        state.prefs = (r && r.prefs) || state.prefs;
+        note(`已保存：${(state.prefs.steps || []).length} 档${state.prefs.bark ? ' · 推手机' : ''}`);
+        toast('DDL 提醒的档位已保存', 'green');
+        reloadPage('tasks');                       // 卡片上那行"现在 N 档"跟着变
+      } catch (e) { note(''); toast(`没保存上：${e.message || ''}`, 'red'); }
     };
   }
 

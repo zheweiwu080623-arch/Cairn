@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "kind": "gadget",
   "mount_into": "tasks",
+  "settings": true,
   "icon": "⏳",
   "order": 6,
   "author": { "name": "空庭Coterie" },

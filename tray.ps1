@@ -38,6 +38,60 @@ function Test-TrayAlive {
   } catch { return $false }
 }
 
+<#
+  「为什么认为上一个托盘不在了」——**如实说清是哪一种**（2026-09-28）。
+
+  以前这里只有一句「发现旧的托盘记录（心跳已停）：接管」，可 Test-TrayAlive 为假有四种原因
+  （进程没了 / 心跳文件没了 / 心跳标了 exited / 心跳过期），四种情况全被写成了"心跳已停"。
+  真出问题时（2026-09-28 攒出三个图标那次）看日志的人就被这句话带偏了。
+#>
+function Get-TrayTakeoverReason {
+  if (-not (Test-Path -LiteralPath $pidPath)) { return '之前没有托盘记录（本次像是第一次启动）' }
+  $oldPid = 0
+  try { [void][int]::TryParse((Get-Content -LiteralPath $pidPath -Raw).Trim(), [ref]$oldPid) } catch { }
+  if ($oldPid -le 0) { return '托盘记录里的 pid 读不出来' }
+  if (-not (Get-Process -Id $oldPid -ErrorAction SilentlyContinue)) { return ("上一个托盘进程（pid {0}）已经不在了" -f $oldPid) }
+  if (-not (Test-Path -LiteralPath $beatPath)) { return ("心跳文件不见了（pid {0} 的进程还在）" -f $oldPid) }
+  $text = ''
+  try { $text = (Get-Content -LiteralPath $beatPath -Raw -ErrorAction SilentlyContinue).Trim() } catch { }
+  if ($text -eq $script:BeatExitedMark) { return ("上一个托盘标了「已退出」（pid {0} 的进程还在）" -f $oldPid) }
+  $age = 0
+  try { $age = ((Get-Date) - (Get-Item -LiteralPath $beatPath).LastWriteTime).TotalSeconds } catch { }
+  return ("上一个托盘（pid {0} 的进程还在）的心跳停了 {1:N0} 秒" -f $oldPid, $age)
+}
+
+<#
+  找"另一个托盘进程"（2026-09-28 修"三个图标"那次）。
+
+  为什么要它：单实例判断只看**心跳**，于是"进程活着但心跳停了"的托盘会被当成已死 ——
+  新托盘接管时只改写 tray.pid，**旧进程谁也不管**，图标就一个接一个攒起来（实测攒到 3 个）。
+  现在接管时把更早的托盘进程真的收掉。
+
+  一条刻意的规矩：**只结束比我先启动的**。同时起两个时，新的赢；老的那个即便之后"醒过来"，
+  也不会反过来把新的杀掉（它只收比自己更早的）。
+#>
+function Get-OlderTrayProcesses {
+  $out = @()
+  try {
+    $mine = Get-Process -Id $PID -ErrorAction Stop
+    foreach ($p in (Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction Stop)) {
+      if (-not $p.CommandLine) { continue }
+      if ($p.CommandLine -notmatch 'tray\.ps1') { continue }
+      if ([int]$p.ProcessId -eq $PID) { continue }
+      $started = $null
+      # PowerShell 7 把 CreationDate 直接转成 DateTime，5.1 给的是 CIM 字符串 —— 两种都认，
+      # 否则日志里会写成"启动于 时间未知"（2026-09-28 实测踩到）。
+      try {
+        if ($p.CreationDate -is [datetime]) { $started = $p.CreationDate }
+        else { $started = [Management.ManagementDateTimeConverter]::ToDateTime($p.CreationDate) }
+      } catch { }
+      if ($started -and $started -gt $mine.StartTime) { continue }   # 比我还新 → 让着它
+      $out += [pscustomobject]@{ Id = [int]$p.ProcessId; Started = $started }
+    }
+  } catch { }
+  return $out
+}
+
 # 2026-09-15 修复：快捷方式文件名必须是纯 ASCII（旧中文名在本机代码页下会写成 '??' 并保存失败）
 $lnkPath = Join-Path ([Environment]::GetFolderPath('Startup')) 'CodexPlanner.lnk'
 $lnkLegacy = @(
@@ -232,7 +286,7 @@ if (-not [Environment]::UserInteractive) {
 }
 # 2) 心跳还活着 ⇒ 真的已有托盘在跑，退出
 if (Test-TrayAlive) { Write-Log '已有健康托盘在运行，本次退出'; exit 0 }
-if (Test-Path -LiteralPath $pidPath) { Write-Log '发现旧的托盘记录（心跳已停）：接管' }
+Write-Log ('接管：' + (Get-TrayTakeoverReason))
 # 3) 桌面外壳 PlannerShell 自带托盘与看门狗
 try {
   if (Get-Process -Name 'PlannerShell' -ErrorAction SilentlyContinue) {
@@ -240,9 +294,53 @@ try {
     exit 0
   }
 } catch {}
+# 3.5) **真的**把更早的托盘进程收掉（2026-09-28 修"三个图标"那次：
+#      以前接管只是改写 tray.pid，旧进程谁也不管，于是每接管一次就多留一个图标）
+$script:olderTrays = @(Get-OlderTrayProcesses)
+if ($script:olderTrays.Count -gt 0) {
+  Write-Log ("接管：发现 {0} 个更早的托盘进程，先把它们收掉（不然各留一个图标）" -f $script:olderTrays.Count)
+  foreach ($o in $script:olderTrays) {
+    try {
+      Stop-Process -Id $o.Id -Force -ErrorAction Stop
+      Write-Log ("接管：已结束旧托盘 pid={0}（启动于 {1}）" -f $o.Id, $(if ($o.Started) { $o.Started.ToString('HH:mm:ss') } else { '时间未知' }))
+    } catch {
+      Write-Log ("接管：结束旧托盘 pid={0} 失败：{1}" -f $o.Id, $_.Exception.Message)
+    }
+  }
+  Start-Sleep -Milliseconds 400        # 给 Windows 一点时间把旧图标收掉
+}
 Set-Content -LiteralPath $pidPath -Value $PID -Encoding ascii
 Set-Content -LiteralPath $beatPath -Value (Get-Date).ToString('o') -Encoding ascii
 Write-Log ("托盘启动（看门狗已开启：每 20 秒探活）· 会话 {0} · 当前时间 {1:HH:mm:ss}" -f ([System.Diagnostics.Process]::GetCurrentProcess().SessionId), (Get-Date))
+
+# ---------- 心跳：交给独立线程（2026-09-28，和上面那条同一个原因）----------
+# 心跳原来只由下面那个 20 秒的 WinForms 定时器写 —— 那是 **UI 线程**的定时器：
+# 托盘只要卡在"向通知区域登记图标"这类调用上，心跳就停，服务端看门狗（lib/tray-guard.mjs）
+# 会误判成"托盘死了"，于是再拉一个**新的**（旧的还活着）⇒ 图标越攒越多（实测攒到 3 个）。
+# 现在用 C# 的小定时器写心跳：它跑在 .NET 线程池线程上，UI 线程被挡住也照样跳。
+Add-Type -TypeDefinition @'
+using System;
+using System.IO;
+using System.Threading;
+public sealed class CairnTrayBeat {
+  private Timer _t;
+  private string _path;
+  public void Start(string path, int everyMs) {
+    _path = path;
+    _t = new Timer(_ => { try { File.WriteAllText(_path, DateTime.Now.ToString("o")); } catch { } }, null, everyMs, everyMs);
+  }
+  public void Stop() { try { if (_t != null) { _t.Dispose(); _t = null; } } catch { } }
+}
+'@ -ErrorAction SilentlyContinue
+$script:beat = $null
+try {
+  $script:beat = New-Object CairnTrayBeat
+  $script:beat.Start($beatPath, 20000)
+  Write-Log '心跳：已交给独立线程（UI 卡住也不会停跳）'
+} catch {
+  $script:beat = $null
+  Write-Log ('心跳：独立线程没起来（{0}）—— 退回由 UI 定时器写' -f $_.Exception.Message)
+}
 
 if (Test-Server) { Write-Log 'server 已在运行（HTTP 探测通过）' } else { Start-Server }
 
@@ -379,7 +477,17 @@ $watchdog.add_Tick({
   # 2026-09-26：整个 tick 包 try —— 以前心跳写失败（文件被占/杀软）会把这个定时器回调炸掉，
   # 严重时连托盘一起没了；现在任何一步出错都只记一行日志，托盘继续活着。
   try {
-    try { Set-Content -LiteralPath $beatPath -Value (Get-Date).ToString('o') -Encoding ascii } catch { }
+    # 心跳：正常情况由那个独立线程写（见上面的 CairnTrayBeat）；它没起来时才由这里兜底。
+    # 顺带自检一次 —— 心跳是"给别人看的存活信号"，停了必须留下痕迹（以前是静默 catch）。
+    if (-not $script:beat) {
+      try { Set-Content -LiteralPath $beatPath -Value (Get-Date).ToString('o') -Encoding ascii }
+      catch { Write-Log ('写心跳失败：' + $_.Exception.Message) }
+    } else {
+      try {
+        $beatAge = ((Get-Date) - (Get-Item -LiteralPath $beatPath).LastWriteTime).TotalSeconds
+        if ($beatAge -gt 60) { Write-Log ("心跳异常：已经 {0:N0} 秒没更新（独立线程可能没起来）" -f $beatAge) }
+      } catch { }
+    }
     # 2026-09-26：图标"不见了"但进程还在（explorer 重排托盘区时图标会掉）⇒ 每轮把可见性再声明一次，
     # 这是让图标自己回来的标准做法，代价几乎为零。
     try { if (-not $ni.Visible) { $ni.Visible = $true }; $ni.Text = ("{0}（后台运行中 · 每 3 小时检查 Canvas）" -f $script:AppName) } catch { }
@@ -421,6 +529,9 @@ try {
     Write-Log ('托盘退出（未捕获异常）：' + $_.Exception.Message + ' @ ' + $_.InvocationInfo.PositionMessage)
   } catch { }
 } finally {
+  # 先停掉独立心跳线程，再写 'exited' —— 不然它会在这之后把标记覆盖成时间戳，
+  # 服务端看门狗（lib/tray-guard.mjs）就分不清"用户主动退出"和"托盘悄悄死了"了。
+  try { if ($script:beat) { $script:beat.Stop() } } catch { }
   try { Set-Content -LiteralPath $beatPath -Value $script:BeatExitedMark -Encoding ascii } catch { }
   try { Remove-Item -LiteralPath $pidPath -Force -ErrorAction SilentlyContinue } catch { }
   Write-Log '托盘已退出（心跳已标记 exited；服务端看门狗不会自动拉起这次退出）'

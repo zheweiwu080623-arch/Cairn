@@ -162,8 +162,19 @@ ok('默认开、默认不推手机', normalizeDdlPrefs({}).enabled === true && n
     upcoming: [{ id: 't1', title: '数学作业', due_at: iso(NOW + D), countdown: '还有 1 天', level: 'soon', next_step: { at: NOW + D, label: '还剩 1 天', sent: false } }],
   });
   ok('卡片上有开关 / 五个档位 / 推手机 / 保存 / 试一次',
-    ['ddl-enabled', 'ddl-bark', 'ddl-save', 'ddl-check'].every((id) => html.includes(`id="${id}"`))
-    && (html.match(/class="ddl-step"/g) || []).length === 5);
+    ['ddl-enabled', 'ddl-save', 'ddl-check'].every((id) => html.includes(`id="${id}"`)));
+  // 2026-09-28：档位与"推手机"这两项细项搬进了页头那颗 ⚙（P2「就地设置」推广）——
+  // 卡片上只留一行指路，避免同一个设置写两处。这里改成钉住"搬进抽屉、且卡片不重复"。
+  ok('卡片不再重复档位控件，而是指路到页头 ⚙ 功能设置',
+    !html.includes('class="ddl-step"') && !html.includes('id="ddl-bark"')
+    && html.includes('⚙ 功能设置'));
+  {
+    const drawer = view.renderSettings({ prefs: { enabled: true, bark: false, steps: DDL_DEFAULT_STEPS } });
+    ok('抽屉里才有五个档位与推手机（选项表仍只有一份 STEP_CHOICES）',
+      (drawer.match(/class="ddl-set-step"/g) || []).length === view.STEP_CHOICES.length
+      && view.STEP_CHOICES.length === 5
+      && drawer.includes('id="ddl-set-bark"') && drawer.includes('id="ddl-set-save"'));
+  }
   ok('卡片会列出"接下来什么时候叫"', html.includes('数学作业') && html.includes('还剩 1 天'));
   ok('卡片说明里写清"做完的不再提醒"', html.includes('做完'));
 }

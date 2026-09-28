@@ -67,6 +67,7 @@ function makeGuard(opts = {}) {
     guard, spawned, logs, files,
     setBeat(text, ageMs) { files.set(guard.beatPath, { text, mtimeMs: clock - ageMs }); },
     setLauncher(v = true) { if (v) files.set(guard.launcher, { text: '', mtimeMs: clock }); else files.delete(guard.launcher); },
+    setRestarter(v = true) { if (v) files.set(guard.restarter, { text: '', mtimeMs: clock }); else files.delete(guard.restarter); },
     advance(ms) { clock += ms; },
   };
 }
@@ -81,13 +82,13 @@ function makeGuard(opts = {}) {
 
   h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 60_000);
   ok('心跳过期 → respawn', h.guard.tick() === 'respawn');
-  ok('拉起用的是 wscript.exe + start-tray.vbs（隐藏窗口、脱离父进程）',
+  ok('主流路径是 wscript.exe + start-tray.vbs（隐藏窗口、脱离父进程）',
     h.spawned.length === 1 && h.spawned[0].cmd === 'wscript.exe'
     && h.spawned[0].args[0] === h.guard.launcher
     && h.spawned[0].o.detached === true && h.spawned[0].o.windowsHide === true,
     JSON.stringify(h.spawned[0] && h.spawned[0].args));
   ok('拉起这件事写进了日志（用户能在 server.log 里看到）',
-    h.logs.some((l) => l.includes('tray-guard') && l.includes('拉起')));
+    h.logs.some((l) => l.includes('tray-guard') && l.includes('换一个')));
 
   ok('紧接着再来一轮 → cooldown（不连环开进程）',
     h.guard.tick() === 'cooldown' && h.spawned.length === 1);
@@ -97,9 +98,46 @@ function makeGuard(opts = {}) {
 
   h.advance(COOLDOWN_MS + 1000);
   h.setLauncher(false);
-  ok('找不到 start-tray.vbs → 不假装成功，如实记 no-launcher',
+  ok('两个启动器都找不到 → 不假装成功，如实记 no-launcher',
     h.guard.tick() === 'no-launcher' && h.spawned.length === 2
-    && h.logs.some((l) => l.includes('找不到 start-tray.vbs')));
+    && h.logs.some((l) => l.includes('既没有 tray.ps1 也没有 start-tray.vbs')));
+}
+
+// ---------------- ②b 「换一个」而不是「再加一个」+ 退路 + 静默失败（2026-09-28） ----------------
+{
+  // 没有 start-tray.vbs 时退到 tray.ps1 -Action restart
+  const h = makeGuard();
+  h.setRestarter();
+  h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 1);
+  ok('找不到 start-tray.vbs → 退到 tray.ps1 -Action restart（它会先收掉旧托盘）',
+    h.guard.tick() === 'respawn' && h.spawned.length === 1 && h.spawned[0].cmd === 'powershell.exe'
+    && h.spawned[0].args.includes(h.guard.restarter) && h.spawned[0].args.at(-1) === 'restart',
+    JSON.stringify(h.spawned[0] && h.spawned[0].args));
+}
+{
+  // 两个启动器都在时，**主路径是 start-tray.vbs**（实测更可靠那条）
+  const h = makeGuard();
+  h.setLauncher(); h.setRestarter();
+  h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 1);
+  h.guard.tick();
+  ok('两个启动器都在 → 走 start-tray.vbs（把"换"交给新托盘的接管逻辑）',
+    h.spawned.length === 1 && h.spawned[0].cmd === 'wscript.exe');
+  ok('日志说明了"新托盘会收掉更早那个"', h.logs.some((l) => l.includes('收掉更早那个')));
+}
+{
+  // spawn 的 error 事件必须被接住（否则"命令起不来"就是静默失败 —— 2026-09-28 真撞上过）
+  const logs = [];
+  const h = makeGuard({
+    log: (m) => logs.push(m),
+    spawnFn: () => {
+      const fake = { unref() {}, on(evt, fn) { if (evt === 'error') setTimeout(() => fn(new Error('spawn powershell.exe ENOENT')), 0); } };
+      return fake;
+    },
+  });
+  h.setLauncher(); h.setBeat('x', STALE_MS + 1);
+  ok('spawn 失败不再是静默的', h.guard.tick() === 'respawn');
+  await new Promise((r) => setTimeout(r, 10));
+  ok('起不来会写进日志（含原因）', logs.some((l) => l.includes('起不来') && l.includes('ENOENT')), JSON.stringify(logs.slice(-2)));
 }
 
 {
@@ -138,6 +176,24 @@ function makeGuard(opts = {}) {
     && tray.includes('Set-Content -LiteralPath $beatPath -Value $script:BeatExitedMark'));
   ok('单实例判断认 exited（否则新托盘会被旧标记挡回去）',
     tray.includes('eq $script:BeatExitedMark) { return $false }'));
+  // 2026-09-28 实测攒出三个图标之后补的三条：
+  ok('接管时**真的**收掉更早的托盘进程（不再只改写 tray.pid）',
+    tray.includes('function Get-OlderTrayProcesses')
+    && tray.includes('Stop-Process -Id $o.Id -Force')
+    && tray.includes('只结束比我先启动的'));
+  ok('心跳交给独立线程写（UI 线程卡住也不会停跳）',
+    tray.includes('public sealed class CairnTrayBeat')
+    && tray.includes('$script:beat.Start($beatPath, 20000)')
+    && tray.includes('已交给独立线程'));
+  ok('退出前先停心跳线程，再写 exited（不然标记会被覆盖）',
+    /if \(\$script:beat\) \{ \$script:beat\.Stop\(\) \}/.test(tray)
+    && tray.indexOf('$script:beat.Stop()') < tray.indexOf("$script:BeatExitedMark -Encoding ascii"));
+  ok('心跳写失败/停跳会留日志（不再是静默 catch）',
+    tray.includes('写心跳失败：') && tray.includes('心跳异常：已经'));
+  ok('接管原因如实分开写（进程没了 / 心跳文件没了 / 标了退出 / 心跳停了）',
+    tray.includes('function Get-TrayTakeoverReason')
+    && tray.includes('已经不在了') && tray.includes('心跳文件不见了')
+    && tray.includes('标了「已退出」') && tray.includes('的心跳停了'));
 }
 
 console.log('');

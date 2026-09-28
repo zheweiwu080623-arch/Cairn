@@ -44,20 +44,13 @@ export function renderCard(payload = {}) {
 
       <div class="flex" style="gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center">
         <label class="dim" style="display:flex;align-items:center;gap:6px">
-          提前 <input type="number" id="pc-lead" min="5" max="180" value="${esc(prefs.lead_minutes ?? 30)}" style="width:70px" /> 分钟
-        </label>
-        <label class="dim" style="display:flex;align-items:center;gap:6px">
           <input type="checkbox" id="pc-enabled" ${prefs.enabled ? 'checked' : ''} style="width:auto" />启用
         </label>
         <label class="dim" style="display:flex;align-items:center;gap:6px">
           <input type="checkbox" id="pc-notify" ${prefs.notify_in_app ? 'checked' : ''} style="width:auto" />进通知
         </label>
-        <label class="dim" style="display:flex;align-items:center;gap:6px">
-          <input type="checkbox" id="pc-bark" ${prefs.bark ? 'checked' : ''} style="width:auto" />推手机（只发一句话）
-        </label>
-        <label class="dim" style="display:flex;align-items:center;gap:6px">
-          只看最近 <input type="number" id="pc-since" min="1" max="336" value="${esc(prefs.since_hours ?? 48)}" style="width:70px" /> 小时
-        </label>
+        <!-- 2026-09-28：提前多少分钟 / 只看最近多久 / 推手机这三个细项搬进页头 ⚙（卡上只留一行指路）-->
+        <span class="dim">提前 ${esc(prefs.lead_minutes ?? 30)} 分钟 · 只看最近 ${esc(prefs.since_hours ?? 48)} 小时${prefs.bark ? ' · 推手机' : ''}（在右上角 <b>⚙ 功能设置</b> 里改）</span>
         <button class="btn small primary" id="pc-save">保存</button>
         <button class="btn small" id="pc-dry">试一次（演练）</button>
         <button class="btn small" id="pc-run">现在真查一次</button>
@@ -91,10 +84,16 @@ export async function mount(el, ctx = {}) {
     if (save) save.onclick = async () => {
       status('保存中…');
       try {
+        // 只改"启用 / 进通知"，其余三个细项（提前多久、只看最近多久、推手机）沿用当前值 ——
+        // 它们在抽屉里改，别在这里被顺手改回默认。
+        const p = payload.prefs || {};
         payload = await api('POST', '/api/preclass', {
           prefs: {
-            enabled: chk('#pc-enabled'), lead_minutes: val('#pc-lead', 30),
-            notify_in_app: chk('#pc-notify'), bark: chk('#pc-bark'), since_hours: val('#pc-since', 48),
+            enabled: chk('#pc-enabled'),
+            notify_in_app: chk('#pc-notify'),
+            lead_minutes: p.lead_minutes ?? 30,
+            bark: !!p.bark,
+            since_hours: p.since_hours ?? 48,
           },
         });
         draw();
@@ -120,6 +119,75 @@ export async function mount(el, ctx = {}) {
     if (dry) dry.onclick = () => runOnce(true);
     const real = el.querySelector('#pc-run');
     if (real) real.onclick = () => runOnce(false);
+  }
+
+  await load();
+}
+
+// ---------------- 抽屉里的设置（页头 ⚙ 功能设置；2026-09-28） ----------------
+/** 抽屉内容（纯函数）：提前多久查 / 只看最近多久 / 要不要推手机。 */
+export function renderSettings(state = {}) {
+  const p = state.prefs || {};
+  return `<div class="fn-section-title">什么时候开始查</div>
+    <div class="dim">每节课前这么多分钟开始看这一门课的 Canvas（只读、只报新出现的）。</div>
+    <label class="dim" style="display:flex;align-items:center;gap:6px;margin:8px 0">
+      提前 <input type="number" id="pc-set-lead" min="5" max="180" value="${esc(p.lead_minutes ?? 30)}" style="width:80px" /> 分钟
+    </label>
+    <div class="fn-section-title">只看最近多久的东西</div>
+    <label class="dim" style="display:flex;align-items:center;gap:6px;margin:8px 0">
+      <input type="number" id="pc-set-since" min="1" max="336" value="${esc(p.since_hours ?? 48)}" style="width:80px" /> 小时内出现在 Canvas 上的才算"新"
+    </label>
+    <div class="fn-section-title">要不要推手机</div>
+    <label class="dim" style="display:flex;align-items:center;gap:6px">
+      <input type="checkbox" id="pc-set-bark" ${p.bark ? 'checked' : ''} style="width:auto" />推手机（Bark，只发一句话）
+    </label>
+    <div class="flex" style="gap:8px;align-items:center;margin-top:12px">
+      <button class="btn small primary" id="pc-set-save">保存</button>
+      <span class="dim" id="pc-set-note">${esc(state.note || '')}</span>
+    </div>`;
+}
+
+export async function settings(host, ctx = {}) {
+  const { api, toast = () => {}, reloadPage = () => {} } = ctx;
+  const state = { prefs: {}, note: '' };
+  const note = (t) => { state.note = t; const n = host.querySelector('#pc-set-note'); if (n) n.textContent = t || ''; };
+  const draw = () => { host.innerHTML = renderSettings(state); bind(); };
+
+  async function load() {
+    try {
+      const r = await api('GET', '/api/preclass');
+      state.prefs = (r && r.prefs) || {};
+    } catch (e) {
+      host.innerHTML = `<div class="empty">读不到设置：${esc((e && e.message) || '')}</div>`;
+      return;
+    }
+    draw();
+  }
+
+  function bind() {
+    const save = host.querySelector('#pc-set-save');
+    if (!save) return;
+    save.onclick = async () => {
+      const num = (sel, d) => { const n = host.querySelector(sel); const v = Number(n && n.value); return Number.isFinite(v) ? v : d; };
+      const lead = num('#pc-set-lead', 30);
+      if (lead < 5 || lead > 180) { note('提前时间要在 5–180 分钟之间'); return; }
+      note('保存中…');
+      try {
+        // 启用 / 进通知沿用卡片上的当前值
+        const p = state.prefs || {};
+        const r = await api('POST', '/api/preclass', { prefs: {
+          enabled: p.enabled !== false,
+          notify_in_app: p.notify_in_app !== false,
+          lead_minutes: lead,
+          since_hours: num('#pc-set-since', 48),
+          bark: !!(host.querySelector('#pc-set-bark') || {}).checked,
+        } });
+        state.prefs = (r && r.prefs) || state.prefs;
+        note(`已保存：提前 ${state.prefs.lead_minutes ?? lead} 分钟`);
+        toast('上课前检查的设置已保存', 'green');
+        reloadPage('today');
+      } catch (e) { note(''); toast('保存失败：' + (e.message || ''), 'red'); }
+    };
   }
 
   await load();

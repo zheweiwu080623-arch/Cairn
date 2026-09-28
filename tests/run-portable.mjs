@@ -114,6 +114,7 @@ export const PORTABLE_TESTS = [
   'flow-builder.test.mjs',
   'onboarding-wizard.test.mjs',
   'settings-dev.test.mjs',
+  'page-gear.test.mjs',
   'function-capability-split.test.mjs',
   'backup.test.mjs',
   'notify-tick.test.mjs',

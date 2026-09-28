@@ -207,6 +207,10 @@ body[data-theme="p3r"] .bg-emblem, body[data-theme="dark"] .bg-emblem { display:
 .fn-section { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
 .fn-section:last-child { border-bottom: none; margin-bottom: 0; }
 .fn-section-title { font-weight: 700; margin-bottom: 6px; }
+/* 一页上好几个功能都有设置时的分段（2026-09-28：齿轮推广到 gadget 之后才有这种情形） */
+.fn-drawer-section { padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+.fn-drawer-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.fn-drawer-section .fn-section-title { font-family: var(--font-head); font-size: 14px; }
 .fn-vars { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 .fn-var {
   background: var(--panel2, transparent); border: 1px solid var(--line2); color: var(--text);

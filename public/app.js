@@ -3103,19 +3103,38 @@ async function mountModuleById(host, id) {
 //         ② 抽屉是**覆盖式**的（贴右边 360px，画面不重排）；
 //         ③ 抽屉里的内容由模块自己的 `settings(host, ctx)` 画 —— 主程序不认识"命名模板"这种东西。
 
-/** 页头右上角那颗按钮（没有声明 settings 的功能，这里就是空的）。 */
+/**
+ * 这一页上**有专属设置**的模块（2026-09-28 推广到 gadget）。
+ *
+ * 以前只认 `kind: view` 且"模块 id 正好等于页名"的那种（课程辅助）；挂在页面里的卡片
+ * （DDL 提醒 → 任务页、上课前检查 → 今日页）即便声明了 settings 也拿不到齿轮。
+ * 现在两种都收：view 看 id，gadget 看它 `mount_into` 哪一页。
+ */
+function pageSettingsModules(tab) {
+  return MODULE_REGISTRY.filter((x) => {
+    if (x.settings !== true) return false;
+    if (x.kind === 'view') return x.id === tab;
+    return x.mount_into === tab;
+  });
+}
+
+/** 页头右上角那颗按钮（这一页没有任何"有专属设置"的功能时，这里是空的）。 */
 function renderPageActions(tab) {
   const box = document.getElementById('page-actions');
   if (!box) return;
   box.innerHTML = '';
-  const m = MODULE_REGISTRY.find((x) => x.kind === 'view' && x.id === tab);
+  const list = pageSettingsModules(tab);
+  if (!list.length) return;
+  const m = list[0];
   if (!m || m.settings !== true) return;
   const btn = document.createElement('button');
   btn.className = 'btn small';
   btn.id = 'page-fn-settings';
-  btn.title = `只在「${m.name}」里生效的设置`;
+  btn.title = list.length === 1
+    ? `只在「${m.name}」里生效的设置`
+    : `这一页上 ${list.length} 个功能的设置：${list.map((x) => x.name).join(' / ')}`;
   btn.textContent = '⚙ 功能设置';
-  btn.onclick = () => openFunctionDrawer(m.id);
+  btn.onclick = () => openFunctionDrawer(list.map((x) => x.id));
   box.appendChild(btn);
 }
 
@@ -3162,27 +3181,50 @@ function closeFunctionDrawer() {
   drawer.classList.remove('open');
 }
 
-/** 打开某个功能的抽屉：取它的 `settings(host, ctx)` 画内容。 */
-async function openFunctionDrawer(id) {
-  const m = MODULE_REGISTRY.find((x) => x.id === id);
+/**
+ * 打开抽屉：取每个功能的 `settings(host, ctx)` 画内容。
+ *
+ * 参数收数组（2026-09-28）：一页上可能有好几个功能都有设置（今日页有"上课前检查"，
+ * 任务页有"DDL 提醒"），抽屉就按功能分段显示 —— 段标题用模块自己的名字与图标。
+ */
+async function openFunctionDrawer(ids) {
+  const list = (Array.isArray(ids) ? ids : [ids]).filter(Boolean)
+    .map((id) => MODULE_REGISTRY.find((x) => x.id === id))
+    .filter((m) => m && m.entry && m.entry.view);
   const { backdrop, drawer, body, title } = fnDrawerEls();
-  if (!m || !m.entry || !m.entry.view) return;
-  title.textContent = `${m.name} · 设置`;
+  if (!list.length) return;
+  title.textContent = list.length === 1 ? `${list[0].name} · 设置` : '这一页的功能设置';
   body.innerHTML = '<div class="dim">正在打开…</div>';
   backdrop.classList.add('open');
   drawer.classList.add('open');
-  try {
-    const modUrl = '/modules/' + m.id + '/' + m.entry.view + '?v=' + encodeURIComponent((m.version || '0') + '-' + (m.mtime || 0))
-      + (globalThis.MOD_CACHE_BUST ? '&r=' + globalThis.MOD_CACHE_BUST : '');
-    const mod = await import(modUrl).catch(async () => {
-      await new Promise((r) => setTimeout(r, 800));
-      return import(modUrl + '&r=' + Date.now());
-    });
-    body.innerHTML = '';
-    if (typeof mod.settings === 'function') await mod.settings(body, moduleCtx());
-    else body.innerHTML = '<div class="empty">这个功能声明了有专属设置，但组件没有导出 settings(host, ctx)。</div>';
-  } catch (e) {
-    body.innerHTML = `<div class="empty">打不开设置：${esc((e && e.message) || '')}</div>`;
+  body.innerHTML = '';
+  for (const m of list) {
+    const sec = document.createElement('section');
+    sec.className = 'fn-drawer-section';
+    if (list.length > 1) {
+      const h = document.createElement('div');
+      h.className = 'fn-section-title';
+      h.textContent = `${m.icon || ''} ${m.name}`.trim();
+      sec.appendChild(h);
+    }
+    const slot = document.createElement('div');
+    slot.className = 'fn-drawer-slot';
+    slot.innerHTML = '<div class="dim">正在打开…</div>';
+    sec.appendChild(slot);
+    body.appendChild(sec);
+    try {
+      const modUrl = '/modules/' + m.id + '/' + m.entry.view + '?v=' + encodeURIComponent((m.version || '0') + '-' + (m.mtime || 0))
+        + (globalThis.MOD_CACHE_BUST ? '&r=' + globalThis.MOD_CACHE_BUST : '');
+      const mod = await import(modUrl).catch(async () => {
+        await new Promise((r) => setTimeout(r, 800));
+        return import(modUrl + '&r=' + Date.now());
+      });
+      slot.innerHTML = '';
+      if (typeof mod.settings === 'function') await mod.settings(slot, moduleCtx());
+      else slot.innerHTML = '<div class="empty">这个功能声明了有专属设置，但组件没有导出 settings(host, ctx)。</div>';
+    } catch (e) {
+      slot.innerHTML = `<div class="empty">打不开设置：${esc((e && e.message) || '')}</div>`;
+    }
   }
 }
 
