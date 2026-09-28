@@ -158,7 +158,7 @@ export function runPortable({ quiet = false } = {}) {
     results.push({
       file, ok, ms: Date.now() - started,
       tail: lines.slice(-1)[0] || '',
-      log: lines.slice(-8).join('\n'),        // 失败时用来定位（CI 里会变成 annotation）
+      log: lines.slice(-20).join('\n'),       // 失败时用来定位（CI 里会变成 annotation）
     });
     if (!quiet) console.log(`${ok ? 'PASS' : 'FAIL'}  ${file}${ok ? '' : `  ← ${results.at(-1).tail}`}`);
   }

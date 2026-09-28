@@ -29,10 +29,13 @@ if (!detail.length && !named.length) {
 
 console.log(`::error::可移植子集失败 ${named.length || detail.length} 个：${named.join(', ')}`);
 for (const item of detail) {
-  const text = String(item.log || item.tail || '')
+  const lines = String(item.log || item.tail || '')
     .split('\n')
     .map((s) => s.trim())
-    .filter(Boolean)
-    .join(' ⏎ ');
+    .filter(Boolean);
+  // 先把失败那几行挑出来 —— 否则注解里全是最后几条 PASS，等于没说（2026-09-28 踩过）
+  const failed = lines.filter((l) => /FAIL|Error|✗|not ok|不通过/.test(l));
+  const shown = (failed.length ? failed : lines).slice(-6);
+  const text = shown.join(' ⏎ ');
   console.log(`::error file=tests/${item.file}::${item.file} 失败 :: ${text.slice(0, 1500)}`);
 }
