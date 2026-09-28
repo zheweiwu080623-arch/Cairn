@@ -153,8 +153,13 @@ export function runPortable({ quiet = false } = {}) {
       cwd: ROOT, env, encoding: 'utf8', timeout: 120000,
     });
     const out = `${proc.stdout || ''}${proc.stderr || ''}`;
+    const lines = out.trim().split('\n').filter((l) => l.trim());
     const ok = proc.status === 0;
-    results.push({ file, ok, ms: Date.now() - started, tail: out.trim().split('\n').slice(-1)[0] || '' });
+    results.push({
+      file, ok, ms: Date.now() - started,
+      tail: lines.slice(-1)[0] || '',
+      log: lines.slice(-8).join('\n'),        // 失败时用来定位（CI 里会变成 annotation）
+    });
     if (!quiet) console.log(`${ok ? 'PASS' : 'FAIL'}  ${file}${ok ? '' : `  ← ${results.at(-1).tail}`}`);
   }
   return { results, tmp, passed: results.filter((r) => r.ok).length, total: results.length };
@@ -164,13 +169,17 @@ export function runPortable({ quiet = false } = {}) {
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const json = process.argv.includes('--json');
   const out = runPortable({ quiet: json });
-  if (json) {
-    console.log(JSON.stringify({
-      platform: process.platform, node: process.version,
-      passed: out.passed, total: out.total,
-      failed: out.results.filter((r) => !r.ok).map((r) => r.file),
-    }, null, 2));
-  } else {
+    if (json) {
+      console.log(JSON.stringify({
+        platform: process.platform, node: process.version, tz: process.env.TZ || 'UTC',
+        passed: out.passed, total: out.total,
+        failed: out.results.filter((r) => !r.ok).map((r) => r.file),
+        // 明细：GitHub 的 job log 要登录才看得到，所以 CI 会把这几行变成 annotation
+        // （见 tests/ci-annotate.mjs），不登录也能从 API 读到失败原因。
+        failedDetail: out.results.filter((r) => !r.ok)
+          .map((r) => ({ file: r.file, tail: r.tail, log: r.log })),
+      }, null, 2));
+    } else {
     console.log('');
     console.log(`平台 ${process.platform} · Node ${process.version} · TZ ${process.env.TZ || 'UTC'} · ${out.passed}/${out.total} 通过`);
     if (out.passed !== out.total) {

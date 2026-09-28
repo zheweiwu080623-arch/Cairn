@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { execFile, spawn } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
 import { existsSync, copyFileSync, mkdirSync, readdirSync, statSync, createReadStream, readFileSync, createWriteStream, renameSync, rmSync } from 'node:fs';
-import { extname, join, dirname, resolve, basename } from 'node:path';
+import { extname, join, dirname, resolve, basename, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { format } from 'node:util';
 import { pipeline } from 'node:stream';
@@ -1108,7 +1108,10 @@ async function sendLocalFileViaMailBridge(body = {}) {
   const file = resolve(input);
   if (!existsSync(file)) return { ok: false, error: `文件不存在：${file}` };
   const lower = file.toLowerCase();
-  const allowed = SEND_FILE_ROOTS.some((root) => lower.startsWith(resolve(root).toLowerCase() + '\\'));
+  // 2026-09-28：这里原来写死 '\\' —— 在 macOS / Linux 上 `resolve(root) + '\'` 永远拼不出
+  // 真实路径，于是这个"只允许发送这些目录"的判断**永远为假**，功能直接不可用（CI 抓到的）。
+  // 用 path.sep 之后两个平台都对。
+  const allowed = SEND_FILE_ROOTS.some((root) => lower.startsWith(resolve(root).toLowerCase() + sep));
   if (!allowed) {
     return { ok: false, error: `出于安全考虑，只允许发送这些目录下的文件：${SEND_FILE_ROOTS.join(' / ')}` };
   }

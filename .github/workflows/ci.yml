@@ -27,8 +27,19 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       # 本仓库零依赖：不需要 npm install，直接跑。
+      # 失败时把「哪个测试挂了 + 它最后几行输出」打成 annotation：GitHub 的 job log 要登录
+      # 才能下载（未登录读 API 会 403），annotation 是公开可读的 —— 不然 CI 一红，
+      # 从外面只能拿到一句 "Process completed with exit code 1"（2026-09-28 为此花了一轮）。
       - name: 运行可移植测试子集
-        run: node tests/run-portable.mjs
+        shell: bash
+        run: |
+          set +e
+          node tests/run-portable.mjs --json > portable.json 2>&1
+          code=$?
+          set -e
+          tail -n 25 portable.json
+          node tests/ci-annotate.mjs portable.json
+          exit $code
 
   smoke:
     name: ${{ matrix.os }} / 起服务打接口

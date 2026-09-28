@@ -216,8 +216,13 @@ console.log('cross-platform.test.mjs');
   const srv = read('server.mjs');
   ok('/api/open 改走跨平台的 openExternalUrl，server.mjs 里不再有 Windows 盘符',
     srv.includes('await openExternalUrl({ url: target })') && !srv.includes('C:\\\\Program Files'));
-  ok('自启逻辑已搬到 lib/autostart.mjs（server 只是接线）',
-    srv.includes('createAutostart(') && !srv.includes('AUTOSTART_LNK ='));
+    ok('自启逻辑已搬到 lib/autostart.mjs（server 只是接线）',
+      srv.includes('createAutostart(') && !srv.includes('AUTOSTART_LNK ='));
+    // 2026-09-28：CI 在 macos/ubuntu 上抓到 —— 「只允许发送这些目录」的包含性检查原来写成
+    // `startsWith(resolve(root) + '\\')`，在 POSIX 上永远为假（功能直接不可用）。
+    // 源码里不许再出现写死的分隔符拼接，要用 path.sep。
+    ok('server.mjs 的路径包含性检查用 path.sep，不写死 Windows 分隔符',
+      !srv.includes("+ '\\\\'") && srv.includes('+ sep') && srv.includes('basename, sep }'));
   const panel = read('modules/settings/panel.js');
   ok('设置页认 supported：不支持的平台显示"暂不支持"、且不再弹假的绿字',
     panel.includes('autostartSupported') && panel.includes('这个平台暂不支持')
