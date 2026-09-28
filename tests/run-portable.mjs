@@ -138,7 +138,13 @@ export function runPortable({ quiet = false } = {}) {
   const baseTmp = process.env.PLANNER_TEST_TMP || tmpdir();
   let tmp = baseTmp;
   try { tmp = mkdtempSync(join(baseTmp, 'portable-')); } catch { tmp = baseTmp; }
-  const env = { ...process.env, PLANNER_TEST_TMP: tmp };
+  // 时区：默认按 **UTC** 跑，和 GitHub 的 runner 对齐。
+  // 2026-09-28 踩到的坑：CI 的 runner 在 UTC，而本机是 +08；一批测试把
+  // '…T09:00:00+08:00' 这种**绝对时刻**当"本地 09:00"用，于是本机全过、CI 六个组合全挂。
+  // 现在测试已改成按本地时间构造（任意时区都成立），这里再把默认时区钉成 UTC ——
+  // 本机跑就等于 CI 跑，以后同类问题在推之前就能撞到。想验证别的时区：`TZ=Asia/Shanghai node tests/run-portable.mjs`
+  const tz = process.env.TZ || 'UTC';
+  const env = { ...process.env, PLANNER_TEST_TMP: tmp, TZ: tz };
   const results = [];
 
   for (const file of PORTABLE_TESTS) {
@@ -166,7 +172,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     }, null, 2));
   } else {
     console.log('');
-    console.log(`平台 ${process.platform} · Node ${process.version} · ${out.passed}/${out.total} 通过`);
+    console.log(`平台 ${process.platform} · Node ${process.version} · TZ ${process.env.TZ || 'UTC'} · ${out.passed}/${out.total} 通过`);
     if (out.passed !== out.total) {
       console.log('没过的：');
       for (const r of out.results.filter((x) => !x.ok)) console.log(`  · ${r.file}`);

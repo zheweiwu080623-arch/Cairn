@@ -227,7 +227,9 @@ ok('还不知道的 mode → 什么都不做（返回空数组，不硬造产物
   // 能力③：每周巩固包（mode=weekly）
   const withWeek = createCourseStack({
     dataDir, env: { PLANNER_COURSE_DIR: courseRoot },
-    termStart: () => '2026-09-14T00:00:00+08:00',
+      // 2026-09-28：学期起点也按**本地时间**给（不带 +08:00）。下面 expectedWeek 是按
+      // 本地日期各算各的，两边必须用同一套解释；写死 +08:00 会在 UTC 的 runner 上差一周。
+      termStart: () => '2026-09-14T00:00:00',
   });
   const actions = await mod.run({ mode: 'weekly', week: 1 }, ctxOf(withWeek));
   ok('weekly：产出一条 file 动作，文件名是 week-1-巩固.md',
@@ -295,7 +297,7 @@ ok('resolveCourseDir 没配置时返回空串（功能优雅降级）',
 
 // ---------------- 8.5 能力③：每周巩固包（只摘不编） ----------------
 ok('学期第几周：按校历开学日算，没有校历返回 null（不猜）',
-  weekNumberFrom('2026-09-14T00:00:00+08:00', new Date(2026, 8, 24, 12).getTime()) === 2
+    weekNumberFrom('2026-09-14T00:00:00', new Date(2026, 8, 24, 12).getTime()) === 2
   && weekNumberFrom(null) === null && weekNumberFrom('乱写') === null);
 {
   const lines = pickLines('这是一个足够长的正常句子\nExercise 3: compute the derivative\n\nx\nExercise 3: compute the derivative\n', { pattern: /exercise/i, max: 5 });

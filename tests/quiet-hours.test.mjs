@@ -34,7 +34,9 @@ console.log('quiet-hours.test.mjs');
     && normalizeQuiet({ start: '晚上十点' }).start === ''
     && normalizeQuiet(null).focus_mute === true);
 
-  const at = (s) => new Date(`2026-09-21T${s}:00+08:00`).getTime();
+  // 2026-09-28：按**本地时间**构造（不带 +08:00）。CI 的 runner 在 UTC，
+  // 固定时区的绝对时刻会让"09:00 的安静时段"变成"01:00"，整组断言假失败。
+  const at = (s) => new Date(`2026-09-21T${s}:00`).getTime();
   ok('同一天内的时段：09:00–12:00', inQuietHours({ start: '09:00', end: '12:00' }, at('10:30')) === true
     && inQuietHours({ start: '09:00', end: '12:00' }, at('12:00')) === false
     && inQuietHours({ start: '09:00', end: '12:00' }, at('08:59')) === false);
@@ -60,7 +62,7 @@ console.log('quiet-hours.test.mjs');
 
 // ---------- ①b 重要例外（2026-09-27 晚加） ----------
 {
-  const at = (s) => new Date(`2026-09-21T${s}:00+08:00`).getTime();
+  const at = (s) => new Date(`2026-09-21T${s}:00`).getTime();
   ok('默认：DDL 最后一档破例、重点不破例',
     JSON.stringify(normalizeQuiet().exceptions) === JSON.stringify({ ddl_final: true, starred: false }));
   ok('例外开关能被单独改，坏值退回默认',

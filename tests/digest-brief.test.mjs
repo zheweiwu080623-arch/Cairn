@@ -18,8 +18,10 @@ const ok = (label, cond, detail = '') => {
 
 console.log('digest-brief.test.mjs');
 
-const NOW = Date.parse('2026-09-22T09:00:00+08:00');   // 周二上午
-const EVE = Date.parse('2026-09-22T21:00:00+08:00');   // 周二晚上
+// 2026-09-28：按**本地时间**构造（不带 +08:00）—— 报文抬头写的是用户本地时间，
+// 写成固定时区的绝对时刻后，CI（UTC）上会算成"01:00 的早报"而假失败。
+const NOW = Date.parse('2026-09-22T09:00:00');   // 周二上午（本地）
+const EVE = Date.parse('2026-09-22T21:00:00');   // 周二晚上（本地）
 
 // ---------------- 1. 早报还是晚报 ----------------
 ok('15:59 还算早上（早报）', kindForHour(15) === 'morning');

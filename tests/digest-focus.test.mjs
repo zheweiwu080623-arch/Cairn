@@ -17,7 +17,8 @@ const ok = (label, cond, detail = '') => {
 console.log('digest-focus.test.mjs');
 
 // ---------- 1. 专注时段判断（纯函数） ----------
-const now = Date.parse('2026-09-21T19:00:00+08:00');
+  // 2026-09-28：按本地时间构造（不带 +08:00），否则 CI 的 UTC runner 上会变成别的时段。
+  const now = Date.parse('2026-09-21T19:00:00');
 const h = 3600000;
 const running = { label: '番茄 45', started_at: new Date(now - h / 2).toISOString(), ended_at: new Date(now + h / 2).toISOString() };
 const past = { started_at: new Date(now - 3 * h).toISOString(), ended_at: new Date(now - 2 * h).toISOString() };

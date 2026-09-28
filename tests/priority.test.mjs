@@ -23,7 +23,9 @@ const ok = (label, cond, detail = '') => {
 console.log('priority.test.mjs');
 
 const DAY = 86400000;
-const NOW = Date.parse('2026-09-22T10:00:00+08:00');   // 固定"现在"，测试不受当天日期影响
+// 2026-09-28：按本地时间构造（不带 +08:00）—— 评分与时段都在本地时间上算，
+// 固定时区的绝对时刻会在 UTC 的 runner 上错开好几个小时。固定"现在"这点不变。
+const NOW = Date.parse('2026-09-22T10:00:00');
 const dayStr = (offset) => {
   const d = new Date(NOW + offset * DAY);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

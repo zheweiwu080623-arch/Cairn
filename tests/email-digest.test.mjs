@@ -21,7 +21,8 @@ console.log('email-digest.test.mjs');
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DAY = 86400000;
-const NOW = Date.parse('2026-09-22T10:00:00+08:00');
+// 2026-09-28：按本地时间构造（不带 +08:00）—— 邮件里写的是本地时间，固定时区会在 UTC 上假失败。
+const NOW = Date.parse('2026-09-22T10:00:00');
 const iso = (off, hour = 23) => { const d = new Date(NOW + off * DAY); d.setHours(hour, 0, 0, 0); return d.toISOString(); };
 // 「今天」要用**真实今天**：buildPlan 读系统日期，写死某一天跨零点就失效
 const todayAt = (hour = 23) => { const d = new Date(); d.setHours(hour, 0, 0, 0); return d.toISOString(); };

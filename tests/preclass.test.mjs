@@ -36,32 +36,37 @@ ok('周次解析：区间 / 列举 / 混合',
 {
   // 2026-09-14 是周一（学期第 1 周起点）
   const term = '2026-09-14';
-  ok('第 1 周算得对', weekNumber(new Date('2026-09-14T12:00:00+08:00'), term) === 1);
-  ok('第 2 周算得对', weekNumber(new Date('2026-09-21T12:00:00+08:00'), term) === 2);
+  // 2026-09-28：这里的时间一律用**本地时间**构造（`new Date(2026, 8, 14, 12)`）。
+  // 以前写的是 '2026-09-14T12:00:00+08:00' —— 那是个**绝对时刻**，只有在 +08 的机器上
+  // 本地小时数才是 12。GitHub 的 runner 跑在 UTC，于是"09:40 的课"变成了"01:40"，
+  // 整组断言假失败（还顺带把 [0].courseCode 崩掉）。本地构造在哪个时区都成立。
+  ok('第 1 周算得对', weekNumber(new Date(2026, 8, 14, 12), term) === 1);
+  ok('第 2 周算得对', weekNumber(new Date(2026, 8, 21, 12), term) === 2);
   ok('没有学期起点就返回 null', weekNumber(new Date(), null) === null);
-  ok('星期几是 1-7（周一=1）', weekdayOf(new Date('2026-09-14T12:00:00+08:00')) === 1
-    && weekdayOf(new Date('2026-09-19T12:00:00+08:00')) === 6
-    && weekdayOf(new Date('2026-09-20T12:00:00+08:00')) === 7);
+  ok('星期几是 1-7（周一=1）', weekdayOf(new Date(2026, 8, 14, 12)) === 1
+    && weekdayOf(new Date(2026, 8, 19, 12)) === 6
+    && weekdayOf(new Date(2026, 8, 20, 12)) === 7);
   const oddWeek = { weekday: 5, weeks: '1,3,5,7', start_at: '10:00' };
   ok('单双周：第 1 周上、第 2 周不上',
-    meetsOn(oddWeek, new Date('2026-09-18T09:00:00+08:00'), term) === true      // 9/18 是第 1 周周五
-    && meetsOn(oddWeek, new Date('2026-09-25T09:00:00+08:00'), term) === false); // 第 2 周周五
-  ok('没写 weeks = 每周都上', meetsOn({ weekday: 5 }, new Date('2026-09-25T09:00:00+08:00'), term) === true);
-  ok('星期不对就不上', meetsOn({ weekday: 1, weeks: '1-13' }, new Date('2026-09-25T09:00:00+08:00'), term) === false);
+    meetsOn(oddWeek, new Date(2026, 8, 18, 9), term) === true      // 9/18 是第 1 周周五
+    && meetsOn(oddWeek, new Date(2026, 8, 25, 9), term) === false); // 第 2 周周五
+  ok('没写 weeks = 每周都上', meetsOn({ weekday: 5 }, new Date(2026, 8, 25, 9), term) === true);
+  ok('星期不对就不上', meetsOn({ weekday: 1, weeks: '1-13' }, new Date(2026, 8, 25, 9), term) === false);
 }
 ok('课程代码能从名字里抠出来',
   courseCodeOf({ course: '高等数学B1 · Honors Mathematics II MATH1860J' }) === 'MATH1860J'
   && courseCodeOf({ course_code: 'ENGR1010J' }) === 'ENGR1010J');
 {
-  const base = new Date('2026-09-23T09:40:00+08:00');
+  const base = new Date(2026, 8, 23, 9, 40);   // 本地 09:40（下面 10:00 的课还差 20 分钟）
   const c = { weekday: weekdayOf(base), start_at: '10:00', weeks: '1-16', course: '示例课 DEMO1010J', location: '东中院' };
   const got = upcomingSessions([c], { now: base.getTime(), leadMinutes: 30, termStart: '2026-09-14' });
   ok('20 分钟后上课 → 命中', got.length === 1 && got[0].minutesLeft === 20, JSON.stringify(got.map((x) => x.minutesLeft)));
   ok('命中的课带齐信息（课号/地点/日期键/检查键）',
-    got[0].courseCode === 'DEMO1010J' && got[0].location === '东中院' && !!got[0].dateKey && /^preclass:/.test(got[0].key));
+    !!got[0] && got[0].courseCode === 'DEMO1010J' && got[0].location === '东中院'
+    && !!got[0].dateKey && /^preclass:/.test(got[0].key));
   const later = upcomingSessions([c], { now: base.getTime(), leadMinutes: 10, termStart: '2026-09-14' });
   ok('不在窗口内（还差 20 分钟 > 提前 10 分钟）→ 不命中', later.length === 0);
-  const past = upcomingSessions([c], { now: new Date('2026-09-23T10:05:00+08:00').getTime(), leadMinutes: 30, termStart: '2026-09-14' });
+  const past = upcomingSessions([c], { now: new Date(2026, 8, 23, 10, 5).getTime(), leadMinutes: 30, termStart: '2026-09-14' });
   ok('已经开始了 → 不再检查', past.length === 0);
   const checked = upcomingSessions([c], { now: base.getTime(), leadMinutes: 30, termStart: '2026-09-14', checked: [got[0].key] });
   ok('今天已经查过这节课 → 跳过（一节课只查一次）', checked.length === 0);
@@ -69,7 +74,7 @@ ok('课程代码能从名字里抠出来',
 }
 {
   const s = { key: 'preclass:DEMO1010J:2026-09-23:10:00', courseCode: 'DEMO1010J', courseName: '示例课', startAt: '2026-09-23T02:00:00.000Z', minutesLeft: 20, dateKey: '2026-09-23', location: '东中院', course: {} };
-  const sig = buildSignal(s, { now: Date.parse('2026-09-23T09:40:00+08:00'), sinceMs: 0 });
+  const sig = buildSignal(s, { now: new Date(2026, 8, 23, 9, 40).getTime(), sinceMs: 0 });
   ok('signal 形状符合契约（schema/item_id/band/verdict 都有）',
     sig.schema === 'signal.v1' && !!sig.item_id && sig.band === 'high' && sig.verdict === 'push');
   ok('signal 解释了"为什么现在"', sig.reasons.some((r) => r.rule === 'class-soon'));
@@ -138,7 +143,7 @@ const signalBase = {
   ok('seen：不同课程互不影响', seen.filterNew([{ type: 'file', id: '1' }], { scope: 'Y' }).length === 1);
 
   const calls = [];
-  const nowMs = Date.parse('2026-09-23T09:40:00+08:00');
+  const nowMs = new Date(2026, 8, 23, 9, 40).getTime();   // 本地 09:40（同上：不用 +08:00 的绝对时刻）
   const courses = [{ weekday: weekdayOf(new Date(nowMs)), start_at: '10:00', weeks: '1-16', course: '示例课 DEMO1010J', location: '东中院' }];
   let clock = nowMs;
   const runner = createPreclassRunner({
