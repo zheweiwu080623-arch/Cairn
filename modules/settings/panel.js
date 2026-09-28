@@ -30,6 +30,9 @@ export const TABS = [
   { id: 'look', name: '外观', note: '主题 · 名字' },
   { id: 'mode', name: '模式', note: '用户 / 开发者' },
   { id: 'features', name: '功能', note: '要哪些 · 什么顺序' },
+  // 2026-09-28（P1「自定义补齐」）：以前壁纸目录 / 课程目录 / pdftotext 路径这些东西
+  // 散在别处，或者干脆只能改配置文件、环境变量。收成这一页 —— 目录、可选外部工具、导出格式。
+  { id: 'local', name: '本机', note: '目录 · 工具 · 导出' },
   { id: 'runtime', name: '后台', note: '服务 · 开机自启' },
 ];
 
@@ -45,7 +48,7 @@ export function renderTabs(payload = {}) {
   const GROUPS = [
     { name: '数据', ids: ['sources'] },
     { name: '个人', ids: ['profile', 'prefs', 'look', 'features'] },
-    { name: '系统', ids: ['mode', 'runtime'] },
+    { name: '系统', ids: ['mode', 'local', 'runtime'] },
     { name: '开发者', ids: ['dev'] },
   ];
   const tabs = tabsFor(payload);
@@ -62,7 +65,7 @@ export function renderTabs(payload = {}) {
 /** 左栏每一项的小图标（照 Codex 设置页那种"图标 + 名字"的感觉，不占宽度）。 */
 const RAIL_ICON = {
   sources: '🔌', profile: '🧭', prefs: '⚙️', look: '🎨',
-  mode: '👤', features: '🧩', runtime: '🖥', dev: '🛠',
+  mode: '👤', features: '🧩', local: '📁', runtime: '🖥', dev: '🛠',
 };
 
 export function renderRuntime(payload = {}) {
@@ -370,6 +373,111 @@ export function renderLook(payload = {}) {
   </div>`;
 }
 
+/**
+ * 本机（2026-09-28，P1「自定义补齐」）：三类"以前只能改配置文件 / 环境变量"的东西。
+ *
+ *   1. **本机目录** —— 壁纸目录、课程资料目录（校验、写回都在 lib/routes/localdirs.mjs）；
+ *   2. **本机工具** —— pdftotext / pdftoppm 这类**可选的**外部工具。它们本来是"有就用、
+ *      没有就降级"，所以这里要说清**现在到底用的是什么**（环境变量 / 设置里配的 /
+ *      应用自己找到的 / 根本没找到），别让人对着一个空框猜；
+ *   3. **计划导出格式** —— 导出哪几种文件（md / json / ics / csv）。
+ *
+ * 这一页只负责画和转发：取值走 /api/localdirs 与 /api/fn-settings/plan_export，
+ * 落盘走同一套接口 —— 不在这里另存一份状态。
+ */
+export function renderLocal(payload = {}) {
+  const dirs = payload.localDirs || {};
+  const tools = payload.localTools || {};
+  const fx = payload.planExport || {};
+  const fmtOn = new Set(String((fx.values || {}).formats || 'md,json').split(',').map((s) => s.trim()).filter(Boolean));
+
+  const dirRow = (key, d) => {
+    if (!d) return '';
+    const state = !d.configured ? '<span class="pill pending">未配置</span>'
+      : (d.exists && d.is_dir !== false) ? '<span class="pill status">在</span>'
+        : '<span class="pill p0">找不到了</span>';
+    const from = d.from === 'env' ? '现在来自环境变量（会压过这里的设置）' : (d.configured ? '现在用的是设置里的值' : '');
+    return `<div class="ob-row" style="align-items:flex-start">
+      <div style="flex:1;min-width:240px">
+        <div>${esc(d.label)} ${state}</div>
+        <div class="dim">${esc(d.hint || '')}</div>
+        <input id="loc-dir-${esc(key)}" value="${esc(d.dir || '')}" placeholder="点右边「选择…」，或把路径粘到这里" style="width:100%;margin-top:6px" />
+        ${from ? `<div class="dim">${esc(from)}</div>` : ''}
+      </div>
+      <div style="display:flex;gap:6px;flex-direction:column">
+        <button class="btn small" data-loc-dir-pick="${esc(key)}">选择…</button>
+        <button class="btn small primary" data-loc-dir-save="${esc(key)}">保存</button>
+        <button class="btn small" data-loc-dir-clear="${esc(key)}">清空</button>
+      </div>
+    </div>`;
+  };
+
+  const toolRow = (key, t) => {
+    if (!t) return '';
+    const usable = Boolean(t.effective);
+    const state = usable ? '<span class="pill status">有</span>' : '<span class="pill pending">没找到</span>';
+    const fromLabel = t.effective_from === 'env' ? '环境变量'
+      : t.effective_from === 'config' ? '设置里配的'
+        : t.effective_from === 'auto' ? '应用自己找到的' : '';
+    const statusLine = usable
+      ? `<div class="dim" style="word-break:break-all">现在用的：${esc(t.effective)}${fromLabel ? `（${esc(fromLabel)}）` : ''}</div>`
+      : `<div class="dim">${esc(t.effect || '')}</div>`;
+    return `<div class="ob-row" style="align-items:flex-start">
+      <div style="flex:1;min-width:240px">
+        <div>${esc(t.label)} ${state}</div>
+        <div class="dim">${esc(t.hint || '')}</div>
+        ${statusLine}
+        <input id="loc-tool-${esc(key)}" value="${esc(t.path || '')}" placeholder="点右边「选择…」，或粘一个完整路径 / 命令名" style="width:100%;margin-top:6px" />
+      </div>
+      <div style="display:flex;gap:6px;flex-direction:column">
+        <button class="btn small" data-loc-tool-pick="${esc(key)}">选择…</button>
+        <button class="btn small primary" data-loc-tool-save="${esc(key)}">保存</button>
+        <button class="btn small" data-loc-tool-clear="${esc(key)}">自动找</button>
+      </div>
+    </div>`;
+  };
+
+  const opts = (fx.fields && fx.fields[0] && fx.fields[0].options) || [
+    { value: 'md', label: 'Markdown', note: '给 Codex 和人看的正文（daily-plan.md）' },
+    { value: 'json', label: 'JSON', note: '给程序读的完整结构（plan.json）' },
+    { value: 'ics', label: 'ICS 日历', note: '导进手机 / 办公本日历（daily-plan.ics）' },
+    { value: 'csv', label: 'CSV 表格', note: '一行一件事，导进 Excel / 飞书表格（daily-plan.csv）' },
+  ];
+  return `<div class="card">
+    <b>本机目录</b>
+    <div class="dim">每个人的机器不一样，所以这些路径只存本机（不进仓库）。改完<b>立刻生效</b>，不用重启。</div>
+    ${Object.keys(dirs).map((k) => dirRow(k, dirs[k])).join('') || '<div class="dim">读不到本机目录清单（后台服务没在跑？）</div>'}
+  </div>
+
+  <div class="card mt">
+    <b>本机工具（可选）</b>
+    <div class="dim">这两个是 Poppler 的小工具，<b>不装也能用</b> —— 装了只是能多读 / 多还原一批材料。
+      没配就在这里点「选择…」指一个，或者把命令名（如 pdftotext）填进去，会自动去 PATH 里找。</div>
+    ${Object.keys(tools).map((k) => toolRow(k, tools[k])).join('') || '<div class="dim">读不到工具清单（后台服务没在跑？）</div>'}
+  </div>
+
+  <div class="card mt">
+    <b>计划导出</b>
+    <div class="dim">导给 Codex 的「每日计划与安排」要写成哪几种文件。默认 Markdown + JSON（和以前一样）。</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0">
+      ${opts.map((o) => `<label class="dim" style="display:flex;align-items:flex-start;gap:6px">
+        <input type="checkbox" data-loc-fmt="${esc(o.value)}" ${fmtOn.has(o.value) ? 'checked' : ''} style="width:auto;margin-top:3px" />
+        <span><b>${esc(o.label)}</b><br /><span class="dim">${esc(o.note || '')}</span></span></label>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="btn primary" id="loc-fmt-save">保存格式</button>
+      <span class="dim">勾全去掉 = 回到默认（至少留一份，不然导完什么都没有）</span>
+    </div>
+    <div class="dim" style="margin-top:12px">现在就能下载（不管上面勾没勾）：</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+      <a class="btn small" href="/api/plan.md" target="_blank" rel="noopener">看 Markdown</a>
+      <a class="btn small" href="/api/plan.json?download=1">下载 JSON</a>
+      <a class="btn small" href="/api/plan.ics?download=1">下载 ICS 日历</a>
+      <a class="btn small" href="/api/plan.csv?download=1">下载 CSV 表格</a>
+    </div>
+  </div>`;
+}
+
 export function renderMode(payload = {}) {
   const dev = payload.mode === 'dev';
   return `<div class="card">
@@ -618,8 +726,9 @@ export function renderPage(payload = {}) {
     : tab === 'look' ? renderLook(payload)
       : tab === 'mode' ? renderMode(payload)
         : tab === 'features' ? renderFeatures(payload)
-          : tab === 'runtime' ? renderRuntime(payload)
-            : renderDev(payload);
+          : tab === 'local' ? renderLocal(payload)
+            : tab === 'runtime' ? renderRuntime(payload)
+              : renderDev(payload);
   return `<div class="set-wrap">
     <aside class="set-rail">${renderTabs(payload)}</aside>
     <section class="set-main">
@@ -651,6 +760,7 @@ export async function mount(el, ctx = {}) {
     peakNow: false, peakLabel: '',
     prioritySources: ['email_sjtu', 'canvas'], priorityAvailable: [],
     daily: null,
+    localDirs: {}, localTools: {}, planExport: null,
   };
   const q = (s) => el.querySelector(s);
   const qa = (s) => [...el.querySelectorAll(s)];
@@ -800,6 +910,13 @@ export async function mount(el, ctx = {}) {
     S.priorityAvailable = Array.isArray(prefs.priority_sources_available) ? prefs.priority_sources_available : [];
     // 每日开工（GET /api/daily）：以前只有接口、界面没入口
     try { S.daily = await readJson('/api/daily'); } catch { S.daily = null; }
+    // 本机目录 / 本机工具 / 导出格式（设置 → 本机）
+    try {
+      const ld = await readJson('/api/localdirs');
+      S.localDirs = ld.dirs || {};
+      S.localTools = ld.tools || {};
+    } catch { S.localDirs = {}; S.localTools = {}; }
+    try { S.planExport = await readJson('/api/fn-settings/plan_export'); } catch { S.planExport = null; }
     S.theme = prefs.theme || 'p5';
     S.appName = (prefs.brand && prefs.brand.custom ? prefs.brand.app_name : '') || '';
     // 分析偏好：当前已存的这段话与关键词（保存时"只加不减"，不冲掉你手填的）
@@ -1124,6 +1241,78 @@ export async function mount(el, ctx = {}) {
         else if (r.ok === false) toast(`没改成：${r.error || '未知原因'}`, 'red');
         else toast(want ? '已开启开机自启' : '已关闭开机自启', want ? 'green' : '');
       } catch (e) { toast(`没改成功：${e.message || ''}`, 'red'); }
+      draw();
+    });
+
+    // ---- 本机页签（2026-09-28）：本机目录 / 本机工具 / 导出格式 ----
+    // 这一块和别处一样：**值不在界面里存**，改完就问一次接口、拿服务端回的整份状态重画。
+    const afterLocalWrite = (r, okMsg) => {
+      if (r && r.dirs) { S.localDirs = r.dirs; S.localTools = r.tools || S.localTools; }
+      toast(okMsg, 'green');
+      draw();
+    };
+    onAll('[data-loc-dir-save]', async (e) => {
+      const key = e.currentTarget.dataset.locDirSave;
+      const dir = String(((q('#loc-dir-' + key) || {}).value) || '').trim();
+      try {
+        const r = await api('POST', '/api/localdirs', { key, dir });
+        afterLocalWrite(r, `${(r.dirs && r.dirs[key] && r.dirs[key].label) || key} 已保存（立刻生效）`);
+      } catch (err) { toast(`没保存上：${err.message || ''}`, 'red'); }
+    });
+    onAll('[data-loc-dir-clear]', async (e) => {
+      const key = e.currentTarget.dataset.locDirClear;
+      try {
+        const r = await api('POST', '/api/localdirs', { key, dir: '' });
+        afterLocalWrite(r, `${(r.dirs && r.dirs[key] && r.dirs[key].label) || key} 已清空`);
+      } catch (err) { toast(`没清掉：${err.message || ''}`, 'red'); }
+    });
+    onAll('[data-loc-dir-pick]', async (e) => {
+      const key = e.currentTarget.dataset.locDirPick;
+      try {
+        const r = await api('POST', '/api/localdirs/pick', { key });
+        if (r.cancelled) return;
+        if (!r.ok || !r.dir) { toast(r.error || '没能打开选择框（可以手动粘贴路径）', 'red'); return; }
+        // 只回填、**不落盘**：确认无误再点「保存」（和接口的约定一致）
+        S.localDirs = { ...S.localDirs, [key]: { ...(S.localDirs[key] || {}), dir: r.dir } };
+        toast('选好了：确认无误就点「保存」', '');
+        draw();
+      } catch (err) { toast(`选择框没打开：${err.message || ''}`, 'red'); }
+    });
+    onAll('[data-loc-tool-save]', async (e) => {
+      const key = e.currentTarget.dataset.locToolSave;
+      const path = String(((q('#loc-tool-' + key) || {}).value) || '').trim();
+      try {
+        const r = await api('POST', '/api/localdirs', { key, path });
+        const t = (r.tools || {})[key] || {};
+        afterLocalWrite(r, t.effective ? `${t.label || key} 已保存 · 现在用的是 ${t.effective}` : `${t.label || key} 已保存`);
+      } catch (err) { toast(`没保存上：${err.message || ''}`, 'red'); }
+    });
+    onAll('[data-loc-tool-clear]', async (e) => {
+      const key = e.currentTarget.dataset.locToolClear;
+      try {
+        const r = await api('POST', '/api/localdirs', { key, path: '' });
+        const t = (r.tools || {})[key] || {};
+        afterLocalWrite(r, t.effective ? `改回自动找：${t.effective}` : '已清空 —— 这台机器上没找到它（可选，不影响已能用的部分）');
+      } catch (err) { toast(`没清掉：${err.message || ''}`, 'red'); }
+    });
+    onAll('[data-loc-tool-pick]', async (e) => {
+      const key = e.currentTarget.dataset.locToolPick;
+      try {
+        const r = await api('POST', '/api/localdirs/pick', { key });
+        if (r.cancelled) return;
+        if (!r.ok || !r.path) { toast(r.error || '没能打开选择框（可以手动粘贴路径）', 'red'); return; }
+        S.localTools = { ...S.localTools, [key]: { ...(S.localTools[key] || {}), path: r.path } };
+        toast('选好了：确认无误就点「保存」', '');
+        draw();
+      } catch (err) { toast(`选择框没打开：${err.message || ''}`, 'red'); }
+    });
+    on('#loc-fmt-save', async () => {
+      const picked = qa('[data-loc-fmt]').filter((x) => x.checked).map((x) => x.dataset.locFmt);
+      try {
+        S.planExport = await api('POST', '/api/fn-settings', { fn: 'plan_export', patch: { formats: picked.join(',') } });
+        const got = String(((S.planExport.values || {}).formats) || '');
+        toast(picked.length ? `导出格式已保存：${got}` : `一个都没勾 —— 已改回默认：${got}`, 'green');
+      } catch (e) { toast(`没保存上：${e.message || ''}`, 'red'); }
       draw();
     });
 

@@ -16,12 +16,17 @@ import { instanceType } from './lib/connectors/instances.mjs';
 import { createAutoSync } from './lib/autosync.mjs';
 import { semesterInfo } from './lib/semester.mjs';
 import { buildStudentView } from './lib/student-view.mjs';
-import { writePlanExport, buildPlan, planToMarkdown } from './lib/plan-export.mjs';
+import {
+  PLAN_FILE_NAMES, PLAN_FORMAT_LABELS, buildPlan, planToCsv, planToMarkdown, writePlanExport,
+} from './lib/plan-export.mjs';
 import {
   buildNotificationsExport, buildSnapshotExport, writeExportFiles,
 } from './lib/export-contract.mjs';
 import { buildPlannerAppStatus } from './lib/app-status.mjs';
 import { buildIcs } from './lib/ics.mjs';
+import { findPdftotext, setPdftotextPath } from './lib/coursetext.mjs';
+import { findRasterizer, setRasterizerPath } from './lib/pdf-pages.mjs';
+import { planExportFormats } from './lib/function-settings.mjs';
 import { brandInfo } from './lib/brand.mjs';
 import { describePaths } from './lib/paths.mjs';
 import {
@@ -123,14 +128,16 @@ function currentCodexHome() {
 let lastPlanExport = null;
 function exportPlanNow() {
   try {
-    const r = writePlanExport(store, { dataDir: DATA_DIR, codexHome: currentCodexHome() });
+    // 导出哪几种格式是**设置里的偏好**（设置 → 本机 → 计划导出；默认 md + json）
+    const formats = planExportFormats();
+    const r = writePlanExport(store, { dataDir: DATA_DIR, codexHome: currentCodexHome(), formats });
     // P1-5：同时刷新契约化导出（data/export/*.json），供外部程序（办公 AI / 本机脚本）消费
     let exports = { paths: [] };
     try { exports = writeExportFiles(store, { dataDir: DATA_DIR }); } catch { /* 不影响计划文件 */ }
-    lastPlanExport = { exported_at: r.exported_at, paths: r.paths, exports: exports.paths };
+    lastPlanExport = { exported_at: r.exported_at, formats: r.formats, paths: r.paths, exports: exports.paths };
     return lastPlanExport;
   } catch (e) {
-    return { error: e.message, paths: [] };
+    return { error: e.message, formats: [], paths: [] };
   }
 }
 function getPlanSnapshot() { return buildPlan(store, { days: 14 }); }
@@ -955,11 +962,21 @@ const media = createMedia({
 const {
   scanWallpapers, rescanMusic, getMusic, handleWallpapers,
 } = media;
-// 壁纸目录可以改：界面选完文件夹 → routes/localdirs.mjs 写 paths.json → 这里把新值交给 media（立刻生效）
+// 本机目录 / 本机工具都能在界面上改：routes/localdirs.mjs 写 paths.json → 这里把新值交给
+// 用到它的人（立刻生效，不用重启）—— 壁纸扫描、PDF 取字、PDF 转图各一条。
+// 启动时也先按 paths.json 注入一次（环境变量仍然优先，见各模块自己的取值顺序）。
+setPdftotextPath(localPath({ envKey: '', configKey: 'pdftotext_path', dataDir: DATA_DIR }));
+setRasterizerPath(localPath({ envKey: '', configKey: 'pdftoppm_path', dataDir: DATA_DIR }));
 const localDirs = createLocalDirRoutes({
   dataDir: DATA_DIR, sendJson, sendError, readBody,
   log: (m) => console.log(m),
-  onChanged: (key, dir) => { if (key === 'wallpaper') media.setWallpaperDir(dir); },
+  // 选文件的框（给外部工具用）与选目录的框各走一条
+  detectTools: { pdftotext: () => findPdftotext(), pdftoppm: () => findRasterizer() },
+  onChanged: (key, value) => {
+    if (key === 'wallpaper') media.setWallpaperDir(value);
+    if (key === 'pdftotext') setPdftotextPath(value);
+    if (key === 'pdftoppm') setRasterizerPath(value);
+  },
 });
 // 每个功能自己的设置（功能页右上角「⚙ 功能设置」抽屉读它）：接口在 lib/routes/function-settings.mjs
 const fnSettings = createFunctionSettingsRoutes({ sendJson, sendError, readBody, log: (m) => console.log(m) });
@@ -1466,10 +1483,35 @@ async function handleJson(req, res, url) {
   }
   // ---- 日报 / 晚报（复用同一套排序；只有你点「推到手机」才会发）----
   if (p === '/api/digest' || p.startsWith('/api/digest/')) return digestRoutes.handleDigest(req, res, url);
-  if (p === '/api/plan.md' && method === 'GET') {
-    const md = planToMarkdown(getPlanSnapshot());
-    res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Cache-Control': 'no-cache' });
-    return res.end(md);
+  // ---- 计划导出的四种格式，都能直接预览/下载（2026-09-28）----
+  // `/api/plan.md`（老链接，浏览器里点「预览 Markdown」用的）、`/api/plan.json`、
+  // `/api/plan.ics`（导进日历）、`/api/plan.csv`（导进表格）。
+  // `?download=1` 会带上文件名，点一下就是下载而不是在浏览器里打开。
+  if (/^\/api\/plan\.(md|json|ics|csv)$/.test(p) && method === 'GET') {
+    const fmt = p.slice('/api/plan.'.length);
+    const plan = getPlanSnapshot();
+    const body = fmt === 'md' ? planToMarkdown(plan)
+      : fmt === 'json' ? JSON.stringify(plan, null, 2)
+        : fmt === 'csv' ? planToCsv(plan)
+          : (buildIcs(store, { pastDays: 0, futureDays: 14 }).ics || '');
+    const type = fmt === 'md' ? 'text/markdown; charset=utf-8'
+      : fmt === 'json' ? 'application/json; charset=utf-8'
+        : fmt === 'csv' ? 'text/csv; charset=utf-8'
+          : 'text/calendar; charset=utf-8';
+    const head = { 'Content-Type': type, 'Cache-Control': 'no-cache' };
+    if (url.searchParams.get('download')) {
+      head['Content-Disposition'] = `attachment; filename="${PLAN_FILE_NAMES[fmt] || `daily-plan.${fmt}`}"`;
+    }
+    res.writeHead(200, head);
+    return res.end(body);
+  }
+  // 「导出格式有哪几种可选」：界面照它画勾选框（就一处声明，不写第二份）
+  if (p === '/api/plan/formats' && method === 'GET') {
+    return sendJson(res, 200, {
+      schema: 'plan-formats.v1',
+      current: planExportFormats(),
+      options: Object.keys(PLAN_FILE_NAMES).map((value) => ({ value, label: PLAN_FORMAT_LABELS[value] || value, file: PLAN_FILE_NAMES[value] })),
+    });
   }
   if (p === '/api/plan/export' && method === 'POST') return sendJson(res, 200, exportPlanNow());
   if (p === '/api/plan/export' && method === 'GET') return sendJson(res, 200, lastPlanExport || exportPlanNow());

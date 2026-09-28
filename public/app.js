@@ -1798,7 +1798,9 @@ function renderCodex() {
     <div class="card mt">
       <h3>让 Codex 读取你的计划 <span class="muted">把每日计划与安排导出给 Codex</span></h3>
       <div class="dim" style="margin-bottom:10px">
-        应用会把「每日计划与安排」（今天的日程 / 到期任务 / 课程 / 提醒，及未来 14 天）导出为 Markdown + JSON 文件，Codex 任意会话都能直接读取。
+        应用会把「每日计划与安排」（今天的日程 / 到期任务 / 课程 / 提醒，及未来 14 天）导出成文件，Codex 任意会话都能直接读取。
+        <b>导出哪几种格式由你定</b>（Markdown / JSON / ICS 日历 / CSV 表格，默认 Markdown + JSON）——
+        在<b>设置 → 本机 → 计划导出</b>里勾选，也可以在那儿直接下载某一种。
       </div>
       <div class="dim" style="font-family:monospace;font-size:12px;line-height:1.9">
         ${cx.planPaths.length
@@ -1808,6 +1810,8 @@ function renderCodex() {
       <div class="flex" style="margin-top:10px;align-items:center;gap:10px">
         <button class="btn primary small" id="plan-export">立即导出</button>
         <a class="btn small" href="/api/plan.md" target="_blank" rel="noopener">预览 Markdown</a>
+        <a class="btn small" href="/api/plan.ics?download=1">下载 ICS 日历</a>
+        <a class="btn small" href="/api/plan.csv?download=1">下载 CSV 表格</a>
         <span id="plan-export-status" class="dim">${cx.planExport && cx.planExport.exported_at ? '上次导出：' + fmtFull(cx.planExport.exported_at) : '（尚未导出，操作后会更新）'}</span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 # 三平台 CI：验证"换台机器还灵不灵"。
 #
 # 两个 job：
-#   1) portable —— tests/run-portable.mjs 里那批"纯仓库内"的测试（当前 102 套）；
+#   1) portable —— tests/run-portable.mjs 里那批"纯仓库内"的测试（当前 105 套）；
 #   2) smoke    —— **真的把服务起起来**再打一遍只读接口（2026-09-27 加：光跑离线测试证明不了
 #                  "在这台机器上能跑"，macOS / Linux 上的启动与路径问题正是靠这一步才能露出来）。
 # 需要活的 Planner 服务、本机邮件桥、PowerShell 的测试故意不进 CI（见 tests/run-portable.mjs 的 LOCAL_ONLY_TESTS）。
