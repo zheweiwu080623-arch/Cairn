@@ -119,6 +119,7 @@ export const PORTABLE_TESTS = [
   'daily.test.mjs',
   'mcp.test.mjs',
   'server-shell.test.mjs',
+  'tray-guard.test.mjs',
   'feedback-fixes.test.mjs',
   'feedback-ux.test.mjs',
 ];

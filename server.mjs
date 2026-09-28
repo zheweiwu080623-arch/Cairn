@@ -60,6 +60,7 @@ import { createTickRunner } from './lib/notify-tick.mjs';
 import { createDdlStack } from './lib/ddl-stack.mjs';
 import { createDailyStack } from './lib/daily-stack.mjs';
 import { createMcpStack } from './lib/mcp-stack.mjs';
+import { createTrayGuard } from './lib/tray-guard.mjs';
 import {
   createStaticHandler, initFileLogging, installProcessGuards, openBrowser, openExternalUrl, streamMedia,
 } from './lib/server-shell.mjs';
@@ -605,6 +606,13 @@ function canvasWatchDue() {
 // 开机自启 / 存活看护已搬进 lib/autostart.mjs（Windows 快捷方式 + macOS LaunchAgent）
 const autostart = createAutostart({ repoDir: __dir, port: PORT, logPath: join(DATA_DIR, 'launchd.log'), log: (m) => console.log(m) });
 const { getAutostartState, setAutostart } = autostart;
+
+// 托盘看门狗（2026-09-28）：托盘自己看不了自己 —— 它一死，服务就**没有看门狗**了
+// （实测：当天托盘心跳停了几个小时，服务真崩了的话没人拉）。而服务本身很稳
+// （连续 17 小时没重启），所以让它反过来盯着托盘心跳（data/tray.heartbeat）：
+// 过期就尝试把托盘重新拉起。从没用过托盘的机器不插手（见 lib/tray-guard.mjs 的规则）。
+const trayGuard = createTrayGuard({ dataDir: DATA_DIR, repoDir: __dir, log: (m) => console.log(m) });
+trayGuard.start();
 
 function watchNextRun(watch) {
   const interval = Math.max(1, Number(watch.interval_hours) || 3) * 3600000;

@@ -21,6 +21,9 @@ $logPath = Join-Path $logDir 'tray.log'
 # 现在改成看**心跳**：只有"最近 90 秒还在写心跳"的托盘才算在跑；心跳断了就接管。
 $pidPath = Join-Path $logDir 'tray.pid'
 $beatPath = Join-Path $logDir 'tray.heartbeat'
+# 2026-09-28：托盘**正常退出**时会把心跳写成这个标记（而不是删掉文件），
+# 这样服务端的托盘看门狗（lib/tray-guard.mjs）就能分清"用户主动关了"和"托盘悄悄死了"。
+$script:BeatExitedMark = 'exited'
 function Test-TrayAlive {
   try {
     if (-not (Test-Path -LiteralPath $pidPath)) { return $false }
@@ -29,6 +32,8 @@ function Test-TrayAlive {
     if ($oldPid -le 0) { return $false }
     if (-not (Get-Process -Id $oldPid -ErrorAction SilentlyContinue)) { return $false }
     if (-not (Test-Path -LiteralPath $beatPath)) { return $false }
+    # 上一个托盘是"正常退出"的 → 不算还有活的托盘（否则会把自己挡回去）
+    if ((Get-Content -LiteralPath $beatPath -Raw -ErrorAction SilentlyContinue).Trim() -eq $script:BeatExitedMark) { return $false }
     return (((Get-Date) - (Get-Item -LiteralPath $beatPath).LastWriteTime).TotalSeconds -lt 90)
   } catch { return $false }
 }
@@ -403,4 +408,20 @@ $form = New-Object System.Windows.Forms.Form
 $form.ShowInTaskbar = $false
 $form.WindowState = 'Minimized'
 $form.Visible = $false
-[System.Windows.Forms.Application]::Run($form)
+# ---------- 退出时记下原因（2026-09-28）----------
+# 以前托盘"悄悄没了"只留下一个过期心跳，日志里**没有任何原因**，事后无从判断。
+# 现在把退出路径和异常都写进 tray.log，并把心跳写成 'exited'：
+#   · 用户主动退出（菜单里那个）→ 服务端看门狗看到标记就不再拉起；
+#   · 异常退出 → 心跳停在旧时间戳，服务端会在 ~3 分钟后把它拉起来。
+try {
+  [System.Windows.Forms.Application]::Run($form)
+  Write-Log '托盘退出：窗口循环正常结束'
+} catch {
+  try {
+    Write-Log ('托盘退出（未捕获异常）：' + $_.Exception.Message + ' @ ' + $_.InvocationInfo.PositionMessage)
+  } catch { }
+} finally {
+  try { Set-Content -LiteralPath $beatPath -Value $script:BeatExitedMark -Encoding ascii } catch { }
+  try { Remove-Item -LiteralPath $pidPath -Force -ErrorAction SilentlyContinue } catch { }
+  Write-Log '托盘已退出（心跳已标记 exited；服务端看门狗不会自动拉起这次退出）'
+}
