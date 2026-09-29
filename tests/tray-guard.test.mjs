@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  COOLDOWN_MS, EXITED_MARK, STALE_MS, createTrayGuard, decideTrayAction,
+  CONFIRM_TICKS, COOLDOWN_MS, EXITED_MARK, STALE_MS, createTrayGuard, decideTrayAction,
 } from '../lib/tray-guard.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,6 +42,41 @@ console.log('tray-guard.test.mjs');
     decideTrayAction({ exists: true, text: 'x', ageMs: Number.NaN }) === 'alive');
   ok('边界：正好等于阈值算过期（>= 就动手）',
     decideTrayAction({ exists: true, text: 'x', ageMs: STALE_MS }) === 'respawn');
+  // 2026-09-29 加：休眠刚醒时不该立刻换托盘
+  ok('过期但只看到一次 → pending（先确认，别急着换）',
+    decideTrayAction({ exists: true, text: 'x', ageMs: STALE_MS + 1, staleStreak: 1 }) === 'pending');
+  ok('连着两次都过期（同一段心跳）→ respawn',
+    decideTrayAction({ exists: true, text: 'x', ageMs: STALE_MS + 1, staleStreak: CONFIRM_TICKS }) === 'respawn');
+}
+
+// ---------------- ①b 「睡一觉醒来别误杀」（2026-09-29 实测：一天换了 5 次托盘） ----------------
+{
+  // 机器休眠时所有线程一起冻住，心跳必然"过期很久"。醒来第一次 tick 应该只"确认"，
+  // 等托盘 20 秒内把心跳写回来，第二次 tick 看到新鲜的 → 什么都不做。
+  const h = makeGuard();
+  h.setLauncher();
+  h.setBeat('2026-09-29T09:42:00.0000000+08:00', 400_000);   // 像刚从休眠醒来：停了 400 秒
+  ok('刚睡醒（第一次看到过期）→ 只 pending，不换托盘',
+    h.guard.tick() === 'pending' && h.spawned.length === 0);
+  ok('日志里说清是"先确认一次"（用户能在 server.log 里看到）',
+    h.logs.some((l) => l.includes('先确认一次')));
+
+  // 托盘醒了，写了新心跳（mtime 变新）
+  h.setBeat('2026-09-29T09:49:00.0000000+08:00', 5_000);
+  ok('托盘自己写回心跳 → alive，什么都不做',
+    h.guard.tick() === 'alive' && h.spawned.length === 0);
+
+  // 再来一次"睡醒"：仍然是先确认
+  h.setBeat('2026-09-29T09:49:00.0000000+08:00', 600_000);
+  ok('第二次睡醒 → 还是先 pending（不会因为"之前 pending 过"就动手）',
+    h.guard.tick() === 'pending' && h.spawned.length === 0);
+
+  // 但如果是**真的死了**（心跳一直是同一段、再也没动）：连确认两次就动手
+  h.advance(61_000);
+  ok('同一段过期心跳再看一次 → respawn（真死了要救）',
+    h.guard.tick() === 'respawn' && h.spawned.length === 1);
+  ok('拉起这件事仍然写进日志（说的是「换一个」）',
+    h.logs.some((l) => l.includes('换一个')));
 }
 
 // ---------------- ② 注入式跑一轮 ----------------
@@ -69,6 +104,13 @@ function makeGuard(opts = {}) {
     setLauncher(v = true) { if (v) files.set(guard.launcher, { text: '', mtimeMs: clock }); else files.delete(guard.launcher); },
     setRestarter(v = true) { if (v) files.set(guard.restarter, { text: '', mtimeMs: clock }); else files.delete(guard.restarter); },
     advance(ms) { clock += ms; },
+    /** 走完"连续确认"：第一拍 pending → 过一分钟 → 第二拍（返回两拍的结果）。 */
+    confirmStale() {
+      const first = this.guard.tick();
+      this.advance(61_000);
+      const second = this.guard.tick();
+      return { first, second };
+    },
   };
 }
 
@@ -81,7 +123,10 @@ function makeGuard(opts = {}) {
   ok('心跳新鲜 → alive，不 spawn', h.guard.tick() === 'alive' && h.spawned.length === 0);
 
   h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 60_000);
-  ok('心跳过期 → respawn', h.guard.tick() === 'respawn');
+  ok('心跳过期第一拍 → 先 pending（连续确认：睡醒时不误杀）',
+    h.guard.tick() === 'pending' && h.spawned.length === 0);
+  h.advance(61_000);
+  ok('同一段过期心跳再看一次 → respawn', h.guard.tick() === 'respawn');
   ok('主流路径是 wscript.exe + start-tray.vbs（隐藏窗口、脱离父进程）',
     h.spawned.length === 1 && h.spawned[0].cmd === 'wscript.exe'
     && h.spawned[0].args[0] === h.guard.launcher
@@ -110,7 +155,7 @@ function makeGuard(opts = {}) {
   h.setRestarter();
   h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 1);
   ok('找不到 start-tray.vbs → 退到 tray.ps1 -Action restart（它会先收掉旧托盘）',
-    h.guard.tick() === 'respawn' && h.spawned.length === 1 && h.spawned[0].cmd === 'powershell.exe'
+    h.confirmStale().second === 'respawn' && h.spawned.length === 1 && h.spawned[0].cmd === 'powershell.exe'
     && h.spawned[0].args.includes(h.guard.restarter) && h.spawned[0].args.at(-1) === 'restart',
     JSON.stringify(h.spawned[0] && h.spawned[0].args));
 }
@@ -119,7 +164,7 @@ function makeGuard(opts = {}) {
   const h = makeGuard();
   h.setLauncher(); h.setRestarter();
   h.setBeat('2026-09-28T10:00:00.0000000+08:00', STALE_MS + 1);
-  h.guard.tick();
+  h.confirmStale();
   ok('两个启动器都在 → 走 start-tray.vbs（把"换"交给新托盘的接管逻辑）',
     h.spawned.length === 1 && h.spawned[0].cmd === 'wscript.exe');
   ok('日志说明了"新托盘会收掉更早那个"', h.logs.some((l) => l.includes('收掉更早那个')));
@@ -135,7 +180,7 @@ function makeGuard(opts = {}) {
     },
   });
   h.setLauncher(); h.setBeat('x', STALE_MS + 1);
-  ok('spawn 失败不再是静默的', h.guard.tick() === 'respawn');
+  ok('spawn 失败不再是静默的', h.confirmStale().second === 'respawn');
   await new Promise((r) => setTimeout(r, 10));
   ok('起不来会写进日志（含原因）', logs.some((l) => l.includes('起不来') && l.includes('ENOENT')), JSON.stringify(logs.slice(-2)));
 }
@@ -154,7 +199,7 @@ function makeGuard(opts = {}) {
   const h = makeGuard({ spawnFn: () => { throw new Error('wscript 起不来'); } });
   h.setLauncher(); h.setBeat('x', STALE_MS + 1);
   ok('拉起失败如实记 spawn-failed（不崩、不假装）',
-    h.guard.tick() === 'spawn-failed' && h.logs.some((l) => l.includes('拉起托盘失败')));
+    h.confirmStale().second === 'spawn-failed' && h.logs.some((l) => l.includes('拉起托盘失败')));
 }
 {
   const h = makeGuard();
