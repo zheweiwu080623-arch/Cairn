@@ -400,7 +400,7 @@ const TITLE_L = {
 let lang = (() => { try { return localStorage.getItem('planner-lang') || 'zh'; } catch { return 'zh'; } })();
 let lastModule = 'today';
 let hubCursor = 'today';
-const APP_VERSION = 'Vol.2.3';
+const APP_VERSION = 'Vol.2.4';
 // 显示名由服务端下发（/api/state 的 brand.app_name）：
 // 作者本机读 data/brand.json，别人 clone 下来默认是 Cairn。
 let APP_TITLE = 'Cairn';

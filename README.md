@@ -10,7 +10,7 @@
   <img alt="License" src="https://img.shields.io/badge/License-MIT-black">
 </p>
 
-> **Vol.2.3** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+> **v1.0.1（应用内显示 Vol.2.4）** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
 
 > **命名**：对外发布名是 **Cairn**（石堆路标 —— 在野外，人们用一摞石头标记「该往哪走」）。
 > 作者本机仍然叫「空庭Coterie的Planner」：把 `data/brand.json` 丢进数据目录就行

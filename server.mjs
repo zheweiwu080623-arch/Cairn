@@ -1521,7 +1521,7 @@ async function handleJson(req, res, url) {
     let courseSync = null;
     try { courseSync = await courseSyncStatus(); } catch { /* 状态查询失败不影响整体 */ }
     return sendJson(res, 200, buildPlannerAppStatus(buildHealth(), {
-      courseSync, planExport: lastPlanExport, version: 'Vol.2.3',
+      courseSync, planExport: lastPlanExport, version: 'Vol.2.4',
       schemaInfo: store.migrationState(),
     }));
   }
