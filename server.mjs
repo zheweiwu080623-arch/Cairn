@@ -57,6 +57,7 @@ import { createFlowStack } from './lib/flow-stack.mjs';
 import { createCapabilityHost } from './lib/capabilities/host.mjs';
 import { createPreclassStack } from './lib/preclass-stack.mjs';
 import { createLocalDirRoutes } from './lib/routes/localdirs.mjs';
+import { createLocalDropRoutes } from './lib/routes/local-drop.mjs';
 import { createFunctionSettingsRoutes } from './lib/routes/function-settings.mjs';
 import { createCourseStack } from './lib/course-stack.mjs';
 import { createProcessorExecutors } from './lib/processor-executors.mjs';
@@ -899,10 +900,12 @@ function notFound(res) { sendError(res, 404, 'Not Found'); }
 // 只暴露日历订阅与今日文本，不暴露应用本身（设置、任务、邮件内容都不在里面）。
 let barkWindow = { ts: 0, sent: 0, suppressed: 0 };
 
-async function barkNotify({ title, body = '', url = '', level = 'active', force = false, source = '', important = '' }) {
+// ignoreSource（2026-10-01）：备用通道（/api/local-drop）用它绕过"重点来源"过滤 ——
+// 那是一个**故障兜底**通道，`pigeon` 通常不在用户勾的重点来源里，但"邮件坏了"这件事必须能推到你面前。
+async function barkNotify({ title, body = '', url = '', level = 'active', force = false, source = '', ignoreSource = false, important = '' }) {
   try {
     if (!force) {
-      if (source && !barkSourceAllowed(store, source)) return { ok: false, skipped: 'source-filtered' };
+      if (source && !ignoreSource && !barkSourceAllowed(store, source)) return { ok: false, skipped: 'source-filtered' };
       if (!getMobilePrefs(store).bark_key) return { ok: false, skipped: 'no-key' };
       // 免打扰（2026-09-27）：安静时段 / 专注静音期间**不主动推手机**。
       // force=true = 你自己在界面上点"推到手机"，那就照做（人的明确指令优先于偏好）。
@@ -1247,6 +1250,13 @@ async function ingestAutomationReport(b = {}) {
 }
 
 // ---------- 凭据脱敏与数据源接口（R2：已搬到 lib/credential-mask.mjs 与 lib/routes/connectors.mjs）----------
+// ---------- 本机备用投递口（2026-10-01 新增）----------
+// 邮件桥发不出去时，Pigeon 把内容投到本机 Cairn（进「通知」页，可选推手机）。
+// 实现与边界见 lib/routes/local-drop.mjs；这里只接线。
+const localDrop = createLocalDropRoutes({
+  store, sendJson, sendError, readBody, barkNotify,
+  log: (m) => console.log(m),
+});
 // 只保留接线：这两个模块的职责见各自文件头（凭据脱敏是安全边界，单独一个文件便于审阅）。
 const connRoutes = createConnectorRoutes({
   store, sendJson, sendError, notFound, readBody,
@@ -1682,6 +1692,9 @@ async function handleJson(req, res, url) {
       return sendJson(res, 200, { ok: false, error: e.message });
     }
   }
+  // 本机备用投递口（2026-10-01）：邮件桥发不出去时，Pigeon 把内容送到这里 → 进「通知」页。
+  // 实现在 lib/routes/local-drop.mjs（GET = 就绪探测，POST = 投递）。
+  if (p === '/api/local-drop') return localDrop.handleLocalDrop(req, res, url);
   if (p === '/api/automation/reports' && method === 'GET') {
     const limit = Math.min(50, Math.max(1, Number(url.searchParams.get('limit') || 10) || 10));
     const rows = store.listNotifications()
