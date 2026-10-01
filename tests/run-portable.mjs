@@ -87,6 +87,7 @@ export const PORTABLE_TESTS = [
   'localdirs.test.mjs',
   'local-tools.test.mjs',
   'local-drop.test.mjs',
+  'mail-policy.test.mjs',
   'coursetext.test.mjs',
   'pdftotext-route.test.mjs',
   'course-assist.test.mjs',

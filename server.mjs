@@ -58,6 +58,7 @@ import { createCapabilityHost } from './lib/capabilities/host.mjs';
 import { createPreclassStack } from './lib/preclass-stack.mjs';
 import { createLocalDirRoutes } from './lib/routes/localdirs.mjs';
 import { createLocalDropRoutes } from './lib/routes/local-drop.mjs';
+import { decideMail, mailPolicyState } from './lib/mail-policy.mjs';
 import { createFunctionSettingsRoutes } from './lib/routes/function-settings.mjs';
 import { createCourseStack } from './lib/course-stack.mjs';
 import { createProcessorExecutors } from './lib/processor-executors.mjs';
@@ -1167,6 +1168,10 @@ async function sendLocalFileViaMailBridge(body = {}) {
 
 /** 交给本机邮件桥把报告发到办公本；收件人取「数据源 → 手机与办公本」里的投递邮箱。 */
 async function forwardAutomationReport({ name, title, text, ranAt }) {
+  // 发信策略（2026-10-01，用户要求降载）：自动化简报**不再单独发邮件** ——
+  // 它们照旧进「通知」页，标题会出现在早上那封汇总里（见 lib/mobile.mjs 的 buildDigestText）。
+  const gate = decideMail('report', { store });
+  if (!gate.allow) return { ok: false, skipped: 'mail-policy', note: gate.reason };
   const recipients = automationReportRecipients();
   let when = String(ranAt || '');
   try { when = new Date(ranAt).toLocaleString('zh-CN', { hour12: false }); } catch { /* 保持原样 */ }
@@ -1220,9 +1225,11 @@ async function ingestAutomationReport(b = {}) {
 
   const mailNote = forward.ok
     ? `📮 已通过邮件桥转发到 ${(forward.to || []).join(', ')}`
-    : (forward.skipped === 'rate-limited'
-      ? `📮 未转发：${forward.note}`
-      : `📮 转发失败：${forward.error}（报告已存进 Planner）`);
+    : (forward.skipped === 'mail-policy'
+      ? `📮 按发信策略没有单独发邮件（标题会出现在早上的汇总里）：${forward.note || ''}`
+      : (forward.skipped === 'rate-limited'
+        ? `📮 未转发：${forward.note}`
+        : `📮 转发失败：${forward.error}（报告已存进 Planner）`));
 
   const notif = store.createNotification({
     title: `🤖 ${name}｜${title}`,
@@ -1695,6 +1702,9 @@ async function handleJson(req, res, url) {
   // 本机备用投递口（2026-10-01）：邮件桥发不出去时，Pigeon 把内容送到这里 → 进「通知」页。
   // 实现在 lib/routes/local-drop.mjs（GET = 就绪探测，POST = 投递）。
   if (p === '/api/local-drop') return localDrop.handleLocalDrop(req, res, url);
+  // 发信策略（2026-10-01 降载）：今天哪几类邮件还能发、已经发了几封。
+  // 规则在 lib/mail-policy.mjs：只留「早上汇总（一天 1 封）」+「Canvas 有新增」。
+  if (p === '/api/mail-policy' && method === 'GET') return sendJson(res, 200, mailPolicyState(store));
   if (p === '/api/automation/reports' && method === 'GET') {
     const limit = Math.min(50, Math.max(1, Number(url.searchParams.get('limit') || 10) || 10));
     const rows = store.listNotifications()
