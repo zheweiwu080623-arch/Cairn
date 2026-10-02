@@ -51,10 +51,13 @@ import { createAutopushRunner } from './lib/autopush-run.mjs';
 import { createPrefsRoutes } from './lib/routes/prefs.mjs';
 import { createMobileRoutes } from './lib/routes/mobile.mjs';
 import { createMobileServer } from './lib/mobile-server.mjs';
+import { buildMobileVM, buildMobileWeekVM } from './lib/mobile-view.mjs';
+import { buildMobileState, priorityAwareNotifications } from './lib/mobile-state.mjs';
+import { createJobRunRecorder, jobRunsResponse, pruneJobRuns } from './lib/job-runs.mjs';
+import { handleDashboardApi, seedDashboardCards } from './lib/dashboard.mjs';
 import { createModuleRoutes } from './lib/routes/modules.mjs';
-import { createCapabilityRoutes } from './lib/routes/capabilities.mjs';
-import { createFlowStack } from './lib/flow-stack.mjs';
 import { createCapabilityHost } from './lib/capabilities/host.mjs';
+import { createCapabilityStack } from './lib/capability-stack.mjs';
 import { createPreclassStack } from './lib/preclass-stack.mjs';
 import { createLocalDirRoutes } from './lib/routes/localdirs.mjs';
 import { createLocalDropRoutes } from './lib/routes/local-drop.mjs';
@@ -830,6 +833,7 @@ async function courseSyncMaintenance({ force = false } = {}) {
 const tick = createTickRunner({
   store, log: (m) => console.log(m), warn: (m) => console.error(m),
   fireReminders: () => notifTick(),
+  onJobRun: createJobRunRecorder(store, { warn: (m) => console.error(m) }),   // 改造项 2
   heartbeat: ({ uptime_minutes }) => {
     const w = getCanvasWatch();
     console.log(`[heartbeat] 运行中 pid=${process.pid} 已运行 ${uptime_minutes} 分钟 · 通知 ${store.listNotifications().length} 条 · 下次 Canvas 巡检 ${watchNextRun(w).slice(0, 16).replace('T', ' ')}`);
@@ -875,6 +879,8 @@ const tick = createTickRunner({
 });
 tick.start();
 
+pruneJobRuns(store, { log: (m) => console.log(m), warn: (m) => console.error(m) }); seedDashboardCards(store, (m) => console.log(m));   // 改造项 2 / 3
+
 // ---------- HTTP helpers ----------
 async function readBody(req) {
   let body = '';
@@ -902,7 +908,7 @@ function notFound(res) { sendError(res, 404, 'Not Found'); }
 let barkWindow = { ts: 0, sent: 0, suppressed: 0 };
 
 // ignoreSource（2026-10-01）：备用通道（/api/local-drop）用它绕过"重点来源"过滤 ——
-// 那是一个**故障兜底**通道，`pigeon` 通常不在用户勾的重点来源里，但"邮件坏了"这件事必须能推到你面前。
+// 那是一个**故障兜底**通道，邮件桥通常不在用户勾的重点来源里，但"邮件坏了"这件事必须能推到你面前。
 async function barkNotify({ title, body = '', url = '', level = 'active', force = false, source = '', ignoreSource = false, important = '' }) {
   try {
     if (!force) {
@@ -932,6 +938,12 @@ async function barkNotify({ title, body = '', url = '', level = 'active', force 
 const mobileServer = createMobileServer({
   store, mobilePort: MOBILE_PORT, buildIcs, buildDigestText, calendarInfo,
   appName: () => brandInfo({ dataDir: DATA_DIR }).app_name,
+  // 手机界面要的那一坨：字段与 /api/state 同源，外加只读的 Anki 摘要（见 lib/mobile-state.mjs）
+  buildState: () => buildMobileState({ store, isPrioritySource, getCodexSnapshot }),
+  buildVM: (state) => buildMobileVM(state),
+  buildWeek: (state, offset) => buildMobileWeekVM(state, offset),
+  // 访问留痕（只记路径与状态，token 会折叠成 <token>）：用来回答"平板到底够到电脑没有"
+  accessLog: join(DATA_DIR, 'mobile-access.log'),
   log: (m) => console.log(m), warn: (m) => console.warn(m),
 });
 
@@ -1258,7 +1270,7 @@ async function ingestAutomationReport(b = {}) {
 
 // ---------- 凭据脱敏与数据源接口（R2：已搬到 lib/credential-mask.mjs 与 lib/routes/connectors.mjs）----------
 // ---------- 本机备用投递口（2026-10-01 新增）----------
-// 邮件桥发不出去时，Pigeon 把内容投到本机 Cairn（进「通知」页，可选推手机）。
+// 邮件桥发不出去时，外部邮件桥把内容投到本机 Cairn（进「通知」页，可选推手机）。
 // 实现与边界见 lib/routes/local-drop.mjs；这里只接线。
 const localDrop = createLocalDropRoutes({
   store, sendJson, sendError, readBody, barkNotify,
@@ -1346,6 +1358,8 @@ const capabilityHost = createCapabilityHost({
     preclass: () => preclass.extraContext(),
     course: () => course.extraContext(),
     dataDir: DATA_DIR,           // 开发者自写能力的位置（<数据目录>/capabilities/，不改内核）
+    // 模型能力（llm.ask）：**不新增配置**，就是"数据源 → Agent 接入"里那一个（走 CLI 还是 HTTP 由它决定）
+    llm: () => ({ llm: { ask: (o = {}) => askAgent(String(o.prompt || '').slice(0, 12000), { timeoutMs: Number(o.timeout_ms) || 0 }) } }),
   },
   log: (m) => console.log(m),
 });
@@ -1363,14 +1377,12 @@ const moduleRoutes = createModuleRoutes({
   }),
   log: (m) => console.log(m),
 });
-// 能力层（M1 · S3/S6）：只读出口 —— 命令行 `cairn cap list`、可视化搭建、安装预览读的都是它
-const capabilityRoutes = createCapabilityRoutes({
-  sendJson, sendError,
+// 能力层 + 能力搭建（M1/M2/M3）：出口与接线收在 capability-stack 里，主程序只留一行
+const capStack = createCapabilityStack({
+  sendJson, sendError, readBody, dataDir: DATA_DIR, modulesDir: MODULES_DIR,
   listModules: () => moduleRoutes.listModules().modules,
-  dataDir: DATA_DIR, readBody,
+  capabilities: capabilityHost, log: (m) => console.log(m),
 });
-// 能力搭建（M2/M3）：图执行 + 试跑 + 存成新功能，接线收在 flow-stack 里
-const flows = createFlowStack({ sendJson, sendError, readBody, modulesDir: MODULES_DIR, capabilities: capabilityHost, log: (m) => console.log(m) });
 
 // ---------- 养成（习惯 / 番茄 / 里程碑）与课表校历（R2：已搬到 lib/routes/study.mjs）----------
 // 这里只保留接线：存东西的地方（store）与怎么回话（sendJson…）一次性传进去。
@@ -1382,6 +1394,9 @@ async function handleJson(req, res, url) {
   const p = url.pathname;
   const seg = p.split('/').filter(Boolean); // e.g. ['api','tasks','id']
   const method = req.method;
+
+  if (p === '/api/job-runs' && method === 'GET') return sendJson(res, 200, jobRunsResponse(store, url));
+  if (await handleDashboardApi(req, res, url, store, { sendJson, readBody })) return;
 
   // API status / full state
   if (p === '/api/state' && method === 'GET') {
@@ -1405,6 +1420,8 @@ async function handleJson(req, res, url) {
       tasks: store.listTasks(),
       events: store.listEvents(),
       // 「重点」按当前偏好现算（改设置立刻生效）；只重算数据源来的，别覆盖 DDL / Codex 自带的优先级
+      // （这一段是 /api/state 的**权威写法**，tests/customizable.test.mjs 直接按源码形状守着它；
+      //   移动页那份等价实现放在 lib/mobile-state.mjs，两边语义必须一致。）
       notifications: store.listNotifications().map((n) => {
         const src = String(n.source || '');
         if (!src.startsWith('connector:')) return n;
@@ -1538,7 +1555,7 @@ async function handleJson(req, res, url) {
     let courseSync = null;
     try { courseSync = await courseSyncStatus(); } catch { /* 状态查询失败不影响整体 */ }
     return sendJson(res, 200, buildPlannerAppStatus(buildHealth(), {
-      courseSync, planExport: lastPlanExport, version: 'Vol.2.4',
+      courseSync, planExport: lastPlanExport, version: 'Vol.2.5',
       schemaInfo: store.migrationState(),
     }));
   }
@@ -1699,7 +1716,7 @@ async function handleJson(req, res, url) {
       return sendJson(res, 200, { ok: false, error: e.message });
     }
   }
-  // 本机备用投递口（2026-10-01）：邮件桥发不出去时，Pigeon 把内容送到这里 → 进「通知」页。
+  // 本机备用投递口（2026-10-01）：邮件桥发不出去时，外部邮件桥把内容送到这里 → 进「通知」页。
   // 实现在 lib/routes/local-drop.mjs（GET = 就绪探测，POST = 投递）。
   if (p === '/api/local-drop') return localDrop.handleLocalDrop(req, res, url);
   // 发信策略（2026-10-01 降载）：今天哪几类邮件还能发、已经发了几封。
@@ -1746,8 +1763,8 @@ async function handleJson(req, res, url) {
   // ---------- 模块系统（W2）----------
   // ---------- 模块系统（清单 + 跑一个 processor）：接口在 lib/routes/modules.mjs ----------
   if (p === '/api/modules' || p.startsWith('/api/modules/')) return moduleRoutes.handleModules(req, res, url);
-  if (p === '/api/capabilities' || p.startsWith('/api/capabilities/')) return capabilityRoutes.handleCapabilities(req, res, url);
-  if (p === '/api/flows' || p.startsWith('/api/flows/')) return flows.routes.handleFlows(req, res, url);
+  if (p === '/api/capabilities' || p.startsWith('/api/capabilities/')) return capStack.routes.handleCapabilities(req, res, url);
+  if (p === '/api/flows' || p.startsWith('/api/flows/')) return capStack.flows.routes.handleFlows(req, res, url);
   // ---------- 上课前 Canvas 检查（设置 + 状态）：接口在 lib/routes/preclass.mjs ----------
   if (p === '/api/preclass') return preclass.routes.handlePreclass(req, res, url);
   // ---------- 本机目录（壁纸目录 / 课程资料目录）：接口在 lib/routes/localdirs.mjs ----------

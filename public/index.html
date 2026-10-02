@@ -121,6 +121,8 @@
   <!-- 一行式输入 / .ics / .csv 的解析器（纯函数，单测在 tests/schedule-input.test.mjs） -->
   <script src="/schedule-input.js?v=b20260927j"></script>
   <script src="/app.js?v=b20260927i"></script>
+  <!-- 首页卡片（改造项 3）：内容由后端按 contracts/dashboard.v1 产出，这里只负责画；删掉这一行即可整体摘掉 -->
+  <script src="/dashboard-cards.js?v=20261002"></script>
   <!-- ViewModel 层：把 viewmodel.js（ES 模块）挂成 window.PlannerVM 供 app.js 使用 -->
   <script type="module" src="/vm-bridge.js?v=b20260927i"></script>
 </body>

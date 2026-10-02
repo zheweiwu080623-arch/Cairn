@@ -4,7 +4,8 @@
 //
 // 两类断言：
 //   ① 十条 HTTP 路径的**行为不变**（偏好读写 / 测试推送 / 发报 / 重置密钥 / iCloud 两个 / 三个只读下载 / 打开目录）；
-//   ② 那个局域网只读小服务的**安全边界**（token 不对一律 404；只暴露 .ics/.txt/说明页/健康检查）。
+//   ② 那个局域网只读小服务的**安全边界**（token 不对一律 404；只暴露 .ics/.txt/说明页/健康检查，
+//      以及 /m/ 下的手机界面五件套：页面 + vm.json + manifest + sw.js + icon.svg）。
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -140,6 +141,9 @@ const url = (p) => new URL('http://127.0.0.1:3210' + p);
   sync.set(MOBILE_KEYS.cal_token, 'secret-token-1234');
   const handler = mobileReadHandler({
     store, buildIcs: () => ({ ics: 'BEGIN:VCALENDAR' }), buildDigestText: () => 'Cairn · 今日', appName: () => 'Cairn',
+    buildState: () => ({ tasks: [], events: [], notifications: [], codex: {} }),
+    buildVM: (state) => ({ schema: 'mobile-vm.v1', generated_at: '2026-10-02T00:00:00.000Z', state_keys: Object.keys(state) }),
+    buildWeek: (state, offset) => ({ schema: 'mobile-week.v1', offset }),
   });
   const call = (path, host = '10.0.0.5:3211') => {
     const res = mkRes();
@@ -160,6 +164,44 @@ const url = (p) => new URL('http://127.0.0.1:3210' + p);
     (() => { sync.set(MOBILE_KEYS.cal_token, ''); const r = call('/cal/.ics'); sync.set(MOBILE_KEYS.cal_token, 'secret-token-1234'); return r.code === 404; })());
   ok('常数时间比较：长度不同直接否', tokenEquals('abc', 'abcd') === false && tokenEquals('', '') === false);
   ok('说明页里的 token 会原样出现（它就是订阅地址的一部分）', mobilePageHtml({ token: 'T', host: 'h' }).includes('/cal/T.ics'));
+  // ---- /m/ 手机界面：同一把 token，五件套，且越权一律 404 ----
+  ok('说明页里给出了手机版入口（用 /p/ 新入口，绕开老 SW 作用域）',
+    mobilePageHtml({ token: 'T', host: 'h' }).includes('/p/T/'));
+  ok('手机界面：token 不对 → 404', call('/m/wrong/').code === 404 && call('/m/wrong/vm.json').code === 404);
+  ok('手机界面：没有 token → 404', call('/m/').code === 404 && call('/m//vm.json').code === 404);
+  const mPage = call('/m/secret-token-1234/');
+  ok('手机界面：给页面（自包含，含 manifest 与 service worker 注册）',
+    mPage.code === 200 && /application\/json|text\/html/.test(String(mPage.headers['Content-Type']))
+    && String(mPage.ended).includes('manifest.webmanifest') && String(mPage.ended).includes('serviceWorker'));
+  const mVM = call('/m/secret-token-1234/vm.json');
+  ok('手机界面：给 vm.json（走注入的 buildState/buildVM）',
+    mVM.code === 200 && JSON.parse(String(mVM.ended)).schema === 'mobile-vm.v1');
+  const mManifest = call('/m/secret-token-1234/manifest.webmanifest');
+  ok('手机界面：给 manifest（start_url 带 token）',
+    mManifest.code === 200 && String(mManifest.ended).includes('/m/secret-token-1234/'));
+  ok('手机界面：给 sw.js', call('/m/secret-token-1234/sw.js').code === 200);
+  ok('手机界面：给 icon.svg', call('/m/secret-token-1234/icon.svg').code === 200);
+  const mWeek = call('/m/secret-token-1234/week.json?offset=-1');
+  ok('日程页：给 week.json（offset 传得进去）',
+    mWeek.code === 200 && JSON.parse(String(mWeek.ended)).offset === -1);
+  ok('日程页：坏 offset 归零',
+    JSON.parse(String(call('/m/secret-token-1234/week.json?offset=abc').ended)).offset === 0);
+  ok('手机界面：未知子路径 → 404（不做目录列举）', call('/m/secret-token-1234/whatever').code === 404);
+  // ---- /p/ 新入口：与 /m/ 同一把 token；用途是绕开老 SW 的作用域（/m/<token>/） ----
+  ok('新入口 /p/：token 不对 → 404', call('/p/wrong/').code === 404 && call('/p/wrong/vm.json').code === 404);
+  ok('新入口 /p/：token 对 → 给页面与数据',
+    call('/p/secret-token-1234/').code === 200 && call('/p/secret-token-1234/vm.json').code === 200);
+  ok('新入口 /p/：manifest 的 start_url 指向 /p/',
+    String(call('/p/secret-token-1234/manifest.webmanifest').ended).includes('/p/secret-token-1234/'));
+  ok('老入口 /m/ 仍然可用（不破坏已有图标）',
+    call('/m/secret-token-1234/').code === 200);
+  ok('没接线的 buildVM → 503 而不是 500',
+    (() => {
+      const h2 = mobileReadHandler({ store, buildIcs: () => ({ ics: '' }), buildDigestText: () => '', appName: () => 'Cairn' });
+      const r = mkRes();
+      h2({ url: '/m/secret-token-1234/vm.json', headers: { host: 'h' } }, r);
+      return r.code === 503;
+    })());
 }
 {
   // 起停是幂等的；没起过也能安全 stop

@@ -1,7 +1,7 @@
 {
   "name": "cairn",
-  "version": "1.0.1",
-  "appVersion": "Vol.2.4",
+  "version": "1.1.0",
+  "appVersion": "Vol.2.5",
   "description": "Cairn —— 本地优先的个人信息与生活规划平台：把外部信息（Canvas / 邮箱 / 论文 / 日历）汇进来，再据此安排日程、任务与提醒。任何 agent 都能驱动它。",
   "type": "module",
   "scripts": {

@@ -20,7 +20,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { scanModules, validateModule } from '../lib/modules.mjs';
-import { formatCapabilityUse, formatPermissions, summarizePermissions } from '../lib/permissions.mjs';
+import { MANIFEST_NAME, buildManifest, verifyManifest } from '../lib/module-package.mjs';
+import { describePrivacy, formatCapabilityUse, formatPermissions, summarizePermissions } from '../lib/permissions.mjs';
 import { normalizeActions, summarizeActions } from '../lib/processor.mjs';
 import { unzipSync, zipSync } from '../lib/zip.mjs';
 import { COST_LABELS, listCapabilities } from '../lib/capabilities/index.mjs';
@@ -36,7 +37,9 @@ const SERVER_URL = process.env.CAIRN_URL || 'http://127.0.0.1:3210';
 const say = (s = '') => console.log(s);
 const ok = (s) => console.log(`  ✅ ${s}`);
 const warn = (s) => console.log(`  ⚠️  ${s}`);
-const bad = (s) => console.log(`  ❌ ${s}`);
+// 2026-10-02：以前 `bad()` 只打印、**不改退出码** ⇒ 任何失败都以 0 退出，
+// 脚本里 `cairn mod install ... && next` 会以为装成功了。现在失败一律退出码 1。
+const bad = (s) => { console.log(`  ❌ ${s}`); process.exitCode = 1; };
 
 function parseArgs(argv) {
   const args = { _: [], flags: {} };
@@ -261,6 +264,7 @@ async function cmdRun(args) {
 }
 
 // ---------------- mod pack / install ----------------
+
 function cmdPack(args) {
   const id = args._[0];
   if (!id) return bad('用法：cairn mod pack <id> [--out xxx.zip] [--dir 模块目录]');
@@ -272,10 +276,16 @@ function cmdPack(args) {
   const { ok: valid, errors } = validateModule(descriptor);
   if (!valid) return bad(`描述符不合法，先修好再打包：${errors.join('；')}`);
   const files = walkFiles(modDir).filter((f) => !f.startsWith('.') && !f.includes('/.'));
-  const zip = zipSync(files.map((f) => ({ name: f, data: readFileSync(join(modDir, f)) })));
+  const manifest = buildManifest(modDir, descriptor, files, capsOfModule(descriptor));
+  const zip = zipSync([
+    ...files.map((f) => ({ name: f, data: readFileSync(join(modDir, f)) })),
+    { name: MANIFEST_NAME, data: Buffer.from(JSON.stringify(manifest, null, 2) + '\n', 'utf8') },
+  ]);
   const out = resolve(String(args.flags.out || join(process.cwd(), `${id}-${descriptor.version || '0.0.0'}.zip`)));
   writeFileSync(out, zip);
   ok(`已打包 ${files.length} 个文件 → ${out}（${(zip.length / 1024).toFixed(1)} KB）`);
+  say(`包内清单：MANIFEST.json（${manifest.file_count} 个文件的 sha256 + 能力 + 权限）`);
+  say(`它会碰什么：${manifest.privacy}`);
   say(formatPermissions(descriptor));
 }
 
@@ -309,9 +319,34 @@ function cmdInstall(args) {
   const { ok: valid, errors } = validateModule(descriptor);
   say(`来源：${from} ${srcPath}`);
   say(`模块：${descriptor.id} · ${descriptor.name || ''} · ${descriptor.kind} · v${descriptor.version}`);
+  // 一句话讲清"它会读你什么、会不会写"（2026-10-02 · 台阶 B）——装之前最想知道的是这个
+  say(`它会碰什么：${describePrivacy(descriptor, capsOfModule(descriptor))}`);
+  // 包内清单（台阶 E）：有就逐文件核对校验和 —— 装的东西和作者打的东西必须是同一份
+  let manifestChecked = null;
+  const manifestRaw = files[`${prefix}${MANIFEST_NAME}`];
+  if (manifestRaw) {
+    let manifest = null;
+    try { manifest = JSON.parse(manifestRaw.toString('utf8')); } catch { manifest = null; }
+    if (!manifest || !Array.isArray(manifest.files)) {
+      warn('包里有 MANIFEST.json 但读不出来 —— 跳过校验（老包格式？）');
+    } else {
+      const v = verifyManifest(manifest, files, prefix);
+      manifestChecked = v;
+      if (v.ok) ok(`包内清单核对通过：${v.checked} 个文件逐一比对 sha256`);
+      else {
+        warn(`包内清单**对不上**：内容变过的 ${v.bad.length} 个${v.bad.length ? `（${v.bad.slice(0, 3).join('、')}）` : ''}`
+          + `，缺文件 ${v.missing.length} 个${v.missing.length ? `（${v.missing.slice(0, 3).join('、')}）` : ''}`);
+      }
+    }
+  } else {
+    say('这个包没有 MANIFEST.json（老包）—— 装之前只有权限清单可看，没有逐文件校验和。');
+  }
   say(formatPermissions(descriptor));
   say(formatCapabilityUse(descriptor, capsOfModule(descriptor)));
   if (!valid) return bad(`描述符不合法，拒绝安装：${errors.join('；')}`);
+  if (manifestChecked && !manifestChecked.ok && !args.flags.force) {
+    return bad('包内清单对不上（文件被改过或压坏了）—— 拒绝安装；确认没问题再加 --force');
+  }
   const needEntry = descriptor.entry && (descriptor.entry.run || descriptor.entry.flow);
   if (descriptor.kind === 'processor' && (!needEntry || !files[`${prefix}${needEntry}`])) {
     return bad(`包里缺少入口文件 ${needEntry || '（描述符里既没有 entry.run 也没有 entry.flow）'} —— 拒绝安装`);

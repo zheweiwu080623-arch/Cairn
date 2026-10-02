@@ -229,7 +229,9 @@ const CAPS = [
   const srv = readFileSync(join(ROOT, 'server.mjs'), 'utf8');
   const app = readFileSync(join(ROOT, 'public', 'app.js'), 'utf8');
   const view = readFileSync(join(ROOT, 'modules', 'flow-builder', 'builder.js'), 'utf8');
-  ok('主程序挂了 /api/flows', srv.includes("'/api/flows'") && srv.includes('createFlowStack('));
+  // 2026-10-02：能力搭建的接线搬进了 lib/capability-stack.mjs（主程序 2100 行护栏）
+  ok('主程序挂了 /api/flows', srv.includes("'/api/flows'") && srv.includes('createCapabilityStack(')
+    && readFileSync(join(ROOT, 'lib', 'capability-stack.mjs'), 'utf8').includes('createFlowStack('));
   ok('view 模块能被"切过去才 import"那套挂上（导出了 mount）', /export async function mount\(/.test(view));
   ok('页面用的是四个约定接口',
     view.includes("readJson('/api/capabilities')") && view.includes("readJson('/api/flows')")
@@ -250,6 +252,64 @@ const CAPS = [
   ok('app.js 会给 kind=view 的模块建页面并挂载（不需要为主程序加特例）',
     app.includes("m.kind === 'view' && !MODULES.some((x) => x.tab === m.id)") && app.includes('await mod.mount(box,'));
   ok('样式里有搭建页的类', readFileSync(join(ROOT, 'public', 'styles.css'), 'utf8').includes('.fb-nodecol'));
+}
+
+// ---------- 2026-10-02 台阶 0/1/2：条件、存成能力、本地编辑 ----------
+{
+  const view = readFileSync(join(ROOT, 'modules', 'flow-builder', 'builder.js'), 'utf8');
+  const css = readFileSync(join(ROOT, 'public', 'styles.css'), 'utf8');
+
+  // 台阶 2：节点能写条件（"如果…就…"）
+  const card = renderNodeCard({ id: 'a', capability: 'x', when: { ref: '$b.n', op: 'gt', value: 0 } }, 0, { id: 'x', name: 'X', kind: 'compute', __all: [] }, {});
+  ok('节点卡片上出现"条件"输入框，并把已有条件回填',
+    card.includes('data-node-when="0"') && card.includes('$b.n') && card.includes('如果'));
+  ok('没写条件的节点也画得出输入框（不写 = 每次都跑）',
+    renderNodeCard({ id: 'a', capability: 'x' }, 0, { id: 'x', name: 'X', kind: 'compute', __all: [] }, {}).includes('data-node-when="0"'));
+  ok('样式的条件框是虚线、写了才变实线（一眼看出哪些节点带条件）',
+    css.includes('.fb-when') && css.includes('dashed') && css.includes('border-style: solid'));
+
+  // 条件的输入框语法：够用就行，不搞表达式语言
+  const p = (s) => fbView.parseWhenInput(s);
+  ok('空 → 没有条件', p('').when === undefined && p('   ').when === undefined);
+  ok('$a.b → 取到就算成立', p('$a.b').when === '$a.b');
+  ok('$a.b > 0 → {ref, op:gt, value:0}',
+    JSON.stringify(p('$a.b > 0').when) === JSON.stringify({ ref: '$a.b', op: 'gt', value: 0 }));
+  ok('>= / < / <= / == / != / contains / matches 都认得',
+    p('$a.b >= 2').when.op === 'gte' && p('$a.b < 2').when.op === 'lt'
+    && p('$a.b <= 2').when.op === 'lte' && p('$a.b == "x"').when.op === 'eq'
+    && p('$a.b != 2').when.op === 'ne' && p('$a.b contains "x"').when.op === 'contains'
+    && p('$a.b matches "^x"').when.op === 'matches');
+  ok('带引号的值去掉引号、数字变数字、true/false 变布尔',
+    p('$a.b == "x"').when.value === 'x' && p('$a.b == 2').when.value === 2 && p('$a.b == true').when.value === true);
+  ok('JSON 写法原样收下', JSON.stringify(p('{"ref":"$a.b","op":"eq","value":1}').when) === '{"ref":"$a.b","op":"eq","value":1}');
+  ok('写错的写法如实报错（不静默丢掉这个条件）',
+    !!p('b > 0').error && !!p('$a.b 乱写').error && !!p('{ 假的 }').error);
+
+  // 台阶 1：同一张图能存成"新能力"
+  ok('保存区有两个入口：存成功能 / 存成能力',
+    view.includes('id="fb-save"') && view.includes('id="fb-save-cap"') && view.includes("target: 'capability'"));
+  ok('能力 id 要写成点分的（界面先拦一道再发请求）',
+    view.includes("!id.includes('.')") && view.includes('点分的'));
+  ok('spec() 会把条件写进图里（不然条件只在界面上好看）',
+    /if \(n\.when !== undefined[\s\S]{0,40}out\.when = n\.when/.test(view));
+  ok('试跑结果里会显示"哪些节点没跑"（⏭）', view.includes('⏭'));
+
+  // 台阶 0：能力就在本机文件夹里 —— 打开目录 / 重新扫描
+  ok('开发面板能打开能力目录、能重新扫描',
+    view.includes("'/api/capabilities/dev/open'") && view.includes("on('#fb-rescan'") && view.includes('打开能力目录'));
+  ok('把"平台每次读取都会重扫、不用重启"直接写给用户看',
+    view.includes('不用重启'));
+  ok('拼出来的能力在清单里带"拼的"标记（和手写的区分开）',
+    view.includes('c.composite') && view.includes('拼的'));
+
+  // 素材栏上标出"给不给模型调"（台阶 A/C 的可见化）
+  const pal = renderPalette([
+    { id: 'a.b', name: '可直调', label: '可直调', kind_label: '纯计算', permissions: [], idempotent: true, expose: 'tool' },
+    { id: 'c.d', name: '写类', label: '写类', kind_label: '写本机', permissions: ['notify:app'], idempotent: false, expose: 'tool_with_confirm' },
+    { id: 'e.f', name: '图内用', label: '图内用', kind_label: '纯计算', permissions: [], idempotent: true, expose: 'none' },
+  ]);
+  ok('写类能力在素材栏带 ⚠️（"调它只给计划"）', pal.includes('⚠️') && pal.includes('写类'));
+  ok('只用于拼图的能力带 🔒', pal.includes('🔒'));
 }
 
 console.log('');

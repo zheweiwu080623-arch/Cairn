@@ -64,6 +64,18 @@ const GOOD = {
   ok('引用不存在时给 undefined（不抛）', resolveInput('$a.nope.x', outputs) === undefined);
   ok('对象/数组里的引用会递归替换',
     JSON.stringify(resolveInput({ q: '$a.deep.x', keep: 1, list: ['$a.deep.x'] }, outputs)) === '{"q":"hi","keep":1,"list":["hi"]}');
+
+  // 2026-10-02：句子里的 ${节点.字段} 就地替换（拼提示词就靠这个）
+  ok('句子里夹引用会替换', resolveInput('总结一下：${a.deep.x}！', outputs) === '总结一下：hi！');
+  ok('取不到的引用换成空串（不写 undefined 进去）', resolveInput('值：${a.nope} 结束', outputs) === '值： 结束');
+  ok('对象值会被序列化', resolveInput('${a.list}', outputs) === '[1,2,3]');
+  ok('没有 ${ 的字符串行为不变', resolveInput('价格是 $5（不是引用）', outputs) === '价格是 $5（不是引用）');
+  ok('句子里的引用也算上游依赖（校验能拦住"引用排在自己后面的节点"）',
+    validateFlow({
+      schema: 'flow.v1',
+      nodes: [{ id: 'a', capability: 'x', input: { prompt: '看 ${b.v}' } }, { id: 'b', capability: 'y' }],
+      edges: [['a', 'b']],
+    }).errors.some((e) => e.includes('只能来自上游')));
 }
 
 // ---------- ③ 图执行 ----------

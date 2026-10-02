@@ -4,7 +4,8 @@
 //
 // 不起服务、不联网：协议层用假 fetch，数据层用假 store。
 
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -37,9 +38,17 @@ const iso = (ms) => new Date(ms).toISOString();
     (await handleMessage({ jsonrpc: '2.0', id: 2, method: 'initialize', params: { protocolVersion: '2025-06-18' } })).result.protocolVersion === '2025-06-18');
   ok('ping → 空结果', JSON.stringify((await handleMessage({ jsonrpc: '2.0', id: 3, method: 'ping' })).result) === '{}');
   ok('initialized 通知不回复', (await handleMessage({ jsonrpc: '2.0', method: 'notifications/initialized' })) === null);
-  const list = await handleMessage({ jsonrpc: '2.0', id: 4, method: 'tools/list' });
-  ok('tools/list 给 5 个工具，都带 name/description/inputSchema',
-    list.result.tools.length === 5 && list.result.tools.every((t) => t.name && t.description && t.inputSchema && t.inputSchema.type === 'object'));
+  // 这一句必须喂假 fetch：本文件的地基是"不起服务、不联网"。以前漏了 fetchImpl，
+  // 于是**本机 Cairn 恰好在跑**时，tools/list 会顺带取到运行时能力表（工具数变多）→ 时红时绿。
+  const offline = async () => { throw new Error('不联网'); };
+  const list = await handleMessage({ jsonrpc: '2.0', id: 4, method: 'tools/list' }, { fetchImpl: offline });
+  ok('tools/list 给 5 个固定只读工具，都带 name/description/inputSchema（不联网时只有这 5 个）',
+    list.result.tools.length === 5 && list.result.tools.every((t) => t.name && t.description && t.inputSchema && t.inputSchema.type === 'object'),
+    `实际 ${list.result.tools.length} 个`);
+  ok('tools/list：服务开着时会额外带上运行时能力表（假 fetch 给一份就认得出来）',
+    (await handleMessage({ jsonrpc: '2.0', id: 41, method: 'tools/list' },
+      { fetchImpl: async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ tools: [{ name: 'csv.parse', description: 'x', inputSchema: { type: 'object' } }] }) }) })
+    ).result.tools.length === 6);
   ok('工具名都带 cairn_ 前缀（免得和别的服务器撞名）',
     list.result.tools.every((t) => t.name.startsWith('cairn_')),
     JSON.stringify(list.result.tools.map((t) => t.name)));
@@ -221,7 +230,9 @@ ok('不认识的路径 → 404', (await call('/api/mcp/别的')).code === 404);
     && buildAgentFiles({})['学习产物索引.md'].includes('还没有生成学习产物'));
 }
 {
-  const dir = join(process.env.PLANNER_TEST_TMP || '.', `agent-export-${Date.now()}`);
+  // 临时目录必须落在临时目录里：以前退到 '.'（= 仓库根），每跑一次就在仓库里留下一个
+  // agent-export-<时间戳>/ 目录 —— 本地跑几次就攒几个，CI 也会把检出目录弄脏。
+  const dir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-agent-export-'));
   const w = writeAgentFiles(dir, { 'a.md': '# A\n', 'b.json': '{}\n' });
   ok('落盘：返回写了哪几个、各多少字节', w.ok === true && w.written.length === 2 && w.written[0].bytes > 0);
   ok('落盘：文件真的在那儿（能读回来）', readFileSync(join(dir, 'a.md'), 'utf8') === '# A\n');
@@ -256,9 +267,14 @@ ok('不认识的路径 → 404', (await call('/api/mcp/别的')).code === 404);
   ok('MCP 服务器是零依赖的（只用内置能力）', !/from '(?!node:|\.\.?\/)/.test(mcpSrc));
   ok('MCP 服务器**不直接开数据库**（走本机只读接口，避免两个进程写库）',
     !mcpSrc.includes('store.mjs') && mcpSrc.includes('127.0.0.1'));
-  ok('工具全是只读的：没有任何写操作的字样',
-    !/method:\s*'POST'|createNotification|barkNotify|writeFileSync/.test(mcpSrc)
+  // 2026-10-02（台阶 A/C）：MCP 现在也把"能力表"当工具表 —— 写类能力会出现，
+  // 但**调用只会得到计划**。所以守卫改成守"它自己不写"：不开库、不写文件、不直接建通知，
+  // 而且只允许一个 POST 出口（那条口正是"只给计划"的 /api/capabilities/invoke）。
+  ok('MCP 层自己不写任何东西（不开库 / 不写文件 / 不建通知）',
+    !mcpSrc.includes('store.mjs') && !/createNotification|barkNotify|writeFileSync/.test(mcpSrc)
     && !/method:\s*'POST'|createNotification/.test(routeSrc));
+  ok('写类能力只走"要计划"那一个口（POST 只允许打到 /api/capabilities/invoke）',
+    (mcpSrc.match(/method: 'POST'/g) || []).length === 1 && mcpSrc.includes("'/api/capabilities/invoke'"));
   ok('CLI 有 --selftest（换台机器也能自检）与 --help', binSrc.includes('--selftest') && binSrc.includes('--help'));
   ok('文档里给了 Qoder 的 MCP 配置写法', readFileSync(join(ROOT, 'docs', 'CONNECT_AGENTS.md'), 'utf8').includes('mcpServers'));
   ok('主程序行数护栏内', srv.split('\n').length < 2200, String(srv.split('\n').length));

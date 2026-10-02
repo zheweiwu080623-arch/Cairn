@@ -309,13 +309,30 @@ lib/routes/localdirs.mjs     本机目录（壁纸 / 课程资料）：读、改
 （`kind`：`read` / `compute` / `write` / `outbound`）、能不能重放（`idempotent`）、
 花不花钱（`cost`）、实现在哪（`entry`）、单测在哪（`tests`）。
 
-加一条能力的规矩：**先写单测**（`tests/capability-<名字>.test.mjs`），再登记进 `CAPABILITIES`，
-`validateCapability()` 会拦住拼错的 id 与没登记过的权限码。命名用点分「域.动作」
-（`course.text` / `canvas.course.check` / `dedupe.filterNew`），粒度少而稳。
+加一条能力的规矩：**一个文件一条**（`lib/capabilities/impl/<域.动作>.mjs`，导出 `meta` + `bind` + `run`），
+注册表靠**扫目录**发现它，`validateCapability()` 会拦住拼错的 id 与没登记过的权限码。
+命名用点分「域.动作」（`course.text` / `canvas.course.check`），粒度少而稳。
 
-⚠️ **现状（M1 · S2）**：注册表**只登记、还没接线** —— 功能拿到的能力仍是主程序手工装配的，
-`server.mjs` 还没有引用这个注册表（`tests/capabilities.test.mjs` 里有条断言盯着这一点）。
-改装配方式（S4）、让 `module.json` 声明 `requires.capabilities`（S5）之后，这条断言要跟着改。
+**三条粒度，从"算"到"拼"**（2026-10-02）：
+
+1. **自带能力**（`lib/capabilities/impl/`）：真正的原子动作，其中最通用的一批是
+   `http.get` / `json.pick` / `text.template` / `text.split` / `text.extract` / `csv.parse` / `logic.each`
+   —— 有这几条，"接一个新接口"这类事在图上连一连就能做完，不用写代码；
+2. **复合能力**（`<数据目录>/capabilities/<id>.json`）：`{ meta, flow }`，一条能力 = 一张小图，
+   由其它能力拼出来（`lib/capabilities/user.mjs` 的 `validateComposite` / `runUserCapability`）；
+3. **手写能力**（`<数据目录>/capabilities/<id>.mjs`）：`meta` + `run(input, ctx)`，兜底用。
+
+复合能力与手写能力都**不进仓库、不进版本控制** —— 它们在数据目录里，随装随删，
+平台启动/每次读取时扫描、校验、登记（坏的能力会带着错误原因列出来，而不是静默丢掉）。
+控制类能力（`logic.each`）通过 `ctx.invoke` 调别的能力，宿主有**层数护栏**（第 8 层停下），
+所以两个互相调用的复合能力不会把进程转死。
+
+图上的**条件**（`when`）由 `lib/flow.mjs` 求值：不成立 = 安静跳过，并且"上游没跑 ⇒ 下游也不跑"
+自动往下传（`tests/flow-conditions.test.mjs`）。
+
+⚠️ **装配方式（M1 · S4/S5，已完成）**：`server.mjs` 用 `createCapabilityHost` 按登记表装配，
+功能在 `module.json` 的 `requires.capabilities` 里声明了哪几条就拿到哪几条；
+**手写的 `extraContext` 合并已经删掉**（`tests/capabilities.test.mjs` 有断言盯着）。
 
 ---
 

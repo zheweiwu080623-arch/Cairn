@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "dashboard.v1 —— 首页卡片（Cairn 改造项 3）",
+  "description": "首页要渲染的全部卡片。内容是后端按此契约产出的：前端只认「标题 + 几行」，不认识具体业务。加一种卡 = 在 lib/dashboard.mjs 加一个类型 + 往 dashboard_cards 表插一行。",
+  "type": "object",
+  "required": ["schema", "generated_at", "count", "cards"],
+  "properties": {
+    "schema": { "const": "dashboard.v1" },
+    "generated_at": { "type": "string", "description": "ISO 时间戳" },
+    "count": { "type": "integer", "minimum": 0 },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "module_id", "card_id", "size", "position", "kind", "title", "rows"],
+        "properties": {
+          "id": { "type": "string", "description": "dashboard_cards.id" },
+          "module_id": { "type": "string", "description": "谁提供的（builtin 或模块 id）" },
+          "card_id": { "type": "string", "description": "模块内部的卡片类型" },
+          "size": { "enum": ["sm", "md", "lg"] },
+          "position": { "type": "integer" },
+          "kind": {
+            "enum": ["builtin", "native", "unknown"],
+            "description": "builtin=内容由后端产出；native=内容由 public/app.js 画好、前端把节点搬进网格（标题用来认面板）；unknown=认不出的 card_id"
+          },
+          "title": { "type": "string" },
+          "note": { "type": "string", "description": "副标题（可选）" },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "string" },
+                "meta": { "type": "string" },
+                "level": { "enum": ["ok", "warn", "error", "info", "muted"] }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -28,7 +28,16 @@ const ok = (label, cond, detail = '') => {
 console.log('capabilities.test.mjs');
 
 // ---- ① 整张表 ----
-ok('登记了 10 条能力（13 条细能力按粒度决定并成 10 条）', CAPABILITIES.length === 10, String(CAPABILITIES.length));
+// 2026-10-02：10 条（课程/去重/设置/投递/产物）→ 17 条。新增的 7 条是**通用原子**：
+//   http.get / json.pick / text.template / text.split / text.extract / csv.parse / logic.each
+// 目的：把"想接一个新数据源就得写代码"这件事压下去（拼图就能做，见「能力搭建」）。
+// 2026-10-02 下午又加了两条：llm.ask（问模型，花 token）与 task.create（建任务）——
+// 它们让"信息 → 理解 → 行动"这条链在图上能走完。
+const GENERIC = ['http.get', 'json.pick', 'text.template', 'text.split', 'text.extract', 'csv.parse', 'logic.each', 'llm.ask', 'task.create'];
+ok('登记了 19 条能力（10 条业务/动作 + 9 条通用）', CAPABILITIES.length === 19, String(CAPABILITIES.length));
+ok('9 条通用能力都在，且都在「通用」组里',
+  GENERIC.every((id) => getCapability(id) && getCapability(id).ui.group === '通用'),
+  GENERIC.filter((id) => !getCapability(id)).join(', '));
 const ids = CAPABILITIES.map((c) => c.id);
 ok('id 不重复', new Set(ids).size === ids.length, ids.join(', '));
 const bad = CAPABILITIES.map((c) => ({ id: c.id, r: validateCapability(c) })).filter((x) => !x.r.ok);
@@ -40,7 +49,11 @@ for (const c of CAPABILITIES) {
 }
 ok('每条都有 ui.label / ui.group（可视化搭建要按它分栏）',
   CAPABILITIES.every((c) => c.ui && c.ui.label && c.ui.group));
-ok('每条都写清了现在谁在用', CAPABILITIES.every((c) => Array.isArray(c.used_by) && c.used_by.length > 0));
+// 通用原子是"给拼图用的"，还没有哪个功能声明它 ⇒ 允许 used_by 为空，
+// 但必须在 notes 里写清它是干什么的（不许有一条"没人知道它干嘛"的能力）。
+ok('每条都写清了现在谁在用（通用原子要有 notes）',
+  CAPABILITIES.every((c) => (Array.isArray(c.used_by) && c.used_by.length > 0)
+    || ((c.ui && c.ui.group === '通用') && typeof c.notes === 'string' && c.notes.length > 0)));
 
 // ---- ② 命名风格：点分「域.动作」 ----
 ok('id 都是点分段（每段以字母开头，段内允许驼峰，如 course.text / dedupe.filterNew）',
@@ -62,17 +75,17 @@ ok('它们靠 kind 区分：文件类写本机、推手机是对外发送',
   getCapability('notify.app')?.kind === 'write' && getCapability('file.write')?.kind === 'write'
   && getCapability('push.phone')?.kind === 'outbound');
 ok('没有再单列"执行器"这一层（没有 executor.* 的能力）', !ids.some((id) => id.startsWith('executor.')));
-ok('非幂等的两条都被如实标出来',
+ok('非幂等的四条都被如实标出来（notify / push / logic.each / llm.ask）',
   CAPABILITIES.filter((c) => c.idempotent === false).map((c) => c.id).sort().join(',')
-  === 'notify.app,push.phone', CAPABILITIES.filter((c) => c.idempotent === false).map((c) => c.id).join(','));
+  === 'llm.ask,logic.each,notify.app,push.phone', CAPABILITIES.filter((c) => c.idempotent === false).map((c) => c.id).join(','));
 
 // ---- ⑤ 查表接口 ----
 ok('按 id 取得到', getCapability('course.text')?.name === '把课程材料读成文字并检索');
 ok('取不存在的 id 返回 null（不抛）', getCapability('nope.nope') === null);
-ok('按 kind 过滤：5 条只读', listCapabilities({ kind: 'read' }).length === 5, String(listCapabilities({ kind: 'read' }).length));
+ok('按 kind 过滤：6 条只读（多了 http.get）', listCapabilities({ kind: 'read' }).length === 6, String(listCapabilities({ kind: 'read' }).length));
 ok('按分组过滤：课程组 4 条', listCapabilities({ group: '课程' }).length === 4, String(listCapabilities({ group: '课程' }).length));
 ok('按关键字搜（"课件"）能找到课程材料那两条以上', listCapabilities({ q: '课件' }).length >= 2, String(listCapabilities({ q: '课件' }).length));
-ok('分组是 5 组（课程/去重/设置/投递/产物）', capabilityGroups().length === 5, capabilityGroups().join(' / '));
+ok('分组是 6 组（课程/通用/去重/产物/投递/设置）', capabilityGroups().length === 6, capabilityGroups().join(' / '));
 ok('每种 kind 都是登记表认识的', CAPABILITIES.every((c) => CAPABILITY_KINDS.includes(c.kind)));
 ok('一行摘要能生成', summarizeCapability(getCapability('course.text')).startsWith('course.text —— '), summarizeCapability(getCapability('course.text')));
 
@@ -91,8 +104,8 @@ ok('注册表靠"扫目录"发现能力（读 impl 目录）',
   regSrc.includes("IMPL_DIR") && regSrc.includes('readdirSync(IMPL_DIR)') && regSrc.includes('await discover()'));
 ok('注册表里不再手写任何一条能力（没有 id: \'xxx\' 这种字面量）',
   !/id:\s*'[a-z]+\.[a-zA-Z]+'/.test(regSrc), (regSrc.match(/id:\s*'[^']+'/g) || []).join(' | '));
-ok('每条能力的实现都单独成文件（impl/ 下 10 个）',
-  readdirSync(join(ROOT, 'lib', 'capabilities', 'impl')).filter((f) => f.endsWith('.mjs')).length === 10);
+ok('每条能力的实现都单独成文件（impl/ 下 19 个）',
+  readdirSync(join(ROOT, 'lib', 'capabilities', 'impl')).filter((f) => f.endsWith('.mjs')).length === 19);
 ok('每个实现文件都导出 meta + bind + run',
   readdirSync(join(ROOT, 'lib', 'capabilities', 'impl')).filter((f) => f.endsWith('.mjs')).every((f) => {
     const t = readFileSync(join(ROOT, 'lib', 'capabilities', 'impl', f), 'utf8');

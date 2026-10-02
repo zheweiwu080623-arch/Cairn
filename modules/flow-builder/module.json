@@ -3,7 +3,7 @@
   "id": "flow-builder",
   "name": "能力搭建",
   "sub": "拖能力拼功能",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "kind": "view",
   "icon": "🧩",
   "order": 55,

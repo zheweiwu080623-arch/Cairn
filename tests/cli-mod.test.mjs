@@ -96,7 +96,10 @@ const cli = (...args) => spawnSync(process.execPath, [CLI, ...args], { cwd: ROOT
   ok('mod pack 生成 zip', packed.status === 0 && existsSync(zipPath), packed.stdout);
   ok('打包时也打印权限清单', /权限清单/.test(packed.stdout));
   const entries = Object.keys(unzipSync(readFileSync(zipPath)));
-  ok('zip 里是模块的三个文件', entries.length === 3 && entries.includes('module.json') && entries.includes('run.js'), entries.join(','));
+  // 2026-10-02（台阶 E）：包里多了 MANIFEST.json（逐文件 sha256 + 能力 + 权限 + 那句人话）
+  ok('zip 里是模块的文件 + 包内清单',
+    entries.length === 4 && ['module.json', 'run.js', 'README.md', 'MANIFEST.json'].every((f) => entries.includes(f)),
+    entries.join(','));
 
   const target = join(tmp, 'installed');
   const preview = cli('mod', 'install', zipPath, '--dir', target);

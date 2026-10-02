@@ -44,8 +44,14 @@ const courseProvider = () => ({
     currentWeek: () => 4,
   },
 });
+/** 模型提供者（照 server.mjs 的形状：`ctx.llm.ask(o)` → { ok, text, via }）。 */
+const llmProvider = () => ({
+  llm: { ask: async (o = {}) => ({ ok: true, text: `echo:${String(o.prompt || '')}`, via: 'fake' }) },
+});
 const host = createCapabilityHost({
-  providers: { preclass: preclassProvider, course: courseProvider },
+  // 2026-10-02：多了第三个提供者 —— 模型（llm.ask 用它）。
+  // 加提供者就要同步加进下面的 legacy，否则"逐键一致"那条守卫会红（这正是它该干的事）。
+  providers: { preclass: preclassProvider, course: courseProvider, llm: llmProvider },
 });
 
 // ---------- S4 · 行为等价：与"手写合并"逐键一致 ----------
@@ -53,7 +59,7 @@ const host = createCapabilityHost({
   const allCapIds = CAPABILITIES.filter((c) => !c.bind.executor).map((c) => c.id);
   const mod = { id: 'demo', kind: 'processor', requires: { capabilities: allCapIds } };
   const assembled = host.extraContext(mod);
-  const legacy = { ...preclassProvider(), ...courseProvider() };   // 原来 server.mjs 的写法
+  const legacy = { ...preclassProvider(), ...courseProvider(), ...llmProvider() };   // 原来 server.mjs 的写法
 
   const paths = (o, prefix = '') => Object.entries(o).flatMap(([k, v]) => {
     const p = prefix ? `${prefix}.${k}` : k;
@@ -120,7 +126,11 @@ const host = createCapabilityHost({
   });
   const res = {};
   await routes.handleCapabilities({ method: 'GET' }, res, { pathname: '/api/capabilities', searchParams: new URLSearchParams('') });
-  ok('接口 200 且列全 10 条', res.code === 200 && res.body.count === 10, JSON.stringify(res.body).slice(0, 120));
+  // 2026-10-02：登记表从 10 条长到 17 条（加了"通用原子 + 逐条处理"）⇒ 断言改成
+  // "接口列全了登记表里的每一条"，不再钉死一个数字。
+  ok('接口 200 且列全登记表里的每一条',
+    res.code === 200 && res.body.count === CAPABILITIES.length && res.body.builtin_count === CAPABILITIES.length,
+    JSON.stringify(res.body).slice(0, 160));
   ok('带上分组（M3 画布的分栏）', Array.isArray(res.body.groups) && res.body.groups.includes('课程'));
   ok('权限翻成了人话',
     res.body.capabilities.find((c) => c.id === 'course.text').permission_labels[0].label.includes('课程资料'));
@@ -206,7 +216,7 @@ const host = createCapabilityHost({
   ok('帮助里写了 cap list', /cairn cap list/.test(cli));
   ok('mod list --permissions 会带能力清单', cli.includes('formatCapabilityUse(m, capsOfModule(m))'));
   ok('安装预览也会带能力清单', cli.includes('formatCapabilityUse(descriptor, capsOfModule(descriptor))'));
-  ok('登记表仍是 10 条（这一步没有加新能力）', listCapabilities().length === 10);
+  ok('登记表就是注册表（listCapabilities 不多不少）', listCapabilities().length === CAPABILITIES.length);
 }
 
 console.log('');

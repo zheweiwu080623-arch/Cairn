@@ -92,7 +92,7 @@ Cairn 只监听本机回环地址（`127.0.0.1`），而且**故意不碰邮箱�
 `outbox/` 里等人。于是 Cairn 给"发不出去的东西"开了一个**只走本机**的落点：
 
 ```text
-桥发信失败 → POST http://127.0.0.1:3210/api/local-drop → 进「通知」页（source = pigeon）
+桥发信失败 → POST http://127.0.0.1:3210/api/local-drop → 进「通知」页（source = mail-bridge）
                                                       → 可选推一条 Bark 到手机
 ```
 

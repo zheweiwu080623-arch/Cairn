@@ -6,9 +6,15 @@
 //   GET  /api/flows            已经存下来的声明式功能
 //   POST /api/flows/dry-run    试跑（**永远只演练**，真数据、零副作用）
 //   POST /api/flows/save       存成一个新功能（modules/<id>/）
+//                              —— 或者存成一条新能力（<数据目录>/capabilities/<id>.json，target:'capability'）
 //
 // 交互刻意保持朴素：**点素材 → 加节点**；节点可以拖（HTML5 拖拽）上下换位置、
 // 也可以点 ↑↓ 按钮；节点之间用一条 SVG 曲线连起来（"拉线"）。每一对相邻节点就是一条边。
+//
+// 2026-10-02（台阶 0/1/2）：
+//   * 节点可以写**条件**（"如果…就…"）—— 条件不成立就不跑，并且自动往下游传；
+//   * 拼好的图可以**存成一条能力**，于是"能力也能由能力拼出来"（复合能力，一行 JS 不写）；
+//   * 开发页可以直接**打开能力目录**——用你自己的编辑器改文件，平台每次读取都会重扫，不用重启。
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (m) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -25,9 +31,9 @@ export function renderPalette(caps = []) {
   }
   return groups.map((g) => `<div class="fb-group">
     <div class="dim" style="margin:6px 0 4px">${esc(g.name)}</div>
-    ${g.items.map((c) => `<button class="fb-cap" data-add="${esc(c.id)}" title="${esc(c.kind_label)}${c.permissions.length ? ` · 要 ${esc(c.permissions.join(', '))}` : ' · 不要额外权限'}${c.idempotent ? '' : ' · 不能重放'}">
+    ${g.items.map((c) => `<button class="fb-cap" data-add="${esc(c.id)}" title="${esc(c.kind_label)}${c.permissions.length ? ` · 要 ${esc(c.permissions.join(', '))}` : ' · 不要额外权限'}${c.idempotent ? '' : ' · 不能重放'}${c.composite ? ' · 复合能力（由别的能力拼出来的）' : ''}">
       <span class="fb-cap-ico">${esc(c.icon || '◆')}</span>
-      <span>${esc(c.label || c.name)}</span>
+      <span>${esc(c.label || c.name)}${c.composite ? ' <span class="dim">·拼</span>' : ''}${c.expose === 'tool_with_confirm' ? ' <span class="dim" title="写类：外部 agent 调它只会拿到计划">⚠️</span>' : ''}${c.expose === 'none' ? ' <span class="dim" title="只用于拼图，不交给模型">🔒</span>' : ''}</span>
     </button>`).join('')}
   </div>`).join('');
 }
@@ -41,13 +47,16 @@ export function renderPalette(caps = []) {
  */
 export function renderNodeCard(node = {}, index = 0, capMeta = null, wiring = {}) {
   const input = node.input && Object.keys(node.input).length ? JSON.stringify(node.input, null, 1) : '';
+  const when = node.when === undefined ? '' : (typeof node.when === 'string' ? node.when : JSON.stringify(node.when));
   const kind = capMeta ? capMeta.kind : '';
   const tag = kind === 'write' || kind === 'outbound' ? '写' : (kind === 'read' ? '读' : '算');
+  const condTag = when ? '<span class="pill p0" title="只有条件成立时这一条才跑">如果</span>' : '';
   const inbound = wirelessSafe(wiring.inbound);
   const sources = Array.isArray(wiring.sources) ? wiring.sources : [];
   return `<div class="fb-node list-item" draggable="true" data-node="${esc(node.id)}" data-index="${index}">
     <div class="fb-node-head">
       <span class="pill ${tag === '写' ? 'p1' : (tag === '读' ? 'p3' : 'p2')}">${esc(tag)}</span>
+      ${condTag}
       <input class="fb-id" data-node-id="${index}" value="${esc(node.id)}" size="10" />
       <select class="select-inline" data-node-cap="${index}">
         ${(capMeta && capMeta.__all ? capMeta.__all : []).map((c) => `<option value="${esc(c.id)}" ${c.id === node.capability ? 'selected' : ''}>${esc(c.label || c.id)}</option>`).join('')}
@@ -73,8 +82,44 @@ export function renderNodeCard(node = {}, index = 0, capMeta = null, wiring = {}
     </div>
     <textarea class="fb-input" data-node-input="${index}" rows="2"
       placeholder='入参（JSON）：可以写 "$上游节点.id" 取它的产出'>${esc(input)}</textarea>
+    <input class="fb-when" data-node-when="${index}" value="${esc(when)}"
+      placeholder='条件（可空）：留空 = 每次都跑；写 $pick.count > 0 = 只有条件成立才跑' />
     <div class="dim fb-hint">${esc(capMeta ? capMeta.name : '')}</div>
   </div>`;
+}
+
+/**
+ * 把界面上那个"条件"输入框里的文字变成 flow.v1 认的 `when`（**纯函数**，可测）。
+ *
+ * 认这几种写法（够用就行，不搞成表达式语言）：
+ *   `$pick.count`            → 取到的东西"成立"（非空/非 0/非 false）才跑
+ *   `$pick.count > 0`        → 也认 >= < <= == != contains matches
+ *   `{ "ref": "$a.b", "op": "eq", "value": "x" }` → 原样（JSON）
+ *   `true` / `false`         → 写死的条件（调试用）
+ * 看不懂就返回 `{ error }`（界面会提示，不会静默丢掉这个条件）。
+ */
+export function parseWhenInput(text) {
+  const s = String(text == null ? '' : text).trim();
+  if (!s) return { when: undefined };
+  if (s === 'true' || s === 'false') return { when: s === 'true' };
+  if (s.startsWith('{')) {
+    try { return { when: JSON.parse(s) }; } catch (e) { return { error: `条件要写合法 JSON：${(e && e.message) || e}` }; }
+  }
+  const m = s.match(/^(\$[A-Za-z0-9_.]+)\s*(>=|<=|==|!=|>|<|contains|matches)?\s*(.*)$/);
+  if (!m) return { error: '条件看不懂：要么写 $节点.字段，要么写 $节点.字段 > 值' };
+  const ref = m[1];
+  const opRaw = m[2] || '';
+  const rhs = (m[3] || '').trim();
+  if (!opRaw) {
+    if (rhs) return { error: `条件里多了一段看不懂的东西：${rhs}` };
+    return { when: ref };
+  }
+  const op = { '>': 'gt', '>=': 'gte', '<': 'lt', '<=': 'lte', '==': 'eq', '!=': 'ne', contains: 'contains', matches: 'matches' }[opRaw];
+  let value = rhs;
+  if (/^-?\d+(\.\d+)?$/.test(rhs)) value = Number(rhs);
+  else if (rhs === 'true' || rhs === 'false') value = rhs === 'true';
+  else if ((rhs.startsWith('"') && rhs.endsWith('"')) || (rhs.startsWith("'") && rhs.endsWith("'"))) value = rhs.slice(1, -1);
+  return { when: { ref, op, value } };
 }
 
 /** 连线的数组可能来自外部（保存的 flow.json），这里统一成数组，坏值不炸。 */
@@ -88,6 +133,8 @@ export function renderPage(payload = {}) {
   // 于是**素材栏永远是 0 条**（"共 0 条能力"）；而"已存功能"那块正常（那个字段两边都叫 flows）。
   // 现在两个名字都认，别再让这种内部字段错位发生。
   const caps = payload.capabilities || payload.caps || [];
+  const usable = caps.filter((c) => !c.disabled);          // 停用的不进素材栏（台阶 D）
+  const offCount = caps.length - usable.length;
   const nodes = payload.nodes || [];
   const edges = Array.isArray(payload.edges) ? payload.edges : [];
   const all = caps.map((c) => ({ id: c.id, label: c.label, kind: c.kind }));
@@ -107,23 +154,23 @@ export function renderPage(payload = {}) {
     <div class="between" style="margin-bottom:12px">
       <div>
         <h3 style="margin:0">🧩 能力搭建 <span class="muted">拖能力 → 连线 → 试跑 → 存成新功能</span></h3>
-        <div class="dim">${nodes.length} 个节点 · ${edges.length} 条连线（想连哪就连哪）· 试跑**只演练**，不会写文件也不会发通知。</div>
+        <div class="dim">${nodes.length} 个节点 · ${edges.length} 条连线（想连哪就连哪）· 试跑**只演练**，不会写文件也不会发通知。
+          拼好的图既能存成**功能**，也能存成一条**能力**（下次直接当素材用）。</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn" id="fb-clear">清空</button>
         <button class="btn" id="fb-dry">试跑（演练）</button>
-        <button class="btn primary" id="fb-save">存成新功能</button>
       </div>
     </div>
 
     <div class="fb-cols">
       <div class="card fb-palette">
         <div class="dim">能力素材栏（点一下加到图里）</div>
-        <div id="fb-palette-inner" style="max-height:520px;overflow:auto">${renderPalette(caps)}</div>
+        <div id="fb-palette-inner" style="max-height:520px;overflow:auto">${renderPalette(usable)}</div>
         ${payload.capsError
           ? `<div class="empty" style="margin-top:6px">能力清单没读出来：${esc(payload.capsError)}
               <div style="margin-top:6px"><button class="btn small" id="fb-retry">再试一次</button></div></div>`
-          : `<div class="dim" style="margin-top:8px">共 ${caps.length} 条能力</div>`}
+          : `<div class="dim" style="margin-top:8px">共 ${usable.length} 条能力${offCount ? `（另有 ${offCount} 条已停用，去「🛠 开发 · 能力」里启用）` : ''}</div>`}
       </div>
 
       <div class="card fb-canvas" id="fb-canvas">
@@ -142,6 +189,14 @@ export function renderPage(payload = {}) {
         <div style="display:flex;gap:8px;align-items:center">
           <input id="fb-new-id" class="select-inline" placeholder="新功能 id（如 my-flow）" size="18" />
           <input id="fb-new-name" class="select-inline" placeholder="显示名（可选）" size="16" />
+          <button class="btn primary" id="fb-save">存成新功能</button>
+        </div>
+      </div>
+      <div class="between" style="margin-top:6px">
+        <div class="dim">存成**能力**：以后能在素材栏里直接选它（能力 id 要写成点分的，如 <code>my.flow</code>）</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="fb-new-cap-id" class="select-inline" placeholder="新能力 id（如 my.flow）" size="18" />
+          <button class="btn" id="fb-save-cap">存成新能力</button>
         </div>
       </div>
       <pre id="fb-result" style="display:none;white-space:pre-wrap;margin-top:8px"></pre>
@@ -160,11 +215,44 @@ export function renderPage(payload = {}) {
   </div>`;
 }
 
-/** 「开发 · 能力」：写一条能力（单文件）→ 注册 → 试跑（2026-09-26 从设置页搬到这里）。 */
+/**
+ * 「开发 · 能力」：写一条能力（单文件）→ 注册 → 试跑（2026-09-26 从设置页搬到这里）。
+ * 2026-10-02 加了台阶 0：把"在浏览器里写代码"从**唯一入口**降成**兜底入口** ——
+ * 能力就是数据目录下的普通文件，用你自己的编辑器改完，回来点「重新扫描」就生效（不用重启服务）。
+ */
 export function renderDevPane(payload = {}) {
   const caps = payload.userCaps || [];
+  const allCaps = payload.capabilities || payload.caps || [];
   const code = payload.devCode !== undefined ? payload.devCode : DEV_TEMPLATE;
+  const dir = payload.capDir || '';
   return `<div class="card">
+    <b>停用 / 启用（本机版"隔离"）</b>
+    <div class="dim">停用的能力：**不进素材栏、不进给模型的工具表，图执行会明确报"已停用"**（不是静默不跑）。
+      这个是本机设置，存在数据目录里，删掉那份清单就等于全部启用。</div>
+    <div style="margin-top:8px;max-height:220px;overflow:auto">
+      ${allCaps.length ? allCaps.map((c) => `<div class="ob-row">
+        <span style="flex:1">${esc(c.icon || '◆')} ${esc(c.label || c.name || c.id)}
+          <span class="dim">${esc(c.id)}${c.expose === 'none' ? ' · 只用于拼图' : (c.expose === 'tool_with_confirm' ? ' · 写类只给计划' : '')}</span></span>
+        ${c.disabled ? '<span class="pill p0">已停用</span>' : ''}
+        <button class="btn small" data-fb-toggle="${esc(c.id)}" data-fb-disabled="${c.disabled ? '1' : '0'}">${c.disabled ? '启用' : '停用'}</button>
+      </div>`).join('') : '<div class="empty">没读到能力清单。</div>'}
+    </div>
+  </div>
+  <div class="card">
+    <b>在哪写</b>
+    <div class="dim">能力就是<strong>数据目录下的普通文件</strong>：手写的是一份 <code>.json</code>/<code>.mjs</code>，
+      放在 <code>${esc(dir || '<数据目录>/capabilities/')}</code>。
+      平台**每次读取都会重扫这个目录** —— 用你自己的编辑器（VS Code / Codex 都行）改完文件，
+      回到这里点「重新扫描」就生效，**不用重启服务**。</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px">
+      <button class="btn" id="fb-dev-open">打开能力目录</button>
+      <button class="btn" id="fb-rescan">重新扫描</button>
+      <span class="dim">${esc(dir ? `目录：${dir}` : '（这台服务器没给数据目录，用不了自写能力）')}</span>
+    </div>
+    <div class="dim" style="margin-top:6px">想"零代码"加一条能力？不用在这儿写代码 ——
+      去「🧩 搭功能」把能力连成一张图，然后点「存成新能力」。（也可以在文件里手写一条复合能力：一个 <code>.json</code>，里面是 <code>{meta, flow}</code>。）</div>
+  </div>
+  <div class="card">
     <b>写一条能力</b>
     <div class="dim">能力 = 一个单文件：<code>&lt;数据目录&gt;/capabilities/&lt;id&gt;.mjs</code>，导出 <code>meta</code> 与 <code>run(input, ctx)</code>。
       <b>不用改内核、不用改主程序</b>；写好点「保存并注册」，它会立刻出现在上面的素材栏里。</div>
@@ -185,9 +273,9 @@ export function renderDevPane(payload = {}) {
     </div>
     <div style="margin-top:12px"><b>你已经写的能力</b>
       ${caps.length ? caps.map((c) => `<div class="ob-row">
-        <div style="flex:1"><div>${esc(c.id)} <span class="dim">${esc(c.name || '')}</span>${c.error ? ' <span class="pill p0">坏了</span>' : ''}</div>
-          <div class="dim">${c.error ? esc(c.error) : esc(c.file || '')}</div></div>
-        <button class="btn small" data-fb-dev-load="${esc(c.id)}">打开</button>
+        <div style="flex:1"><div>${esc(c.id)} <span class="dim">${esc(c.name || '')}</span>${c.error ? ' <span class="pill p0">坏了</span>' : (c.composite ? ' <span class="pill p3">拼的</span>' : '')}</div>
+          <div class="dim">${c.error ? esc(c.error) : esc(c.file || '')}${c.composite && !c.error ? ` · ${esc((c.capabilities || []).join('、'))}` : ''}</div></div>
+        ${c.composite ? '' : `<button class="btn small" data-fb-dev-load="${esc(c.id)}">打开</button>`}
         <button class="btn small" data-fb-dev-run="${esc(c.id)}">试跑</button>
       </div>`).join('') : '<div class="empty">还没有自己写的能力。</div>'}
     </div>
@@ -219,7 +307,7 @@ export async function mount(el, ctx = {}) {
   const on = (sel, fn) => { const node = q(sel); if (node) node.onclick = fn; };
   const onAll = (sel, fn) => qa(sel).forEach((node) => { node.onclick = fn; });
   // nodes 管顺序与参数；edges 管"谁连到谁"（M3 第二版：不再是"相邻即连"）
-  const state = { caps: [], flows: [], nodes: [], edges: [], capsError: '', flowsError: '', pane: 'build', userCaps: [], devCode: undefined, note: '' };
+  const state = { caps: [], flows: [], nodes: [], edges: [], capsError: '', flowsError: '', pane: 'build', userCaps: [], devCode: undefined, note: '', capDir: '' };
   const draw = () => { el.innerHTML = renderPage({ ...state }); bind(); drawLines(); };
   const status = (t) => { const s = el.querySelector('#fb-status'); if (s) s.textContent = t || ''; };
   const showResult = (text) => {
@@ -281,7 +369,12 @@ export async function mount(el, ctx = {}) {
       state.flows = (f && f.flows) || []; state.flowsError = (f && f.__timeout) ? '取已存功能超时' : '';
     } catch (e) { state.flows = []; state.flowsError = String((e && e.message) || e); }
     // 开发者模式才多取一份"你写的能力"（给"开发 · 能力"那一页）
-    try { const d = await withTimeout(readJson('/api/capabilities/dev'), 4000); state.userCaps = (d && d.capabilities) || []; if (d && d.template && state.devCode === undefined) state.devCode = d.template; }
+    try {
+      const d = await withTimeout(readJson('/api/capabilities/dev'), 4000);
+      state.userCaps = (d && d.capabilities) || [];
+      state.capDir = (d && d.dir) || '';
+      if (d && d.template && state.devCode === undefined) state.devCode = d.template;
+    }
     catch { state.userCaps = []; }
     draw();
   }
@@ -320,6 +413,7 @@ export async function mount(el, ctx = {}) {
     const nodes = state.nodes.map((n) => {
       const out = { id: n.id, capability: n.capability };
       if (n.input && Object.keys(n.input).length) out.input = n.input;
+      if (n.when !== undefined && n.when !== true && n.when !== '') out.when = n.when;
       return out;
     });
     const ids = new Set(nodes.map((n) => n.id));
@@ -374,6 +468,32 @@ export async function mount(el, ctx = {}) {
     };
     const retry = el.querySelector('#fb-retry');
     if (retry) retry.onclick = () => load();
+    // 台阶 0：能力就在本机文件夹里 —— 打开目录 / 重新扫描（不用重启服务）
+    on('#fb-dev-open', async () => {
+      try {
+        const r = await api('POST', '/api/capabilities/dev/open', {});
+        state.note = r.ok ? `已在文件管理器里打开：${r.dir}` : `没能打开：${r.error || '未知原因'}（路径：${r.dir || ''}）`;
+        if (r.ok) toast('已打开能力目录', 'green');
+      } catch (e) { state.note = `没能打开：${e.message || ''}`; }
+      draw();
+    });
+    on('#fb-rescan', async () => {
+      state.note = '重新扫描中…'; draw();
+      state.devCode = undefined;                  // 让模板重新读一次，别把上次的编辑器内容当成"现在的"
+      await load();
+      state.note = `已重新扫描（共 ${state.userCaps.length} 条自写能力）`;
+      draw();
+    });
+    // 停用 / 启用一条能力（台阶 D）：本机隔离，坏能力或"暂时不想看见"的能力都能关掉
+    onAll('[data-fb-toggle]', async (e) => {
+      const id = e.currentTarget.dataset.fbToggle;
+      const want = e.currentTarget.dataset.fbDisabled !== '1';
+      try {
+        const r = await api('POST', '/api/capabilities/disabled', { id, disabled: want });
+        toast(`${want ? '已停用' : '已启用'}「${id}」`, want ? 'green' : 'green');
+        await load();
+      } catch (err) { toast(`没改成：${err.message || ''}`, 'red'); }
+    });
 
     // ---- 开发 · 能力：保存并注册 / 试跑 / 打开（从设置页搬过来时漏了绑，这次补齐） ----
     on('#fb-dev-save', async () => {
@@ -459,6 +579,16 @@ export async function mount(el, ctx = {}) {
       catch { toast('入参要写合法 JSON（例如 { "courses": "$scan.courses" }）', 'red'); return; }
       draw();
     });
+    // 条件（"如果…就…"）：留空 = 每次都跑
+    el.querySelectorAll('[data-node-when]').forEach((inp) => inp.onchange = () => {
+      const n = state.nodes[Number(inp.dataset.nodeWhen)];
+      if (!n) return;
+      const r = parseWhenInput(inp.value);
+      if (r.error) { toast(r.error, 'red'); draw(); return; }
+      if (r.when === undefined) delete n.when; else n.when = r.when;
+      status(r.when === undefined ? `「${n.id}」改回每次都跑` : `「${n.id}」只有条件成立才跑`);
+      draw();
+    });
 
     // 拖动换顺序（HTML5 原生拖拽，拖动时就能看到顺序变化）
     let dragFrom = null;
@@ -478,11 +608,14 @@ export async function mount(el, ctx = {}) {
       status('试跑中…（真数据、只演练）');
       try {
         const r = await api('POST', '/api/flows/dry-run', { spec: spec() });
-        if (!r.ok) { status(''); showResult(`没跑通：${r.error || '未知原因'}\n\n${(r.nodes || []).map((n) => `${n.ok ? '✅' : '❌'} ${n.id}（${n.capability}）${n.error ? '：' + n.error : ''}`).join('\n')}`); return; }
-        status(`${r.summary} · ${r.ms}ms · 只演练，没有副作用`);
+        const line = (n) => (n.skipped ? `  ⏭ ${n.id}（${n.capability}）没跑：${n.reason || '条件不成立'}`
+          : `${n.ok ? '  ✅' : '  ❌'} ${n.id}（${n.capability}）${n.ms}ms${n.error ? '：' + n.error : ''}`);
+        if (!r.ok) { status(''); showResult(`没跑通：${r.error || '未知原因'}\n\n${(r.nodes || []).map((n) => line(n).trim()).join('\n')}`); return; }
+        const skipped = (r.nodes || []).filter((n) => n.skipped).length;
+        status(`${r.summary} · ${r.ms}ms · 只演练，没有副作用${skipped ? ` · ${skipped} 个节点没跑（条件不成立）` : ''}`);
         showResult([
           '节点：',
-          ...(r.nodes || []).map((n) => `  ✅ ${n.id}（${n.capability}）${n.ms}ms`),
+          ...(r.nodes || []).map(line),
           '',
           '本来会做的事（planned，未执行）：',
           ...(r.planned || []).map((a) => `  · ${a.type} —— ${a.summary}${a.path ? `\n      → ${a.path}` : ''}`),
@@ -502,6 +635,29 @@ export async function mount(el, ctx = {}) {
         status('');
         toast(`已存成新功能：${r.id}（用 cairn mod test ${r.id} 试一下）`, 'green');
         showResult(`已保存 modules/${r.id}/\n声明能力：${(r.capabilities || []).join(', ')}\n权限：${(r.permissions || []).join(', ') || '（无）'}`);
+        await load();
+      } catch (e) { status(''); toast(`没存上：${e.message || ''}`, 'red'); }
+    };
+
+    // 台阶 1：同样的图，直接存成一条**能力**（下次在素材栏里就能选它）
+    const saveCap = el.querySelector('#fb-save-cap');
+    if (saveCap) saveCap.onclick = async () => {
+      const id = (el.querySelector('#fb-new-cap-id').value || '').trim();
+      const name = (el.querySelector('#fb-new-name').value || '').trim();
+      if (!id) { toast('先给这条能力起个 id —— 要写成点分的，例如 my.flow', 'red'); return; }
+      if (!id.includes('.')) { toast('能力 id 要是点分的「域.动作」，例如 my.flow', 'red'); return; }
+      status('保存中…');
+      try {
+        const r = await api('POST', '/api/flows/save', { id, name, spec: spec(), target: 'capability' });
+        status('');
+        toast(`已存成新能力：${r.id}`, 'green');
+        showResult([
+          `已保存 ${r.file || `capabilities/${r.id}.json`}`,
+          `用到的能力：${(r.capabilities || []).join(', ')}`,
+          `权限：${(r.permissions || []).join(', ') || '（无）'}`,
+          '',
+          '它现在出现在上面的素材栏里了 —— 可以像自带能力一样被拼进别的图。',
+        ].join('\n'));
         await load();
       } catch (e) { status(''); toast(`没存上：${e.message || ''}`, 'red'); }
     };

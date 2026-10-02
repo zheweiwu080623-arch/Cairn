@@ -291,8 +291,10 @@ const prefsSrc = readFileSync(join(ROOT, 'lib', 'routes', 'prefs.mjs'), 'utf8');
     ok('接口试跑返回产出', res3.code === 200 && res3.body.output.upper === 'ABC', JSON.stringify(res3.body));
     const res4 = {};
     await routes.handleCapabilities({ method: 'GET' }, res4, { pathname: '/api/capabilities', searchParams: new URLSearchParams('') });
+    // 2026-10-02：登记表从 10 长到 17（加了通用原子）⇒ 这里改成"自带 + 自写"的关系，不再钉数字
     ok('自写能力也进了 /api/capabilities（能力搭建能用它）',
-      res4.body.count === 11 && res4.body.user_count === 1 && res4.body.capabilities.some((c) => c.id === 'demo.upper' && c.source === 'user'),
+      res4.body.user_count === 1 && res4.body.count === res4.body.builtin_count + 1
+      && res4.body.capabilities.some((c) => c.id === 'demo.upper' && c.source === 'user'),
       `count=${res4.body.count} user=${res4.body.user_count}`);
 
     // 图执行里也能调到它（host.invoke 兜底去找自写能力）

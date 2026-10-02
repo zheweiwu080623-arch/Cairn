@@ -506,7 +506,8 @@ export function renderFeatures(payload = {}) {
         <input type="checkbox" class="ob-check" data-set-um="${esc(m.id)}" ${picked.includes(m.id) ? 'checked' : ''} />
         <span class="ob-row-ico">${esc(m.icon || '◆')}</span>
         <div style="flex:1"><div>${esc(m.name)}</div><div class="dim">${esc(m.sub || '功能模块')}</div>
-          ${m.settings ? '<div class="dim">有专属设置 → 去那一页右上角 ⚙ 功能设置</div>' : ''}</div>
+          ${m.settings ? '<div class="dim">有专属设置 → 去那一页右上角 ⚙ 功能设置</div>' : ''}
+          ${m.privacy ? `<div class="dim" title="这个功能会碰什么">🧾 ${esc(m.privacy)}</div>` : ''}</div>
         <button class="btn small" data-set-up="${esc(m.id)}" ${i === 0 ? 'disabled' : ''}>↑</button>
         <button class="btn small" data-set-down="${esc(m.id)}" ${i === ordered.length - 1 ? 'disabled' : ''}>↓</button>
       </div>`).join('') || '<div class="empty">还没有可选的功能模块。</div>'}

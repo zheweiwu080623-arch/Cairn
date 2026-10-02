@@ -1,0 +1,16 @@
+{
+  "schema": "flow.v1",
+  "note": "示例：这个功能**一行 JS 都没有** —— 取一个接口 → 取两个字段 → 拼一句话 → 发一条通知。四个节点全是能力。",
+  "nodes": [
+    { "id": "get", "capability": "http.get", "input": { "url": "https://api.github.com/repos/nodejs/node" } },
+    { "id": "pick", "capability": "json.pick", "input": { "data": "$get.json", "fields": { "repo": "full_name", "stars": "stargazers_count" } } },
+    { "id": "line", "capability": "text.template", "input": { "template": "{{repo}} 现在有 {{stars}} 颗星", "data": "$pick.out" } },
+    {
+      "id": "talk",
+      "capability": "notify.app",
+      "when": "$get.ok",
+      "input": { "title": "接口取回来了", "text": "$line.text" }
+    }
+  ],
+  "edges": [["get", "pick"], ["pick", "line"], ["line", "talk"]]
+}

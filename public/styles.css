@@ -776,6 +776,12 @@ body[data-theme="p3r"] .card:hover { border-color: rgba(46,107,255,.55); box-sha
   border-radius: 6px; padding: 4px 6px; font-size: 12px; }
 .fb-input { width: 100%; margin-top: 6px; background: var(--panel2); border: 1px solid var(--line2);
   color: var(--text); border-radius: 8px; padding: 6px 8px; font-size: 12px; font-family: inherit; resize: vertical; }
+/* 条件（"如果…就…"）：空着就是每次都跑，写了就是"只有条件成立才跑" */
+.fb-when { width: 100%; margin-top: 6px; background: var(--panel2); border: 1px dashed var(--line2);
+  color: var(--text); border-radius: 8px; padding: 5px 8px; font-size: 12px;
+  font-family: ui-monospace, Consolas, monospace; }
+.fb-when:not(:placeholder-shown) { border-style: solid; border-color: var(--accent2, #7fd1ff); }
+.fb-when::placeholder { color: var(--muted); font-family: inherit; }
 .fb-hint { font-size: 11px; margin-top: 4px; }
 
 /* ---------------- 五步上手（P5）：页面 + 首次运行的闸门 ---------------- */

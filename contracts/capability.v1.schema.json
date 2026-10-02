@@ -66,6 +66,22 @@
       },
       "additionalProperties": true
     },
+    "model": {
+      "type": "object",
+      "description": "**给模型看的那一面**（2026-10-02 新增）：这条能力要不要、以及怎么交给外部 AI agent 调用。description 要按「什么时候该用它」写（像 skill 的触发条件），不要写「它是什么」；expose 不写就按 kind 推导（read/compute → tool，write/outbound → tool_with_confirm）",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "写给模型的一句话：「当……时用我」。模型先读它，再决定调不调"
+        },
+        "expose": {
+          "type": "string",
+          "enum": ["none", "tool", "tool_with_confirm"],
+          "description": "none=不交给模型（例如只能用在图里的控制类能力）；tool=可直接调；tool_with_confirm=可以列给模型，但**调用只会得到计划**，真执行由用户确认"
+        }
+      },
+      "additionalProperties": true
+    },
     "notes": { "type": ["string", "null"], "description": "边界说明与踩过的坑（例如「只读，不下载不提交」）" }
   },
   "additionalProperties": true

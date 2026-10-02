@@ -104,9 +104,15 @@ node bin/cairn.mjs mod test 我的功能      # 校验 + 演练（不会打扰�
 
 // ② 推手机（**只发一句话**；前提是用户勾了"推手机"）
 { type: 'push', summary: 'X 快上课了', payload: { push: '25 分钟后上课｜有 3 条新东西' } }
+
+// ③ 建任务（2026-10-02 起真的会执行；**只建一条、只建不改**，靠
+//    payload.notes 里那行 `[幂等键]` 防止重跑建第二条）
+{ type: 'task', summary: '交 MATH1860J 作业 3',
+  payload: { title: '交 MATH1860J 作业 3', priority: 1, notes: '来自邮件' },
+  target: { due_at: '2026-10-07T23:59:00+08:00' }, idempotency_key: 'MATH1860J-hw3' }
 ```
 
-其它类型（`task / event / mail / file / external / archive / report`）会被登记但**暂时不执行**，
+其它类型（`event / mail / external / archive / report`）会被登记但**暂时不执行**，
 系统会如实标成 `skipped`（"还没有能执行这类动作的能力"）——不会假装做了。
 
 四条硬规矩：

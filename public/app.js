@@ -381,7 +381,8 @@ function pickablePages() {
       .map((m) => ({ id: m.tab, name: m.name, sub: m.sub, icon: m.ico, core: true })),
     ...MODULE_PAGES.filter((m) => m.tab !== 'settings' && m.tab !== 'onboarding')
       // settings = 这个功能自己有"就地设置"（设置页据此提示"去那一页右上角改"）
-      .map((m) => ({ id: m.tab, name: m.name, sub: m.sub, icon: m.ico, core: false, settings: m.settings === true })),
+      // privacy（2026-10-02 · 台阶 B）：一句话讲清"它会碰什么"，设置 → 功能页会显示
+      .map((m) => ({ id: m.tab, name: m.name, sub: m.sub, icon: m.ico, core: false, settings: m.settings === true, privacy: m.privacy || '' }))
   ];
 }
 // 「功能模块」是**可选**的那一组（view 类模块：课程辅助 / 能力搭建 / 五步上手…）。
@@ -400,7 +401,7 @@ const TITLE_L = {
 let lang = (() => { try { return localStorage.getItem('planner-lang') || 'zh'; } catch { return 'zh'; } })();
 let lastModule = 'today';
 let hubCursor = 'today';
-const APP_VERSION = 'Vol.2.4';
+const APP_VERSION = 'Vol.2.5';
 // 显示名由服务端下发（/api/state 的 brand.app_name）：
 // 作者本机读 data/brand.json，别人 clone 下来默认是 Cairn。
 let APP_TITLE = 'Cairn';
@@ -2947,7 +2948,8 @@ async function loadModules() {
     MODULE_REGISTRY = (r.modules || []).filter((m) => !m.error);
     for (const m of MODULE_REGISTRY) {
       if (m.kind === 'view' && !MODULES.some((x) => x.tab === m.id)) {
-        MODULE_PAGES.push({ tab: m.id, ico: m.icon || '◆', name: m.name, en: m.name, sub: m.sub || '模块', ensub: 'MODULE', settings: m.settings === true });
+    // privacy：服务端 /api/modules 里那句话（"它会碰什么"），设置 → 功能页会显示（台阶 B）
+    MODULE_PAGES.push({ tab: m.id, ico: m.icon || '◆', name: m.name, en: m.name, sub: m.sub || '模块', ensub: 'MODULE', settings: m.settings === true, privacy: m.privacy || '' });
         // 模块自带的一页：导航名与页面标题都跟着模块走（不然切过去标题是空的）
         for (const l of ['zh', 'en']) {
           if (TITLE_L[l] && !TITLE_L[l][m.id]) TITLE_L[l][m.id] = m.name;

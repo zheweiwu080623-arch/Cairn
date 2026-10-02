@@ -28,7 +28,9 @@ console.log('function-capability-split.test.mjs');
 // ---------- ① 能力侧：一条能力 = 一个文件 ----------
 {
   const files = readdirSync(IMPL_DIR).filter((f) => f.endsWith('.mjs'));
-  ok('能力住在 lib/capabilities/impl/ 下，一个文件一条', files.length === 10 && CAPABILITIES.length === 10,
+  // 2026-10-02：10 → 17（加了 7 条通用原子）。这里要守住的是"一个文件一条"，
+  // 所以断言"文件数 = 登记条数"，而不是某个具体数字。
+  ok('能力住在 lib/capabilities/impl/ 下，一个文件一条', files.length === CAPABILITIES.length && files.length > 0,
     `${files.length} 文件 / ${CAPABILITIES.length} 条`);
   ok('文件名就是能力 id（域.动作.mjs）',
     CAPABILITIES.every((c) => c.file === `${c.id}.mjs`), CAPABILITIES.map((c) => c.file).join(', '));
@@ -71,7 +73,13 @@ console.log('function-capability-split.test.mjs');
     !app.includes('canvas.course.check') && !app.includes("'course.text'"));
   const routes = readdirSync(join(ROOT, 'lib', 'routes')).filter((f) => f.endsWith('.mjs'));
   const leaks = routes.filter((f) => /canvas\.course\.check|course\.text|dedupe\.filterNew/.test(read(`lib/routes/${f}`)));
-  ok('路由层里也没有把能力写死（全靠注册表）', leaks.length === 0, leaks.join(', '));
+  // 2026-10-02：路由层里出现了 `course.text` 只是**注释里举的例子**——
+  // 守卫改成"代码里不许出现具体能力 id"（注释不算），不然一句说明就会把守卫打红。
+  const codeLeaks = routes.filter((f) => {
+    const src = read(`lib/routes/${f}`).split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n');
+    return /canvas\.course\.check|course\.text|dedupe\.filterNew/.test(src);
+  });
+  ok('路由层里也没有把能力写死（全靠注册表；注释里举例子不算）', codeLeaks.length === 0, codeLeaks.join(', '));
   ok('能力层对外只有一个出口（lib/capabilities/index.mjs）',
     existsSync(join(ROOT, 'lib', 'capabilities', 'index.mjs')) && existsSync(join(ROOT, 'lib', 'capabilities', 'host.mjs')));
 }

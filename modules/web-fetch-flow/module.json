@@ -1,0 +1,21 @@
+{
+  "schema": "module.v1",
+  "id": "web-fetch-flow",
+  "name": "示例：零代码接一个接口",
+  "sub": "取网址 → 取字段 → 拼一句话 → 发通知",
+  "version": "0.1.0",
+  "kind": "processor",
+  "icon": "🌐",
+  "order": 70,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "flow": "flow.json", "readme": "README.md" },
+  "data": { "reads": [], "writes": [], "tables": [] },
+  "permissions": ["net:outbound", "notify:app"],
+  "config": [],
+  "requires": {
+    "app": ">=1.0",
+    "agent": false,
+    "capabilities": ["http.get", "json.pick", "text.template", "notify.app"]
+  }
+}
