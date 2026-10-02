@@ -89,6 +89,20 @@ const remote = { socket: { remoteAddress: '192.168.1.44' } };
     again.ok === true && again.skipped === 'duplicate' && store.rows.length === 1);
 }
 
+// ---------------- ③b silent：只记不弹（给"任务完成"这类只为推手机的短消息） ----------------
+{
+  const store = makeStore();
+  await ingestLocalDrop(loopback, { title: '📮 邮件桥：任务完成', body: '回信已发出', silent: true },
+    { store, barkNotify: async () => ({ ok: true }) });
+  ok('silent:true → 通知记下来，但标成"已触发"（不弹系统通知）',
+    store.rows[0].last_fired_at !== undefined && store.rows[0].source === LOCAL_DROP_SOURCE,
+    JSON.stringify(store.rows[0].last_fired_at));
+  const store2 = makeStore();
+  await ingestLocalDrop(loopback, { title: 't', body: 'b' }, { store: store2, barkNotify: async () => ({ ok: true }) });
+  ok('不带 silent → 照旧会弹（真正"内容丢了"那种要让你立刻看见）',
+    store2.rows[0].last_fired_at === undefined);
+}
+
 // ---------------- ④ urgent 才连免打扰一起绕过；push:false 就不推 ----------------
 {
   const store = makeStore();
