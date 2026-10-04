@@ -81,7 +81,7 @@ const mkTick = (jobs, onJobRun, clock) => createTickRunner({
 
 // ---------------- ② 表与查询 ----------------
 {
-  const dir = mkdtempSync(join(tmpdir(), 'jobruns-'));
+  const dir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'jobruns-'));
   const db = new DatabaseSync(join(dir, 't.sqlite'));
   runMigrations(db);
 

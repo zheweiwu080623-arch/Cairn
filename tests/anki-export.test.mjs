@@ -58,7 +58,7 @@ ok('多行字段整体被引号包住', /"带""引号""\n和换行"/.test(csv));
 
 // ---------------- ④ 目录级：只吃 exercises.tex，不吃没结构的 knowledge.tex ----------------
 {
-  const dir = mkdtempSync(join(tmpdir(), 'cairn-anki-tex-'));
+  const dir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-anki-tex-'));
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'exercises.tex'), exercises, 'utf8');
   writeFileSync(join(dir, 'knowledge.tex'), '\\section{知识点讲解}\n\\subsection{X}\n一堆没有结构的正文。', 'utf8');

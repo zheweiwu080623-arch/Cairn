@@ -155,6 +155,8 @@ export const LOCAL_ONLY_TESTS = [
 export function runPortable({ quiet = false } = {}) {
   // 每个测试都需要一个可写的临时目录。
   // 优先用 PLANNER_TEST_TMP（有些沙箱里 %TEMP% 不可写），否则用系统临时目录。
+  // 注意：不要退到仓库里的目录。tests/settings-dev.test.mjs 有一条断言「能力目录不能在源码树里」，
+  // 临时目录一旦落进仓库，那条会红（2026-10-03 踩过）。%TEMP% 不可写的环境请自己给 PLANNER_TEST_TMP。
   const baseTmp = process.env.PLANNER_TEST_TMP || tmpdir();
   let tmp = baseTmp;
   try { tmp = mkdtempSync(join(baseTmp, 'portable-')); } catch { tmp = baseTmp; }

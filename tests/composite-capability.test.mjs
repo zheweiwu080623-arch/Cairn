@@ -30,7 +30,7 @@ const ok = (label, cond, detail = '') => {
   else { failures += 1; console.log(`  FAIL ${label}${detail ? ` -- ${detail}` : ''}`); }
 };
 const tmpData = () => {
-  const dir = mkdtempSync(join(tmpdir(), 'cairn-comp-'));
+  const dir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-comp-'));
   mkdirSync(join(dir, 'capabilities'), { recursive: true });
   return dir;
 };
@@ -173,7 +173,7 @@ console.log('composite-capability.test.mjs');
 // ---------- ⑤ 接口：同一张图，存成功能 / 存成能力 ----------
 {
   const data = tmpData();
-  const modulesDir = mkdtempSync(join(tmpdir(), 'cairn-mod-'));
+  const modulesDir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-mod-'));
   const res = {};
   const sendJson = (_res, code, body) => { res.code = code; res.body = body; };
   const sendError = (_res, code, msg) => { res.code = code; res.body = { error: msg }; };

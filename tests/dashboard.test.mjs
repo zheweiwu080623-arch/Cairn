@@ -252,7 +252,7 @@ const card = (card_id, position, extra = {}) => ({
 
 // ---------------- ⑦ 迁移 10/11：老库自动接上原生面板，并排回"原来的样子" ----------------
 {
-  const dir = mkdtempSync(join(tmpdir(), 'cairndash-'));
+  const dir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairndash-'));
   const db = new DatabaseSync(join(dir, 't.sqlite'));
   const order = () => db.prepare('SELECT module_id, card_id FROM dashboard_cards ORDER BY position').all()
     .map((r) => `${r.module_id}/${r.card_id}`);

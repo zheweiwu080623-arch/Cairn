@@ -29,7 +29,7 @@ console.log('anki.test.mjs');
 const DAY = 86400000;
 const CRT_SEC = Math.floor((Date.now() - 10 * DAY) / 1000);   // 夹具库"创建于 10 天前"
 const NOW = CRT_SEC * 1000 + 10 * DAY;                        // 正好第 10 天
-const base = mkdtempSync(join(tmpdir(), 'cairn-anki-test-'));
+const base = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-anki-test-'));
 const profileDir = join(base, '账户 1');
 mkdirSync(profileDir, { recursive: true });
 const dbPath = join(profileDir, 'collection.anki2');

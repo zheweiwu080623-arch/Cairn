@@ -28,7 +28,7 @@ const ok = (label, cond, detail = '') => {
   if (cond) console.log(`  PASS ${label}`);
   else { failures += 1; console.log(`  FAIL ${label}${detail ? ` -- ${detail}` : ''}`); }
 };
-const tmp = (p = 'x-') => mkdtempSync(join(tmpdir(), p));
+const tmp = (p = 'x-') => mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), p));
 
 console.log('privacy-disable-manifest.test.mjs');
 

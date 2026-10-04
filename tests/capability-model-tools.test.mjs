@@ -86,7 +86,7 @@ console.log('capability-model-tools.test.mjs');
 
 // ---------- ④ 接口：工具表 + 调一条能力 ----------
 {
-  const dataDir = mkdtempSync(join(tmpdir(), 'cairn-model-'));
+  const dataDir = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-model-'));
   mkdirSync(join(dataDir, 'capabilities'), { recursive: true });
   const res = {};
   let payload = {};
