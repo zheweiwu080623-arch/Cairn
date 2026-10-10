@@ -1,0 +1,17 @@
+{
+  "schema": "module.v1",
+  "id": "learning-hub",
+  "name": "学习区",
+  "sub": "知识树 · 路线 · 检验",
+  "version": "0.1.0",
+  "kind": "view",
+  "icon": "🧭",
+  "order": 18,
+  "author": { "name": "空庭Coterie" },
+  "license": "MIT",
+  "entry": { "view": "view.js", "readme": "README.md" },
+  "data": { "reads": [], "writes": [], "tables": [] },
+  "permissions": [],
+  "config": [],
+  "requires": { "app": ">=1.0", "agent": false }
+}

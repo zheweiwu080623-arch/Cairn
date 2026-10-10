@@ -20,6 +20,7 @@ const ROOT = join(HERE, '..');
 export const PORTABLE_TESTS = [
   'viewmodel.test.mjs',
   'mobile-view.test.mjs',
+  'mobile-files.test.mjs',
   'anki.test.mjs',
   'anki-export.test.mjs',
   'job-runs.test.mjs',
@@ -136,6 +137,10 @@ export const PORTABLE_TESTS = [
   'notify-tick.test.mjs',
   'ddl.test.mjs',
   'daily.test.mjs',
+  'lab-deadlines.test.mjs',
+  'net-check.test.mjs',
+  'hotspot.test.mjs',
+  'wallpaper-style.test.mjs',
   'mcp.test.mjs',
   'server-shell.test.mjs',
   'tray-guard.test.mjs',

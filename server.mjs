@@ -68,6 +68,7 @@ import { createProcessorExecutors } from './lib/processor-executors.mjs';
 import { createBackupStack } from './lib/backup-stack.mjs';
 import { createTickRunner } from './lib/notify-tick.mjs';
 import { createDdlStack } from './lib/ddl-stack.mjs';
+import { createLabStack } from './lib/lab-stack.mjs';
 import { createDailyStack } from './lib/daily-stack.mjs';
 import { createMcpStack } from './lib/mcp-stack.mjs';
 import { createTrayGuard } from './lib/tray-guard.mjs';
@@ -836,7 +837,7 @@ const tick = createTickRunner({
   onJobRun: createJobRunRecorder(store, { warn: (m) => console.error(m) }),   // 改造项 2
   heartbeat: ({ uptime_minutes }) => {
     const w = getCanvasWatch();
-    console.log(`[heartbeat] 运行中 pid=${process.pid} 已运行 ${uptime_minutes} 分钟 · 通知 ${store.listNotifications().length} 条 · 下次 Canvas 巡检 ${watchNextRun(w).slice(0, 16).replace('T', ' ')}`);
+    console.log(`[heartbeat] 运行中 pid=${process.pid} 已运行 ${uptime_minutes} 分钟 · 通知 ${store.listNotifications().length} 条 · 下次 Canvas 巡检 ${new Date(watchNextRun(w)).toLocaleString('sv-SE', { hour12: false }).slice(0, 16)}`);   // 2026-10-08 修：这里以前直接打 ISO（UTC），看着像"下次巡检"已经过去了
   },
   jobs: [
     { name: 'autosync', due: () => autoSyncDue(), run: async () => { const r = await runAutoSync(); return { note: `每日外部数据同步完成：共 ${r.total} 条待批准` }; } },
@@ -874,6 +875,7 @@ const tick = createTickRunner({
     { name: 'course-sync', due: () => true, run: () => courseSyncMaintenance() },          // 重试下载 / 补推办公本 / 每日清理
     { name: 'backup', due: () => true, run: () => backups.maybeRun() },                    // 到点且库有变化才备；旧的自动清
     { name: 'ddl', due: () => true, run: () => ddl.maybeRun() },                           // DDL 到档位就提醒（每档只响一次）
+    { name: 'lab-deadlines', due: () => true, run: () => lab.maybeRun() },                  // lab 讲义里的截止时间（内部 6 小时节流）
     { name: 'daily', due: () => daily.status().due.ok, run: () => daily.runOnce({ dryRun: false }) },   // 每日 18:00 开工
   ],
 });
@@ -944,6 +946,8 @@ const mobileServer = createMobileServer({
   buildWeek: (state, offset) => buildMobileWeekVM(state, offset),
   // 访问留痕（只记路径与状态，token 会折叠成 <token>）：用来回答"平板到底够到电脑没有"
   accessLog: join(DATA_DIR, 'mobile-access.log'),
+  // 手机↔电脑互相传文件的目录（/f/<token>/，2026-10-08）：只开放这一个目录，不递归
+  fileDir: process.env.CAIRN_SHARE_DIR || join(DATA_DIR, 'share'),
   log: (m) => console.log(m), warn: (m) => console.warn(m),
 });
 
@@ -1069,14 +1073,20 @@ function pushItemToPlanner(r) {
   // 「进通知」的来源：既有硬编码清单（邮箱/Canvas/arXiv），
   // 也允许连接器自己在 meta 里声明 notify: true（通用适配器用这条，不用改这里）
   // r.source 是**实例 id**（可能是 `email#2`）：查连接器定义前先剥成类型
-  if (CONNECTOR_NOTIFY_SOURCES.has(instanceType(r.source)) || getConnector(instanceType(r.source))?.meta?.notify === true) {
-    return pushItemToNotification(r);
-  }
+  const notifyAlso = CONNECTOR_NOTIFY_SOURCES.has(instanceType(r.source))
+    || getConnector(instanceType(r.source))?.meta?.notify === true;
+  // 2026-10-05（用户报的"大部分 assignment 的 deadline 完全没显示"）：**带截止时间的作业必须先变成任务**
+  // —— DDL 只认 tasks.due_at；以前这条被上面的"进通知"分支提前 return 掉了，13 条 Canvas 作业一条都没进任务。
   if (kind === 'task') {
-    const exists = store.listTasks().some((t) => t.title === r.title && t.due_at === r.due_at);
-    if (exists) return 0;
-    store.createTask({ title: r.title, notes: r.notes, due_at: r.due_at, tags: r.source, source: src });
-    return 1;
+    // 一条作业（来源+标题）= 一条任务；老师**改期**就更新 due_at（留一条过期条目比没有更糟）
+    const same = store.listTasks().find((t) => t.title === r.title && (t.source === src || t.due_at === r.due_at));
+    let pushed = 0;
+    if (!same) { store.createTask({ title: r.title, notes: r.notes, due_at: r.due_at, tags: r.source, source: src }); pushed = 1; }
+    else if (String(same.due_at || '') !== String(r.due_at || '')) { store.updateTask(same.id, { due_at: r.due_at, notes: r.notes }); pushed = 1; }
+    return notifyAlso ? pushed + pushItemToNotification(r) : pushed;
+  }
+  if (notifyAlso) {
+    return pushItemToNotification(r);
   }
   // reminder
   const trigger = r.due_at || r.start_at;
@@ -1348,6 +1358,7 @@ const course = createCourseStack({
 const backups = createBackupStack({ store, dataDir: DATA_DIR, sendJson, sendError, readBody, log: (m) => console.log(m) });
 // DDL 提醒 + 每日 18:00 开工（D5）：引擎/执行能力/接口都在各自 stack 里，主程序只传依赖
 const ddl = createDdlStack({ store, sendJson, sendError, readBody, bark: (o) => barkNotify(o), log: (m) => console.log(m) });
+const lab = createLabStack({ store, dataDir: DATA_DIR, sendJson, sendError, readBody, log: (m) => console.log(m), warn: (m) => console.error(m) });   // lab 讲义里的截止时间（Canvas 上没有 due_at 的那种）
 const daily = createDailyStack({ store, sendJson, sendError, readBody, dataDir: DATA_DIR, log: (m) => console.log(m), runModule: (id, opts) => moduleRoutes.runModule(id, opts) });
 // 给外部 AI agent 的只读数据入口（Qoder 走 MCP、千问办公走授权文件夹），见 bin/cairn-mcp.mjs
 const mcp = createMcpStack({ store, sendJson, sendError, readBody, dataDir: DATA_DIR, priority: priorityRoutes, course, log: (m) => console.log(m) });
@@ -1776,6 +1787,7 @@ async function handleJson(req, res, url) {
   if (p === '/api/backups' || p.startsWith('/api/backups/')) return backups.handleBackups(req, res, url);
   // ---------- DDL 到点提醒（D5）：接口在 lib/ddl-stack.mjs ----------
   if (p === '/api/ddl' || p.startsWith('/api/ddl/')) return ddl.handleDdl(req, res, url);
+  if (p === '/api/lab-deadlines' || p.startsWith('/api/lab-deadlines/')) return lab.handleLab(req, res, url);   // lab 讲义里的截止时间
   // ---------- 每日 18:00 开工（D5）：接口在 lib/daily-stack.mjs ----------
   if (p === '/api/daily' || p.startsWith('/api/daily/')) return daily.handleDaily(req, res, url);
   // ---------- 外部 AI agent 的只读入口（Qoder / 千问办公）：接口在 lib/routes/mcp.mjs ----------

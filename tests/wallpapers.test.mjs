@@ -6,8 +6,9 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
-  WALLPAPER_IMAGE_EXT, WALLPAPER_VIDEO_EXT, prettyName, safeWallpaperId,
-  scanWallpaperDir, wallpaperFilePaths,
+  WALLPAPER_IMAGE_EXT, WALLPAPER_MODES, WALLPAPER_PERIODS, WALLPAPER_VIDEO_EXT,
+  normalizeWallpaperPrefs, periodIndex, pickRandom, pickRotate, prettyName,
+  safeWallpaperId, scanWallpaperDir, wallpaperFilePaths,
 } from '../lib/wallpapers.mjs';
 
 let failures = 0;
@@ -104,6 +105,40 @@ ok('server.mjs 仍然把壁纸接口接上（没有漏接线）',
   srv.includes('createMedia(') && srv.includes('handleWallpapers(req, res, url)'));
 ok('注释里已经不再叫"Wallpaper Engine wallpapers"',
   !/Wallpaper Engine wallpapers/i.test(srv) && !/Wallpaper Engine wallpapers/i.test(mediaSrc));
+
+// ---------- 5之二. 壁纸模式：让它自己会换（2026-10-09，用户要"可以自主改动的模式"）----------
+// 设计：默认仍是"按主题固定"（不改变老行为）；rotate 按时间片换（同一片内所有设备一致）；
+// random 每次打开随机。**具体选了什么是本机私人配置**（存 data/，不进公开仓库与体验包）。
+ok('默认模式 = 按主题固定（老行为不变）', normalizeWallpaperPrefs(null).mode === 'theme');
+ok('坏配置回退到默认，不会黑屏',
+  normalizeWallpaperPrefs({ mode: '乱写', period: '乱写', offset: 'x' }).mode === 'theme'
+  && normalizeWallpaperPrefs({ mode: '乱写' }).period === 'day');
+ok('三个模式与三个周期都在',
+  WALLPAPER_MODES.join() === 'theme,rotate,random' && WALLPAPER_PERIODS.join() === 'open,hour,day');
+ok('offset 取整（点"换一张"就是 +1）', normalizeWallpaperPrefs({ offset: '3.9' }).offset === 3);
+
+const t0 = Date.UTC(2026, 9, 9, 3, 0, 0);
+const pool = ['a', 'b', 'c'];
+ok('同一时间片 → 同一张（刷新 / 换设备一致）',
+  pickRotate(pool, periodIndex('hour', t0)) === pickRotate(pool, periodIndex('hour', t0 + 60000)));
+ok('跨时间片 → 换下一张',
+  pickRotate(pool, periodIndex('hour', t0)) !== pickRotate(pool, periodIndex('hour', t0 + 3600000)));
+ok('每天一片：同一天不变', periodIndex('day', t0) === periodIndex('day', t0 + 3600000 * 5));
+ok('「现在换一张」= offset+1 → 立刻跳下一张',
+  pickRotate(pool, periodIndex('hour', t0, 0)) !== pickRotate(pool, periodIndex('hour', t0, 1)));
+ok('轮换是循环的（取模不越界）', pool.includes(pickRotate(pool, 7)) && pool.includes(pickRotate(pool, -1)));
+ok('空库不炸', pickRotate([], 3) === '' && pickRandom([]) === '');
+ok('随机只落在库里，且可注入随机源',
+  pickRandom(['x', 'y'], () => 0) === 'x' && pickRandom(['x', 'y'], () => 0.99) === 'y');
+
+{
+  const appSrc = readFileSync(join(ROOT, 'public', 'app.js'), 'utf8');
+  ok('接口挂了"改模式 / 换一张"', /seg\[2\] === 'prefs'/.test(mediaSrc) && /seg\[2\] === 'shuffle'/.test(mediaSrc));
+  ok('列表接口把 prefs 与 current 一起给前端', /prefs,/.test(mediaSrc) && /current,/.test(mediaSrc));
+  ok('界面有三个模式按钮 + 换一张', /wp-mode-rotate/.test(appSrc) && /wp-mode-random/.test(appSrc) && /wp-shuffle/.test(appSrc));
+  ok('前端按模式选图（rotate 用服务端算的、random 自己抽）',
+    /wpPrefs\.mode === 'rotate'/.test(appSrc) && /wpPrefs\.mode === 'random'/.test(appSrc));
+}
 
 console.log('');
 console.log(failures === 0 ? 'wallpapers.test: PASS' : `wallpapers.test: FAIL (${failures})`);

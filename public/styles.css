@@ -630,6 +630,12 @@ body.wp-on body::before { opacity: .2; }
 .wp-tile .wp-tags { position: absolute; top: 4px; left: 4px; display: flex; gap: 4px; }
 .wp-tile .wp-tags span { font-size: 10px; padding: 1px 5px; border-radius: 8px; background: rgba(0,0,0,.7); }
 .wp-tile .wp-tags span.on { background: var(--accent); color: #000; }
+/* 2026-10-09：颜色风格标签（P5R 黑红 / P3R 克莱因蓝 / 其他）。点一下就能改，手工标的会加粗。 */
+.wp-tile .wp-style { display: inline-block; font-size: 10px; padding: 0 5px; margin-right: 5px; border-radius: 7px;
+  background: rgba(255,255,255,.14); color: var(--text); cursor: pointer; }
+.wp-tile .wp-style.p5 { background: rgba(230,0,18,.75); color: #fff; }
+.wp-tile .wp-style.p3r { background: rgba(46,107,255,.75); color: #fff; }
+.wp-tile .wp-style.manual { outline: 1px solid var(--text); }
 .wp-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
 
 /* Codex chat */

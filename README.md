@@ -204,11 +204,12 @@ modules/我的功能/
 放到 `modules/` 下面就会被自动发现，刷新页面就出现。
 完整写法见 **[docs/WRITING_A_MODULE.md](docs/WRITING_A_MODULE.md)**。
 
-仓库里已经带了 **14 个真实模块**作为例子。界面卡片类的（`kind: gadget`）：`getting-started`（从这里开始）、
+仓库里已经带了 **15 个真实模块**作为例子。界面卡片类的（`kind: gadget`）：`getting-started`（从这里开始）、
 `priority-feed`（重要信息）、`daily-brief`（日报 / 晚报）、`preclass-card`（上课前检查）—— 都挂「今日」页；
 `ddl-card`（DDL 提醒）挂「任务」页；`connect-wizard`（连接向导）、`filter-profile`（信息筛选）、
 `digest-preview`（每日摘要预览）、`agent-connect`（Agent 接入）挂「数据源」页；
-`backup-card`（数据备份）挂「统计」页。**自己占一整页的**（`kind: view`）：`course-assist-view`（课程辅助）。
+`backup-card`（数据备份）挂「统计」页。**自己占一整页的**（`kind: view`）：`course-assist-view`（课程辅助）、
+`learning-hub`（学习区）。
 **再处理功能**（`kind: processor`）：`preclass-check`（上课前 Canvas 检查）、`course-assist`（课程辅助）、
 `hello-processor`（示例，照着抄它）。
 

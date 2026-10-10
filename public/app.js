@@ -1249,6 +1249,36 @@ function dayTimelineInto(el, cursor) {
   }
   items.sort((a, b) => a.top - b.top);
 
+  // 2026-10-05（用户截图报的"字全叠在一起"）：**批量导入的通知会共用同一个时刻** ——
+  // 连接器对"时间已经过去"的条目统一把 trigger_at 写成导入的那一刻，于是一次同步十几条
+  // 全都落在同一分钟；时间轴只有 3 列，十几张卡直接叠成字压字，完全没法看。
+  // 两步修，任何一张卡都不会再压在别的卡上：
+  //   ① **同一分钟的通知合并成一张**「N 条通知 · 首条…」（点它跳去「通知」页看全部）；
+  //   ② 分列时做**防重叠**：每列记住自己排到哪了，放不下就往下让一点（时间轴的位置只在冲突时让位）。
+  const merged = [];
+  const slotCard = new Map();
+  for (const it of items) {
+    if (it.kind !== 'notif') { merged.push(it); continue; }
+    const slot = Math.round(it.top);                     // 同一像素档 ≈ 同一分钟
+    const hit = slotCard.get(slot);
+    if (hit) { hit.count += 1; continue; }
+    const card = { ...it, count: 1 };
+    slotCard.set(slot, card);
+    merged.push(card);
+  }
+  for (const it of merged) {
+    if (it.count > 1) { it.title = `${it.count} 条通知 · ${it.title}`; it.id = null; it.goto = 'notifications'; }
+  }
+  const COL_X = ['2%', '35%', '68%'];
+  const colBottom = COL_X.map(() => 0);
+  for (const it of merged) {
+    let col = 0;
+    for (let i = 1; i < COL_X.length; i += 1) if (colBottom[i] < colBottom[col]) col = i;
+    if (it.top < colBottom[col] + 2) it.top = colBottom[col] + 2;
+    colBottom[col] = it.top + it.height;
+    it.left = COL_X[col];
+  }
+
   el.innerHTML = `
     <div class="card">
       <h3>🕑 当日时间轴 <span class="muted">${cursorKey}</span></h3>
@@ -1257,10 +1287,9 @@ function dayTimelineInto(el, cursor) {
           ${Array.from({ length: 25 }, (_, h) => `<div class="tl-ht" style="top:${h * HOURPX}px">${pad(h)}:00</div>`).join('')}
         </div>
         <div class="tl-body" style="height:${24 * HOURPX}px">
-          ${items.map((it, idx) => `
-            <div class="tl-item ${it.kind}${(it.kind === 'event' || it.kind === 'task') && isConflict(it.kind, it.id) ? ' conflict' : ''}" style="top:${it.top}px;height:${it.height}px;border-left-color:${it.color};
-              ${idx % 3 === 1 ? 'left:38%;' : idx % 3 === 2 ? 'left:66%;' : 'left:2%;'} width:30%"
-              ${it.id ? `data-edit="${it.kind === 'task' ? 'task' : it.kind === 'event' ? 'event' : it.kind === 'course' ? 'course' : 'notif'}" data-id="${it.id}"` : ''}>
+          ${merged.map((it) => `
+            <div class="tl-item ${it.kind}${(it.kind === 'event' || it.kind === 'task') && isConflict(it.kind, it.id) ? ' conflict' : ''}" style="top:${it.top}px;height:${it.height}px;left:${it.left};width:30%;border-left-color:${it.color}"
+              ${it.goto ? `data-goto="${it.goto}"` : it.id ? `data-edit="${it.kind === 'task' ? 'task' : it.kind === 'event' ? 'event' : it.kind === 'course' ? 'course' : 'notif'}" data-id="${it.id}"` : ''}>
               <div class="tl-title" style="color:${it.color}">${esc(it.title)}</div>
               <div class="tl-sub">${esc(it.sub)}</div>
             </div>`).join('')}
@@ -1949,6 +1978,25 @@ function mobileCardHtml() {
     <div class="card" style="margin-bottom:16px">
       <h3>📱 手机与办公本 <span class="muted">Bark 推送 · 日历订阅 · iCloud 直推 · 每日摘要</span></h3>
 
+      <!-- 2026-10-08：平板"换个网络就连不上"的自检入口。
+           Windows 会把 Wi-Fi 判成专用/公用，而防火墙规则只在它覆盖的类型上生效 ——
+           校园网（实测 SJTU WLAN）被判成公用，规则却只覆盖专用，于是静默连不上。 -->
+      <div id="mb-net" style="margin:2px 0 14px;padding:9px 11px;border-left:3px solid var(--line2);background:rgba(255,255,255,.03);border-radius:6px">
+        <b>平板 / 手机连不上？</b>
+        <span id="mb-net-line" class="dim">先自检：看现在这个 Wi-Fi 是什么类型、防火墙放行有没有覆盖它。</span>
+        <button class="btn small" id="mb-net-check" style="margin-left:8px">自检</button>
+        <button class="btn primary small" id="mb-net-fix" style="display:none">让平板能连（会弹一次管理员确认）</button>
+      </div>
+
+      <!-- 2026-10-08：校园网会"隔离设备"（平板连校园网时根本到不了这台电脑）。
+           让电脑自己开一个热点给平板连：不经过校园网的 AP，能上网（ICS 共享），地址还固定。 -->
+      <div id="mb-hot" style="margin:2px 0 14px;padding:9px 11px;border-left:3px solid var(--line2);background:rgba(255,255,255,.03);border-radius:6px">
+        <b>📶 给平板开热点</b>
+        <span id="mb-hot-line" class="dim">电脑自己发一个 Wi-Fi：平板连上就能用（绕开校园网的设备隔离），而且它照样能上网。</span>
+        <button class="btn small" id="mb-hot-toggle" style="margin-left:8px">开热点</button>
+        <button class="btn small" id="mb-hot-refresh">刷新状态</button>
+      </div>
+
       <div class="grid cols-2" style="gap:16px">
         <div>
           <div class="dim" style="margin-bottom:6px"><b>① Bark 即时推送</b>（iPhone 装 Bark，把密钥或推送地址粘到这里）</div>
@@ -2105,6 +2153,101 @@ function bindMobileCard(el) {
     await refresh();
     toast(msg, 'green');
   };
+
+  // 平板/手机连不上：自检 + 一键修复（2026-10-08）
+  const netLine = $('#mb-net-line', el);
+  const netBtn = $('#mb-net-check', el);
+  const netFix = $('#mb-net-fix', el);
+  const runNetCheck = async () => {
+    if (!netBtn) return;
+    netBtn.textContent = '检查中…';
+    try {
+      const r = await api('GET', '/api/mobile/network');
+      const v = r.verdict || {};
+      const icon = v.level === 'bad' ? '⚠️' : v.level === 'ok' ? '✅' : 'ℹ️';
+      const steps = (v.steps || []).map((s, i) => `${i + 1}. ${esc(s)}`).join('<br>');
+      const why = (v.why || []).map((s) => esc(s)).join('<br>');
+      if (netLine) {
+        netLine.innerHTML = `${icon} <b>${esc(v.headline || '（没有结论）')}</b>`
+          + (why ? `<br><span class="dim">${why}</span>` : '')
+          + (steps ? `<br><span class="dim">${steps}</span>` : '');
+      }
+      if (netFix) netFix.style.display = r.needs_fix ? '' : 'none';
+    } catch (e) {
+      if (netLine) netLine.textContent = `自检失败：${e.message}`;
+      if (netFix) netFix.style.display = 'none';
+    }
+    netBtn.textContent = '自检';
+  };
+  if (netBtn) netBtn.onclick = runNetCheck;
+  if (netFix) netFix.onclick = async () => {
+    if (!confirm('会弹一次 Windows 管理员确认（UAC），只把 Cairn 的这条放行规则扩到所有网络类型、且仍限本子网。继续？')) return;
+    netFix.textContent = '已发起，请在弹窗点「是」…';
+    try {
+      const r = await api('POST', '/api/mobile/network/fix', {});
+      toast(r.ok ? '已请求管理员权限：在弹窗里点「是」，6 秒后自动重新自检' : `发起失败：${r.error || '未知原因'}`,
+        r.ok ? 'green' : 'red');
+    } catch (e) {
+      toast(`发起失败：${e.message}`, 'red');
+    }
+    netFix.textContent = '让平板能连（会弹一次管理员确认）';
+    if (netFix.style.display !== 'none') setTimeout(runNetCheck, 6000);
+  };
+
+  // 给平板开热点（2026-10-08）。状态读一次缓存一分钟 —— 卡片每次刷新都去问一遍
+  // PowerShell 太慢，而热点状态本来也不会一秒一变。
+  const hotLine = $('#mb-hot-line', el);
+  const hotBtn = $('#mb-hot-toggle', el);
+  let hotCache = null;
+  let hotCacheAt = 0;
+  const renderHot = (r) => {
+    if (!hotLine || !hotBtn) return;
+    if (!r || r.supported === false) {
+      hotLine.textContent = (r && r.error) || '这个开关目前只做了 Windows';
+      hotBtn.style.display = 'none';
+      return;
+    }
+    hotBtn.style.display = '';
+    const on = r.state === 'on';
+    hotBtn.textContent = on ? '关热点' : '开热点';
+    const bits = [`状态：<b>${esc(r.label || r.state || '未知')}</b>`];
+    if (on && r.ssid) bits.push(`Wi-Fi 名 <b>${esc(r.ssid)}</b>`);
+    if (on && r.pass) bits.push(`密码 <b>${esc(r.pass)}</b>`);
+    let html = bits.join(' · ');
+    if (on && r.url) html += `<br>平板打开：<code>${esc(r.url)}</code>（固定地址，加一次主屏幕就行）`;
+    if (r.error) html += `<br><span class="dim">${esc(r.error)}</span>`;
+    hotLine.innerHTML = html;
+  };
+  const loadHot = async (force) => {
+    if (!hotLine) return;
+    if (!force && hotCache && Date.now() - hotCacheAt < 60000) { renderHot(hotCache); return; }
+    try {
+      hotCache = await api('GET', '/api/mobile/hotspot');
+      hotCacheAt = Date.now();
+      renderHot(hotCache);
+    } catch (e) {
+      hotLine.textContent = `取不到热点状态：${e.message}`;
+    }
+  };
+  const hotRefreshBtn = $('#mb-hot-refresh', el);
+  if (hotRefreshBtn) hotRefreshBtn.onclick = () => loadHot(true);
+  if (hotBtn) hotBtn.onclick = async () => {
+    const turningOn = !/关/.test(hotBtn.textContent || '');
+    hotBtn.disabled = true;
+    hotBtn.textContent = turningOn ? '开热点中…' : '关热点中…';
+    try {
+      const r = await api('POST', '/api/mobile/hotspot', { action: turningOn ? 'on' : 'off' });
+      hotCache = r; hotCacheAt = Date.now();
+      renderHot(r);
+      toast(turningOn ? '热点已开；平板连它就能打开 Cairn' : '热点已关', r.error ? 'red' : 'green');
+    } catch (e) {
+      toast(`操作失败：${e.message}`, 'red');
+    }
+    hotBtn.disabled = false;
+    loadHot(true);
+  };
+  loadHot();
+
   const bs = $('#mb-bark-save', el);
   if (bs) bs.onclick = () => savePrefs({
     bark_key: val('#mb-bark-key'),
@@ -3874,6 +4017,14 @@ const WP_INNER = { p5: '2895586231', p3r: '3151551777' };
 let wpList = [];
 let wpById = {};
 let wpDir = '';                       // 当前壁纸目录（服务端给的，可在这里改）
+// 壁纸模式（2026-10-09）：theme=按主题固定（默认）· rotate=按周期自动换 · random=每次打开随机。
+// 配置存在**本机**（服务端 sync_state），属于私人化设置；这里只负责照它显示。
+let wpPrefs = { schema: 'wallpaper-prefs.v1', mode: 'theme', period: 'day', offset: 0 };
+// rotate 模式下服务端按"时间片 + 风格池"算好的两张：{ p5: id, p3r: id }
+// 2026-10-09：按颜色风格分类后，P5 主题从 p5 池里轮、P3R 从 p3r 池里轮。
+let wpCurrent = null;
+let wpPools = { p5: [], p3r: [], other: [], all: [] };
+let wpRandomPick = '';                // random 模式下本次打开抽到的那张（每次打开重新抽）
 let wpLayers = null;
 // 动态壁纸默认自动播放（保持原有效果）；如果用户手动关掉，会持久记住「关」。
 // 关掉后视频壁纸会退化成同款静态预览图，可省下 4K 视频解码常驻的内存（约 500 MB）。
@@ -3924,6 +4075,39 @@ function setWpVideoAllowed(on) {
 function applyWallpaper(theme, mode, force) {
   if (!wpLayers) initWpLayers();
   const key = theme === 'p3r' ? 'p3r' : 'p5';
+  // 2026-10-09：先看"壁纸模式" ——
+  //   rotate：用服务端按时间片算好的那张（同一片里所有设备一致）
+  //   random：本次打开抽一张（整个页面生命周期内不变）
+  //   两种模式下都**忽略**主题绑定与内页专用图，真正做到"它自己会换"。
+  const rotateId = (wpCurrent && (wpCurrent[key] || wpCurrent.p3r)) || '';
+  if (wpPrefs && wpPrefs.mode === 'rotate' && rotateId && wpById[rotateId]) {
+    const active0 = wpLayers.find((L) => L.active);
+    if (force || !active0 || active0.id !== rotateId) {
+      const next0 = wpLayers.find((L) => !L.active) || wpLayers[0];
+      setWpLayer(next0, rotateId);
+      if (active0) { active0.active = false; active0.el.classList.remove('on'); }
+      next0.active = true; next0.el.classList.add('on');
+    }
+    return;
+  }
+  if (wpPrefs && wpPrefs.mode === 'random') {
+    if (!wpRandomPick || !wpById[wpRandomPick]) {
+      // 2026-10-09：随机也在**同一风格类**里抽（P5 主题只在 P5R 类里抽），空了才退回全部。
+      const pool = (wpPools[key] && wpPools[key].length) ? wpPools[key] : wpList.map((w) => w.id);
+      const ids = pool.filter(Boolean);
+      wpRandomPick = ids.length ? ids[Math.floor(Math.random() * ids.length)] : '';
+    }
+    if (wpRandomPick && wpById[wpRandomPick]) {
+      const active0 = wpLayers.find((L) => L.active);
+      if (force || !active0 || active0.id !== wpRandomPick) {
+        const next0 = wpLayers.find((L) => !L.active) || wpLayers[0];
+        setWpLayer(next0, wpRandomPick);
+        if (active0) { active0.active = false; active0.el.classList.remove('on'); }
+        next0.active = true; next0.el.classList.add('on');
+      }
+      return;
+    }
+  }
   // 选哪张壁纸，**逐级回退**（2026-09-26 晚修）：以前 hub 用 wpMap[key]、内页用两个写死的 id，
   // 那两个 id 是原开发者机器上的 —— 换到别人机器上库里没有，就会变成一片空背景
   //（用户反馈"后面的动态壁纸没了"）。现在：指定 id → 主题配的那张 → 名字像这个主题的 →
@@ -3953,6 +4137,9 @@ async function loadWallpapers() {
   try {
     const r = await api('GET', '/api/wallpapers');
     wpMap = r.map; wpList = r.wallpapers; wpDir = r.dir || '';
+    if (r.prefs) wpPrefs = r.prefs;
+    wpCurrent = r.current || null;
+    if (r.pools) wpPools = r.pools;
     wpById = {}; for (const w of r.wallpapers) wpById[w.id] = w;
     applyWallpaper(document.body.dataset.theme, state.tab === 'hub' ? 'hub' : 'inner');
   } catch { /* 读不到就当没有 */ }
@@ -4039,6 +4226,24 @@ function wallpaperPanelHtml() {
       <button class="wp-toggle ${wpVideoAllowed ? 'on' : ''}" id="wp-video-toggle">${wpVideoAllowed ? '🎞 动态壁纸：开（默认）' : '🖼 动态壁纸：关（省内存）'}</button>
       <span class="muted">默认自动播放动态壁纸；想省内存（例如要开 AE/PR 时）点这里即可切回静态图。</span>
     </div>
+    <!-- 2026-10-09：壁纸模式（用户要"能自主改动的模式"）。默认仍是"按主题固定"，行为不变。 -->
+    <div class="wp-row" style="margin-top:10px;flex-wrap:wrap;gap:8px;align-items:center">
+      <span class="muted">壁纸模式：</span>
+      <button class="btn small ${wpPrefs.mode === 'theme' ? 'primary' : ''}" id="wp-mode-theme">按主题固定</button>
+      <button class="btn small ${wpPrefs.mode === 'rotate' ? 'primary' : ''}" id="wp-mode-rotate">自动轮换</button>
+      <button class="btn small ${wpPrefs.mode === 'random' ? 'primary' : ''}" id="wp-mode-random">每次打开随机</button>
+      <select id="wp-period" style="width:auto" ${wpPrefs.mode === 'rotate' ? '' : 'disabled'}>
+        <option value="hour" ${wpPrefs.period === 'hour' ? 'selected' : ''}>每小时换</option>
+        <option value="day" ${wpPrefs.period === 'day' ? 'selected' : ''}>每天换</option>
+      </select>
+      <button class="btn small" id="wp-shuffle">🔀 现在换一张</button>
+      <button class="btn small" id="wp-classify">🎨 按颜色重新分类</button>
+      <span class="muted" id="wp-mode-hint">${wpPrefs.mode === 'rotate'
+        ? `每${wpPrefs.period === 'hour' ? '小时' : '天'}自动换下一张（同一个时间段里所有设备看到同一张）`
+        : wpPrefs.mode === 'random'
+          ? '每次打开应用随机一张；想立刻换一张就点「现在换一张」或刷新页面'
+          : '按主题走：在下面格子上点 P5 / P3R 就能换'}</span>
+    </div>
     <div class="wp-row" style="margin-top:12px;flex-wrap:wrap;gap:8px">
       <input id="wp-dir" placeholder="壁纸文件夹（Wallpaper Engine 创意工坊目录，或任何放着图片/视频的文件夹）" value="${esc(wpDir)}" style="flex:1;min-width:260px" />
       <button class="btn small primary" id="wp-dir-apply">应用并重新扫描</button>
@@ -4049,7 +4254,13 @@ function wallpaperPanelHtml() {
       ${wpList.map((w) => `<div class="wp-tile" data-id="${w.id}" title="${esc(w.name)}">
         <div class="wp-tags"><span class="${wpMap.p5 === w.id ? 'on' : ''}" data-as="p5">P5</span><span class="${wpMap.p3r === w.id ? 'on' : ''}" data-as="p3r">P3R</span></div>
         <img src="${w.preview_url || ''}" alt="">
-        <div class="wp-name">${esc(w.name)}${w.has_video ? ' · 视频' : ' · 静态'}</div>
+        <div class="wp-name">
+          <span class="wp-style ${w.style || 'other'}${w.style_source === 'manual' ? ' manual' : ''}" data-style-for="${w.id}"
+                title="颜色风格：${esc(w.style_detail || '还没判过')}${w.style_source ? `（来源：${esc(w.style_source)}）` : ''} · 点一下可改">
+            ${w.style === 'p5' ? 'P5R' : w.style === 'p3r' ? 'P3R' : '其他'}
+          </span>
+          ${esc(w.name)}${w.has_video ? ' · 视频' : ' · 静态'}
+        </div>
       </div>`).join('') || '<div class="dim">还没扫到壁纸。上面填 Wallpaper Engine 创意工坊目录（或任何放着图片/视频的文件夹），再点「应用并重新扫描」。</div>'}
     </div>
     <div class="flex" style="margin-top:12px;flex-wrap:wrap;gap:8px">
@@ -4107,6 +4318,64 @@ function bindWallpaperPanel(root) {
     toast(wpVideoAllowed ? '已开启动态壁纸（视频解码会多占内存）' : '已关闭动态壁纸，改用静态图', 'green');
   };
   const shopP5 = q1('#wp-shop-p5');
+  // 壁纸模式（2026-10-09）：三个按钮 + 周期下拉 + 「现在换一张」。
+  // 改动落到**本机**（服务端 sync_state），属于私人化设置；改完立刻重画一遍。
+  const setWpMode = async (mode, period) => {
+    const body = { mode };
+    if (period) body.period = period;
+    try {
+      const r = await api('POST', '/api/wallpapers/prefs', body);
+      if (r && r.prefs) wpPrefs = r.prefs;
+      wpCurrent = (r && r.current) || '';
+      wpRandomPick = '';                    // 换模式就重新抽（random 模式用）
+      await loadWallpapers();               // 会重新拉 prefs/current 并重画面板
+      toast(mode === 'theme' ? '壁纸：按主题固定' : mode === 'rotate' ? '壁纸：自动轮换' : '壁纸：每次打开随机', 'green');
+    } catch (e) { toast(`改壁纸模式失败：${e.message}`, 'red'); }
+  };
+  const modeTheme = q1('#wp-mode-theme');
+  if (modeTheme) modeTheme.onclick = () => setWpMode('theme');
+  const modeRotate = q1('#wp-mode-rotate');
+  if (modeRotate) modeRotate.onclick = () => setWpMode('rotate', wpPrefs.period || 'day');
+  const modeRandom = q1('#wp-mode-random');
+  if (modeRandom) modeRandom.onclick = () => setWpMode('random');
+  const wpPeriod = q1('#wp-period');
+  if (wpPeriod) wpPeriod.onchange = () => setWpMode('rotate', wpPeriod.value);
+  const wpShuffle = q1('#wp-shuffle');
+  if (wpShuffle) wpShuffle.onclick = async () => {
+    try {
+      const r = await api('POST', '/api/wallpapers/shuffle', {});
+      if (r && r.prefs) wpPrefs = r.prefs;
+      wpCurrent = (r && r.current) || null;
+      wpRandomPick = '';                    // 随机模式下也真的换一张
+      await loadWallpapers();
+      toast('换了一张壁纸', 'green');
+    } catch (e) { toast(`换壁纸失败：${e.message}`, 'red'); }
+  };
+  // 按颜色风格重新分类（P5R 黑红 / P3R 克莱因蓝 / 其他）—— 只判没手工标过的那些。
+  const wpClassify = q1('#wp-classify');
+  if (wpClassify) wpClassify.onclick = async () => {
+    wpClassify.textContent = '🎨 正在看颜色…';
+    try {
+      const r = await api('POST', '/api/wallpapers/classify', {});
+      await loadWallpapers();
+      toast(`分类完成：P5R ${((r.pools || {}).p5 || []).length} 张 · P3R ${((r.pools || {}).p3r || []).length} 张 · 其他 ${((r.pools || {}).other || []).length} 张`, 'green');
+    } catch (e) { toast(`分类失败：${e.message}`, 'red'); }
+    wpClassify.textContent = '🎨 按颜色重新分类';
+  };
+  // 点格子上的风格标签：P5R → P3R → 其他 → 自动（循环）。手工标注优先于自动判色。
+  qa1('.wp-style[data-style-for]').forEach((chip) => {
+    chip.onclick = async (e) => {
+      e.stopPropagation();
+      const id = chip.dataset.styleFor;
+      const cur = (wpById[id] && wpById[id].style) || 'other';
+      const next = cur === 'p5' ? 'p3r' : cur === 'p3r' ? 'other' : cur === 'other' ? '' : 'p5';
+      try {
+        await api('POST', '/api/wallpapers/style', { id, style: next });
+        await loadWallpapers();
+        toast(next ? `已标为 ${next === 'p5' ? 'P5R' : next === 'p3r' ? 'P3R' : '其他'}` : '已取消标注（下次重新看图）', 'green');
+      } catch (err) { toast(`改风格失败：${err.message}`, 'red'); }
+    };
+  });
   if (shopP5) shopP5.onclick = () => window.open('https://steamcommunity.com/workshop/browse/?appid=431960&searchtext=' + encodeURIComponent('Persona 5 wallpaper'));
   const shopP3r = q1('#wp-shop-p3r');
   if (shopP3r) shopP3r.onclick = () => window.open('https://steamcommunity.com/workshop/browse/?appid=431960&searchtext=' + encodeURIComponent('Persona 3 Reload wallpaper'));

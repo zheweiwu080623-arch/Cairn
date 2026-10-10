@@ -335,6 +335,47 @@ ok('vm-bridge.js 挂载了周/日取数',
 ok('第 9 周（2026-11-04）确实没有程序设计',
   !week9.courses.some((c) => c.id === 'c2'));
 
+// ---------- 6. 日时间轴不再"字压字"（2026-10-05 用户截图报的问题） ----------
+// 起因：批量导入的通知**共用同一个时刻**（连接器对"时间已经过去"的条目统一把 trigger_at
+// 写成导入的那一刻），一次同步十几条全落在同一分钟；时间轴只有 3 列，卡片叠成一团、字压字。
+// 两条断言：① 同一分钟的通知合并成一张「N 条通知」卡；② 任何两张卡（含任务/日程）都不重叠。
+console.log('');
+{
+  const app2 = loadApp(null);
+  Object.assign(app2.DB, state);
+  app2.DB.courses = [];
+  app2.DB.notifications = Array.from({ length: 14 }, (_, i) => ({
+    id: `n${i}`, title: `Data Science for Future Engineers · 课程文件：Lec ${i + 1}.pdf`,
+    message: 'x', trigger_at: '2026-09-14T09:11:00', enabled: true, priority: 1, repeat: 'none',
+    source: 'connector:canvas',
+  }));
+  app2.DB.tasks = [{ id: 't1', title: '早课（英语30min + 昨日复盘）', due_at: '2026-09-14T09:11', status: 'todo', priority: 2 }];
+  app2.DB.events = [{ id: 'e1', title: '小组讨论', start_at: '2026-09-14T09:00', end_at: '2026-09-14T10:00' }];
+  app2.state.sched.cursor = new Date(2026, 8, 14);
+  app2.state.sched.dayMode = 'timeline';
+  const el2 = app2.sandbox.get('#view-calendar');
+  app2.renderDay(el2);
+  const html2 = dump(el2);          // 时间轴挂在子节点里（同上面周视图那几条断言）
+  const cards = [...html2.matchAll(/class="tl-item ([\w-]+)"[^>]*style="top:([\d.]+)px;height:([\d.]+)px;left:([\d.]+)%;width:30%;/g)]
+    .map((m) => ({ kind: m[1], top: +m[2], height: +m[3], left: m[4] }));
+  ok('日时间轴画出了卡片', cards.length > 0, String(cards.length));
+  const notifCards = cards.filter((c) => c.kind === 'notif');
+  ok('同一分钟的 14 条通知合并成 1 张卡（不再是 14 张叠在一起）',
+    notifCards.length === 1, `实际 ${notifCards.length} 张`);
+  ok('合并卡写明条数「14 条通知 · …」', /14 条通知 · /.test(html2),
+    html2.slice(html2.indexOf('tl-item notif'), html2.indexOf('tl-item notif') + 120));
+  let overlap = '';
+  for (const col of new Set(cards.map((c) => c.left))) {
+    const inCol = cards.filter((c) => c.left === col).sort((a, b) => a.top - b.top);
+    for (let i = 1; i < inCol.length; i += 1) {
+      if (inCol[i].top < inCol[i - 1].top + inCol[i - 1].height) {
+        overlap = `${col} 列：${inCol[i - 1].kind} ${inCol[i - 1].top}~${inCol[i - 1].top + inCol[i - 1].height} 压住 ${inCol[i].kind} ${inCol[i].top}`;
+      }
+    }
+  }
+  ok('任何两张卡都不重叠（以前就是这里字压字）', overlap === '', overlap);
+}
+
 console.log('');
 console.log(failures === 0 ? 'calendar-dayweek.test: PASS' : `calendar-dayweek.test: FAIL (${failures})`);
 process.exit(failures === 0 ? 0 : 1);
