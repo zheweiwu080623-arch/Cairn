@@ -27,7 +27,9 @@ const TOKEN = 'files-token-9876';
 const sync = new Map([[MOBILE_KEYS.cal_token, TOKEN]]);
 const store = { getSync: (k) => (sync.has(k) ? sync.get(k) : null), setSync: (k, v) => sync.set(k, v) };
 
-const work = mkdtempSync(join(tmpdir(), 'cairn-files-'));
+// 临时目录优先用 PLANNER_TEST_TMP（受限环境里系统临时目录可能不可写，
+// CI 与 run-portable.mjs 都会设它）—— 这是仓库里其它测试的统一约定。
+const work = mkdtempSync(join(process.env.PLANNER_TEST_TMP || tmpdir(), 'cairn-files-'));
 const share = join(work, 'share');
 mkdirSync(share, { recursive: true });
 
