@@ -1,31 +1,30 @@
-# 模块：学习区（learning-hub）
+# Module: Learning Hub
 
-`kind: view` —— 自己占一整页，导航里与「今日 / 日程 / 养成 / 课程辅助」并列。
+`kind: view` — a standalone page for long-term, project-driven learning.
 
-**它解决什么**：`养成`页管的是“每天做没做”（打卡、连续天数、里程碑），
-`课程辅助`页管的是“这个学期的课件与巩固”。两页都装不下**跨年份的知识树、
-学习路线、资料地图与自检机制**。所以新开一页，专门放长期学习框架。
+## Purpose
 
-## 内容结构
+The habits page tracks recurring actions and the course helper organises current
+course material. The learning hub covers the longer-lived layer: a knowledge
+tree, a capability assessment, a learning route, resources, reusable prompts,
+and a review loop.
 
-1. **知识树** —— 以 Agent research 为中心的 7 层 + 贯穿的 Research Method；
-2. **能力诊断** —— 14 个板块标注「已具备 / 有项目经验但理论不足 / 完全欠缺 / 暂时不需要」；
-3. **学习路线** —— 阶段 0～4，每段写清：学什么、为什么现在学、学到什么程度、
-   对应 Cairn/Pigeon 哪部分、对 ACM / 2+2 / 暑研 / Agent research 的作用、下一段 prerequisite；
-4. **资料地图** —— 每个主题最多 1 主教材 + 1 辅助 + 2~5 篇关键论文；
-5. **项目驱动** —— 把知识映射到 Cairn / Pigeon / Planner 的真实问题；
-6. **每周计划** —— 必须掌握 / 应该理解 / 可以以后学；
-7. **学习循环** —— 做项目 → 遇到问题 → 学基础 → 回项目验证 → 写理解 → 读论文 → 找 gap；
-8. **主动学习与检验** —— 每学完一个主题先讲、再做题、再分析真实代码；
-9. **科研训练** —— 读论文 / hypothesis / baseline / ablation / metric / 写作；
-10. **三个可复用 Prompt** —— 学习导师 / 能力考官 / 课程设计+文献地图；
-11. **非技术线** —— 视频剪辑(MAD) · 电吉他 · 羽毛球 · 新事物探索 · 坚持学习。
+## Boundaries
 
-> 长文版（可复制、可打印）在 `docs/LEARNING_FRAMEWORK.md`，页面上有直达按钮。
-> 本文件的框架文本与 `docs/LEARNING_FRAMEWORK.md` 同源维护：改内容时两处一起改。
+- Read-only: no database writes, file writes, network calls, or notifications.
+- Neutral defaults: the public release ships a generic template rather than a
+  personal learning plan.
+- Local customisation: users may edit their private copy, but should not commit
+  personal goals, schedules, identifiers, or private project names.
 
-## 边界
+## Content
 
-- 本页**只读**：不写数据库、不碰文件、不联网、不发通知；
-- 不替代 `养成`页的打卡，也不替代 `课程辅助`页的课件整理；
-- 页内的三个 Prompt 只做展示与一键复制，不会自动去调用模型。
+1. dependency-aware knowledge layers;
+2. self-assessment states;
+3. project-driven phases;
+4. a bounded resource map;
+5. weekly planning;
+6. active learning and testing;
+7. reusable teaching and evaluation prompts.
+
+The long-form public template is `docs/LEARNING_FRAMEWORK.md`.

@@ -23,7 +23,7 @@ const ok = (label, cond, detail = '') => {
 
 console.log('mobile-files.test.mjs');
 
-const TOKEN = 'files-token-9876';
+const TOKEN = 'token-1';
 const sync = new Map([[MOBILE_KEYS.cal_token, TOKEN]]);
 const store = { getSync: (k) => (sync.has(k) ? sync.get(k) : null), setSync: (k, v) => sync.set(k, v) };
 
